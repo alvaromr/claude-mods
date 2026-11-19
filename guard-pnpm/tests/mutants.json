@@ -1,0 +1,506 @@
+[
+  {
+    "file": "hooks/refusal.ts",
+    "from": "new Set(['npm', 'npx', 'yarn'])",
+    "to": "new Set(['npx', 'yarn'])",
+    "why": "npm is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "new Set(['npm', 'npx', 'yarn'])",
+    "to": "new Set(['npm', 'yarn'])",
+    "why": "npx is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "new Set(['npm', 'npx', 'yarn'])",
+    "to": "new Set(['npm', 'npx'])",
+    "why": "yarn is denied"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const ASSIGNMENT = /^[A-Za-z_]\\w*=/",
+    "to": "const ASSIGNMENT = /^$a/",
+    "why": "a variable assignment before the command is skipped"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|da|k|a)?sh$/",
+    "why": "the script of zsh -c is read"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|z|da|k)?sh$/",
+    "why": "the script of ash -c is read"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const FIND_EXEC = /^-(?:exec|execdir|ok|okdir)$/",
+    "to": "const FIND_EXEC = /^-(?:execdir|ok|okdir)$/",
+    "why": "find -exec runs a command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const FIND_EXEC = /^-(?:exec|execdir|ok|okdir)$/",
+    "to": "const FIND_EXEC = /^-(?:exec|ok|okdir)$/",
+    "why": "find -execdir runs a command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const FIND_EXEC = /^-(?:exec|execdir|ok|okdir)$/",
+    "to": "const FIND_EXEC = /^-(?:exec|execdir|okdir)$/",
+    "why": "find -ok runs a command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const FIND_EXEC = /^-(?:exec|execdir|ok|okdir)$/",
+    "to": "const FIND_EXEC = /^-(?:exec|execdir|ok)$/",
+    "why": "find -okdir runs a command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "/^(?:v?\\d[\\w.]*|node|iojs|stable|default|system|lts\\/\\S*)$/",
+    "to": "/^(?:node|iojs|stable|default|system|lts\\/\\S*)$/",
+    "why": "nvm exec takes a numbered version before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "/^(?:v?\\d[\\w.]*|node|iojs|stable|default|system|lts\\/\\S*)$/",
+    "to": "/^(?:v?\\d[\\w.]*|iojs|stable|default|system|lts\\/\\S*)$/",
+    "why": "nvm exec takes the node alias before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "/^(?:v?\\d[\\w.]*|node|iojs|stable|default|system|lts\\/\\S*)$/",
+    "to": "/^(?:v?\\d[\\w.]*|node|iojs|stable|default|system)$/",
+    "why": "nvm exec takes an lts alias before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "args: ['-u', '-g', '-C', '-h', '-p', '-r', '-t', '-D', '-U', '-T', '--user', '--group'],",
+    "to": "args: ['-g', '-C', '-h', '-p', '-r', '-t', '-D', '-U', '-T', '--user', '--group'],",
+    "why": "sudo -u takes a user before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "args: ['-u', '-g', '-C', '-h', '-p', '-r', '-t', '-D', '-U', '-T', '--user', '--group'],",
+    "to": "args: ['-u', '-g', '-C', '-h', '-p', '-r', '-t', '-D', '-U', '-T', '--group'],",
+    "why": "sudo --user takes a user before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[vV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "why": "sudo -l is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "why": "sudo -v is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lv][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "why": "sudo -V is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--validate|--version|--help)$/,",
+    "why": "sudo --list is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--version|--help)$/,",
+    "why": "sudo --validate is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--help)$/,",
+    "why": "sudo --version is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version)$/,",
+    "why": "sudo --help is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['command', { query: /^-[a-zA-Z]*[vV]/ }],",
+    "to": "['command', { query: /^-[a-zA-Z]*[V]/ }],",
+    "why": "command -v is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['command', { query: /^-[a-zA-Z]*[vV]/ }],",
+    "to": "['command', { query: /^-[a-zA-Z]*[v]/ }],",
+    "why": "command -V is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['command', { query: /^-[a-zA-Z]*[vV]/ }],",
+    "to": "['command', {}],",
+    "why": "command runs the command it names"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['env', { args: ['-u', '-C', '--unset', '--chdir'] }],",
+    "to": "['env', { args: ['-C', '--unset', '--chdir'] }],",
+    "why": "env -u takes a name before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['env', { args: ['-u', '-C', '--unset', '--chdir'] }],",
+    "to": "['env', { args: ['-u', '--unset', '--chdir'] }],",
+    "why": "env -C takes a directory before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['env', { args: ['-u', '-C', '--unset', '--chdir'] }],",
+    "to": "['env', { args: ['-u', '-C', '--chdir'] }],",
+    "why": "env --unset takes a name before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['env', { args: ['-u', '-C', '--unset', '--chdir'] }],",
+    "to": "['env', { args: ['-u', '-C', '--unset'] }],",
+    "why": "env --chdir takes a directory before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['exec', { args: ['-a'] }],",
+    "to": "['exec', {}],",
+    "why": "exec -a takes a name before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['time', { args: ['-f', '-o'] }],",
+    "to": "['time', { args: ['-o'] }],",
+    "why": "time -f takes a format before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['time', { args: ['-f', '-o'] }],",
+    "to": "['time', { args: ['-f'] }],",
+    "why": "time -o takes a file before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['timeout', { args: ['-s', '-k', '--signal', '--kill-after'] }],",
+    "to": "['timeout', { args: ['-k', '--signal', '--kill-after'] }],",
+    "why": "timeout -s takes a signal before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['timeout', { args: ['-s', '-k', '--signal', '--kill-after'] }],",
+    "to": "['timeout', { args: ['-s', '-k', '--kill-after'] }],",
+    "why": "timeout --signal takes a signal before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-d', '-a', '-s'] }],",
+    "to": "['xargs', { args: ['-n', '-P', '-L', '-E', '-d', '-a', '-s'] }],",
+    "why": "xargs -I takes a replacement before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-d', '-a', '-s'] }],",
+    "to": "['xargs', { args: ['-n', '-P', '-I', '-L', '-d', '-a', '-s'] }],",
+    "why": "xargs -E takes a string before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-d', '-a', '-s'] }],",
+    "to": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-a', '-s'] }],",
+    "why": "xargs -d takes a delimiter before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-d', '-a', '-s'] }],",
+    "to": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-d', '-s'] }],",
+    "why": "xargs -a takes a file before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['stdbuf', { args: ['-i', '-o', '-e'] }],",
+    "to": "['stdbuf', { args: ['-o', '-e'] }],",
+    "why": "stdbuf -i takes a mode before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['stdbuf', { args: ['-i', '-o', '-e'] }],",
+    "to": "['stdbuf', { args: ['-i', '-e'] }],",
+    "why": "stdbuf -o takes a mode before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['stdbuf', { args: ['-i', '-o', '-e'] }],",
+    "to": "['stdbuf', { args: ['-i', '-o'] }],",
+    "why": "stdbuf -e takes a mode before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'nohup',\n",
+    "to": "",
+    "why": "nohup runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'caffeinate',\n",
+    "to": "",
+    "why": "caffeinate runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'arch',\n",
+    "to": "",
+    "why": "arch runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'builtin',\n",
+    "to": "",
+    "why": "builtin runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'corepack',\n",
+    "to": "",
+    "why": "corepack runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'then',\n",
+    "to": "",
+    "why": "a command after then runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'do',\n",
+    "to": "",
+    "why": "a command after do runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'else',\n",
+    "to": "",
+    "why": "a command after else runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'elif',\n",
+    "to": "",
+    "why": "a command after elif runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'if',\n",
+    "to": "",
+    "why": "a command after if runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'while',\n",
+    "to": "",
+    "why": "a command after while runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    'until',\n",
+    "to": "",
+    "why": "a command after until runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    '!',\n",
+    "to": "",
+    "why": "a command after ! runs"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "if (/^[;&|(){}`\\n]$/.test(token)) {",
+    "to": "if (/^[;&|(){}`]$/.test(token)) {",
+    "why": "a newline ends a command"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "} else if (/^\\d*[<>]/.test(token)) {",
+    "to": "} else if (/^\\d*[<]/.test(token)) {",
+    "why": "a redirection's file is not a command word"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "      isTarget = !token.includes('&')",
+    "to": "      isTarget = true",
+    "why": "a descriptor duplication names no file"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "script.replace(/\\\\\\n/g, '')",
+    "to": "script",
+    "why": "a backslash before a newline joins the lines"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "/^-|^\\d/.test(word)",
+    "to": "/^-/.test(word)",
+    "why": "a duration before the command is skipped"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    if (wrapper.query?.test(word)) {\n      return -1\n    }\n",
+    "to": "",
+    "why": "a query option makes the call no run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "at += wrapper.args?.includes(word) ? 2 : 1",
+    "to": "at += 1",
+    "why": "an option's value is skipped with it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    } else if (name === 'find') {\n      return words.flatMap",
+    "to": "    } else if (name === 'findx') {\n      return words.flatMap",
+    "why": "find -exec runs what follows"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "if (!/^(?:exec|run)$/.test(words[at + 1] ?? '')) {",
+    "to": "if (!/^(?:run)$/.test(words[at + 1] ?? '')) {",
+    "why": "nvm exec runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "if (!/^(?:exec|run)$/.test(words[at + 1] ?? '')) {",
+    "to": "if (!/^(?:exec)$/.test(words[at + 1] ?? '')) {",
+    "why": "nvm run runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "if (!/^(?:exec|run)$/.test(words[at + 1] ?? '')) {\n        return []\n      }",
+    "to": "if (false) {\n        return []\n      }",
+    "why": "other nvm commands run nothing"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "      at += VERSION.test(words[at] ?? '') ? 1 : 0",
+    "to": "      at += 0",
+    "why": "nvm exec skips the version before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "      if (wrapper === undefined) {\n        return [words.slice(at)]\n      }",
+    "to": "      if (wrapper === undefined) {\n        return []\n      }",
+    "why": "a command that is no wrapper is checked"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "      for (const inner of substitutions(word)) {\n        const why = refusal(inner)",
+    "to": "      for (const inner of []) {\n        const why = refusal(inner)",
+    "why": "a substitution in double quotes is checked"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "/^-[A-Za-z]*c[A-Za-z]*$/.test(word)",
+    "to": "/^-c$/.test(word)",
+    "why": "bash -c is found among combined flags"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "const script = /\\s/.test(first)",
+    "to": "const script = false",
+    "why": "a command word with spaces is a script"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "name === 'eval'\n          ? rest.join(' ')",
+    "to": "name === 'evalx'\n          ? rest.join(' ')",
+    "why": "what eval runs is checked"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "SHELL.test(name) && flag >= 0",
+    "to": "SHELL.test(name) && flag >= 1",
+    "why": "the script of bash -c is checked"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "const name = first.split('/').pop() ?? ''\n      const flag",
+    "to": "const name = first\n      const flag",
+    "why": "a command given by its path is checked"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const name = word.split('/').pop() ?? ''\n\n    if (ASSIGNMENT",
+    "to": "const name = word\n\n    if (ASSIGNMENT",
+    "why": "a wrapper given by its path is skipped"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "const why = script === undefined ? undefined : refusal(script)",
+    "to": "const why = undefined",
+    "why": "a script's commands are checked"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "is not allowed here, use pnpm (\\`pnpm dlx\\` or \\`pnpm exec\\` in place of npx).",
+    "to": "is not allowed here.",
+    "why": "the denial points to pnpm"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "command.replace(HEREDOC, (whole,",
+    "to": "command.replace(/$a/, (whole,",
+    "why": "the text of a heredoc fed to another command is data"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "return /\\b(?:(?:ba|z|da|k)?sh|eval|source)\\b/.test(line + rest) ? whole : `<<${delimiter}${rest}`",
+    "to": "return `<<${delimiter}${rest}`",
+    "why": "a heredoc fed to a shell is a script"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "(?:(?:ba|z|da|k)?sh|eval|source)",
+    "to": "(?:(?:ba|z|da|k)?sh|source)",
+    "why": "a heredoc fed to eval is a script"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "(?:(?:ba|z|da|k)?sh|eval|source)",
+    "to": "(?:(?:ba|z|da|k)?sh|eval)",
+    "why": "a heredoc fed to source is a script"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "(?:(?:ba|z|da|k)?sh|eval|source)",
+    "to": "(?:(?:ba|da|k)?sh|eval|source)",
+    "why": "a heredoc fed to zsh is a script"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "const HEREDOC = /(?<!<)<<(?!<)",
+    "to": "const HEREDOC = /<<",
+    "why": "a here-string is not a heredoc"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "  on('tool.call', { tool: 'Monitor' }, ($, e, next) => {\n    const why = refusal(e.command ?? '')\n\n    return why === undefined ? next(e) : { deny: `${$.plugin.name}: ${why}` }\n  }).catch(($, e, next) => (next.called ? next(e) : { deny: `${$.plugin.name}: its guard failed.` }))",
+    "to": "  on('tool.call', { tool: 'Monitor' }, ($, e, next) => next(e))",
+    "why": "a Monitor's command is checked"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "  on('tool.call', { tool: 'Bash' }, ($, e, next) => {\n    const why = refusal(e.command)\n\n    return why === undefined ? next(e) : { deny: `${$.plugin.name}: ${why}` }\n  }).catch(($, e, next) => (next.called ? next(e) : { deny: `${$.plugin.name}: its guard failed.` }))",
+    "to": "  on('tool.call', { tool: 'Bash' }, ($, e, next) => {\n    const why = refusal(e.command)\n\n    return why === undefined ? next(e) : { deny: `${$.plugin.name}: ${why}` }\n  }).catch(($, e, next) => next(e))",
+    "why": "a command its own check fails on is denied"
+  }
+]

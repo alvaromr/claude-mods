@@ -1,0 +1,1358 @@
+[
+  {
+    "file": "hooks/commands.ts",
+    "from": "const ASSIGNMENT = /^[A-Za-z_]\\w*=/",
+    "to": "const ASSIGNMENT = /^$a/",
+    "why": "a variable assignment before the command is skipped"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|da|k|a)?sh$/",
+    "why": "the script of zsh -c is read"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|z|k|a)?sh$/",
+    "why": "the script of dash -c is read"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|z|da|a)?sh$/",
+    "why": "the script of ksh -c is read"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|z|da|k)?sh$/",
+    "why": "the script of ash -c is read"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|z|da|k|a)sh$/",
+    "why": "the script of sh -c is read"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const FIND_EXEC = /^-(?:exec|execdir|ok|okdir)$/",
+    "to": "const FIND_EXEC = /^-(?:execdir|ok|okdir)$/",
+    "why": "find -exec runs a command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const FIND_EXEC = /^-(?:exec|execdir|ok|okdir)$/",
+    "to": "const FIND_EXEC = /^-(?:exec|ok|okdir)$/",
+    "why": "find -execdir runs a command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const FIND_EXEC = /^-(?:exec|execdir|ok|okdir)$/",
+    "to": "const FIND_EXEC = /^-(?:exec|execdir|okdir)$/",
+    "why": "find -ok runs a command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const FIND_EXEC = /^-(?:exec|execdir|ok|okdir)$/",
+    "to": "const FIND_EXEC = /^-(?:exec|execdir|ok)$/",
+    "why": "find -okdir runs a command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "args: ['-u', '-g', '-C', '-h', '-p', '-r', '-t', '-D', '-U', '-T', '--user', '--group'],",
+    "to": "args: ['-g', '-C', '-h', '-p', '-r', '-t', '-D', '-U', '-T', '--user', '--group'],",
+    "why": "sudo -u takes a user before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "args: ['-u', '-g', '-C', '-h', '-p', '-r', '-t', '-D', '-U', '-T', '--user', '--group'],",
+    "to": "args: ['-u', '-g', '-C', '-h', '-p', '-r', '-t', '-D', '-U', '-T', '--group'],",
+    "why": "sudo --user takes a user before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[vV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "why": "sudo -l is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "why": "sudo -v is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lv][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "why": "sudo -V is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--validate|--version|--help)$/,",
+    "why": "sudo --list is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--version|--help)$/,",
+    "why": "sudo --validate is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--help)$/,",
+    "why": "sudo --version is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version|--help)$/,",
+    "to": "query: /^(?:-[a-zA-Z]*[lvV][a-zA-Z]*|--list|--validate|--version)$/,",
+    "why": "sudo --help is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['command', { query: /^-[a-zA-Z]*[vV]/ }],",
+    "to": "['command', { query: /^-[a-zA-Z]*[V]/ }],",
+    "why": "command -v is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['command', { query: /^-[a-zA-Z]*[vV]/ }],",
+    "to": "['command', { query: /^-[a-zA-Z]*[v]/ }],",
+    "why": "command -V is a query, not a run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['command', { query: /^-[a-zA-Z]*[vV]/ }],",
+    "to": "['command', {}],",
+    "why": "command runs the command it names"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['env', { args: ['-u', '-C', '--unset', '--chdir'] }],",
+    "to": "['env', { args: ['-C', '--unset', '--chdir'] }],",
+    "why": "env -u takes a name before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['env', { args: ['-u', '-C', '--unset', '--chdir'] }],",
+    "to": "['env', { args: ['-u', '--unset', '--chdir'] }],",
+    "why": "env -C takes a directory before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['env', { args: ['-u', '-C', '--unset', '--chdir'] }],",
+    "to": "['env', { args: ['-u', '-C', '--chdir'] }],",
+    "why": "env --unset takes a name before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['env', { args: ['-u', '-C', '--unset', '--chdir'] }],",
+    "to": "['env', { args: ['-u', '-C', '--unset'] }],",
+    "why": "env --chdir takes a directory before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['exec', { args: ['-a'] }],",
+    "to": "['exec', {}],",
+    "why": "exec -a takes a name before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['time', { args: ['-f', '-o'] }],",
+    "to": "['time', { args: ['-o'] }],",
+    "why": "time -f takes a format before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['time', { args: ['-f', '-o'] }],",
+    "to": "['time', { args: ['-f'] }],",
+    "why": "time -o takes a file before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['timeout', { args: ['-s', '-k', '--signal', '--kill-after'] }],",
+    "to": "['timeout', { args: ['-k', '--signal', '--kill-after'] }],",
+    "why": "timeout -s takes a signal before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['timeout', { args: ['-s', '-k', '--signal', '--kill-after'] }],",
+    "to": "['timeout', { args: ['-s', '-k', '--kill-after'] }],",
+    "why": "timeout --signal takes a signal before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-d', '-a', '-s'] }],",
+    "to": "['xargs', { args: ['-n', '-P', '-L', '-E', '-d', '-a', '-s'] }],",
+    "why": "xargs -I takes a replacement before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-d', '-a', '-s'] }],",
+    "to": "['xargs', { args: ['-n', '-P', '-I', '-L', '-d', '-a', '-s'] }],",
+    "why": "xargs -E takes a string before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-d', '-a', '-s'] }],",
+    "to": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-a', '-s'] }],",
+    "why": "xargs -d takes a delimiter before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-d', '-a', '-s'] }],",
+    "to": "['xargs', { args: ['-n', '-P', '-I', '-L', '-E', '-d', '-s'] }],",
+    "why": "xargs -a takes a file before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['stdbuf', { args: ['-i', '-o', '-e'] }],",
+    "to": "['stdbuf', { args: ['-o', '-e'] }],",
+    "why": "stdbuf -i takes a mode before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "['stdbuf', { args: ['-i', '-o', '-e'] }],",
+    "to": "['stdbuf', { args: ['-i', '-o'] }],",
+    "why": "stdbuf -e takes a mode before the command"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "...['nohup', 'caffeinate',",
+    "to": "...['caffeinate',",
+    "why": "nohup runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "'caffeinate', 'arch',",
+    "to": "'arch',",
+    "why": "caffeinate runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "'arch', 'builtin',",
+    "to": "'builtin',",
+    "why": "arch runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "'builtin', 'then',",
+    "to": "'then',",
+    "why": "builtin runs the command after it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "'then', 'do',",
+    "to": "'do',",
+    "why": "a command after then runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "'do', 'else',",
+    "to": "'else',",
+    "why": "a command after do runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "'else', 'elif',",
+    "to": "'elif',",
+    "why": "a command after else runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "'elif', 'if',",
+    "to": "'if',",
+    "why": "a command after elif runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "'if', 'while',",
+    "to": "'while',",
+    "why": "a command after if runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "'while', 'until',",
+    "to": "'until',",
+    "why": "a command after while runs"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "'until', '!']",
+    "to": "'until']",
+    "why": "a command after ! runs"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "if (/^[;&|(){}`\\n]$/.test(token)) {",
+    "to": "if (/^[;&|(){}`]$/.test(token)) {",
+    "why": "a newline ends a command"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "} else if (/^\\d*[<>]/.test(token)) {",
+    "to": "} else if (/^\\d*[<]/.test(token)) {",
+    "why": "a redirection's file is not a command word"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "      isTarget = !token.includes('&')",
+    "to": "      isTarget = true",
+    "why": "a descriptor duplication names no file"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "script.replace(/\\\\\\n/g, '')",
+    "to": "script",
+    "why": "a backslash before a newline joins the lines"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "/^-|^\\d/.test(word)",
+    "to": "/^-/.test(word)",
+    "why": "a duration before the command is skipped"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    if (wrapper.query?.test(word)) {\n      return -1\n    }\n",
+    "to": "",
+    "why": "a query option makes the call no run"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "at += wrapper.args?.includes(word) ? 2 : 1",
+    "to": "at += 1",
+    "why": "an option's value is skipped with it"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "    } else if (name === 'find') {\n      return words.flatMap",
+    "to": "    } else if (name === 'findx') {\n      return words.flatMap",
+    "why": "find -exec runs what follows"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "      if (wrapper === undefined) {\n        return [words.slice(at)]\n      }",
+    "to": "      if (wrapper === undefined) {\n        return []\n      }",
+    "why": "a command that is no wrapper is checked"
+  },
+  {
+    "file": "hooks/commands.ts",
+    "from": "const name = word.split('/').pop() ?? ''\n\n    if (ASSIGNMENT",
+    "to": "const name = word\n\n    if (ASSIGNMENT",
+    "why": "a wrapper given by its path is skipped"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const name = first.split('/').pop() ?? ''",
+    "to": "const name = first",
+    "why": "a git given by its path is checked"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "      for (const inner of substitutions(word)) {\n        const found",
+    "to": "      for (const inner of []) {\n        const found",
+    "why": "a substitution in double quotes is checked"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "/^-[A-Za-z]*c[A-Za-z]*$/.test(word)",
+    "to": "/^-c$/.test(word)",
+    "why": "bash -c is found among combined flags"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const script = name === 'eval' ? args.join(' ')",
+    "to": "const script = name === 'evalx' ? args.join(' ')",
+    "why": "what eval runs is checked"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "SHELL.test(name) && flag >= 0 ? args[flag + 1] : undefined",
+    "to": "SHELL.test(name) && flag >= 0 ? undefined : undefined",
+    "why": "the script of bash -c is checked"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "name === 'git' ? gitOutward(args, listed) : name === 'gh' ? ghOutward(args, command) : undefined",
+    "to": "name === 'git' ? undefined : name === 'gh' ? ghOutward(args, command) : undefined",
+    "why": "git push asks"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "name === 'git' ? gitOutward(args, listed) : name === 'gh' ? ghOutward(args, command) : undefined",
+    "to": "name === 'git' ? gitOutward(args, listed) : undefined",
+    "why": "a gh command that writes asks"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "entry[0] === name && entry.every((word, at) => at === 0 || args[at - 1] === word)",
+    "to": "entry[0] === name",
+    "why": "a listed command is matched by all its words"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "entry[0] === name && entry.every((word, at) => at === 0 || args[at - 1] === word)",
+    "to": "entry.every((word, at) => at === 0 || args[at - 1] === word)",
+    "why": "a listed command is matched by its name"
+  },
+  {
+    "file": "hooks/outward.ts",
+    "from": "    .split(',')\n",
+    "to": "    .split(',')\n    .slice(0, 1)\n",
+    "why": "every command the person lists asks"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  '-C',\n  '-c',\n  '--git-dir',",
+    "to": "  '-c',\n  '--git-dir',",
+    "why": "git -C takes a folder before the subcommand"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  '-C',\n  '-c',\n  '--git-dir',",
+    "to": "  '-C',\n  '--git-dir',",
+    "why": "git -c takes a setting before the subcommand"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  '--git-dir',\n",
+    "to": "",
+    "why": "git --git-dir takes a folder before the subcommand"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  '--work-tree',\n",
+    "to": "",
+    "why": "git --work-tree takes a folder before the subcommand"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  '--namespace',\n",
+    "to": "",
+    "why": "git --namespace takes a name before the subcommand"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  '--super-prefix',\n",
+    "to": "",
+    "why": "git --super-prefix takes a prefix before the subcommand"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  '--config-env',\n",
+    "to": "",
+    "why": "git --config-env takes a setting before the subcommand"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  '--attr-source',\n",
+    "to": "",
+    "why": "git --attr-source takes a tree before the subcommand"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "new Set(['push', 'send-email', 'imap-send'])",
+    "to": "new Set(['send-email', 'imap-send'])",
+    "why": "git push asks"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "new Set(['push', 'send-email', 'imap-send'])",
+    "to": "new Set(['push', 'imap-send'])",
+    "why": "git send-email asks"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "new Set(['push', 'send-email', 'imap-send'])",
+    "to": "new Set(['push', 'send-email'])",
+    "why": "git imap-send asks"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  ['subtree', 'push'],\n",
+    "to": "",
+    "why": "git subtree push asks"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  ['lfs', 'push'],\n",
+    "to": "",
+    "why": "git lfs push asks"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "  ['svn', 'dcommit'],\n",
+    "to": "",
+    "why": "git svn dcommit asks"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const DRY_RUN = /^(?:--dry-run|-n)$/",
+    "to": "const DRY_RUN = /^(?:-n)$/",
+    "why": "a push with --dry-run stays here"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const DRY_RUN = /^(?:--dry-run|-n)$/",
+    "to": "const DRY_RUN = /^(?:--dry-run)$/",
+    "why": "a push with -n stays here"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "return rest.some(arg => DRY_RUN.test(arg)) ? undefined : `git ${sending}`",
+    "to": "return `git ${sending}`",
+    "why": "a dry run sends nothing"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const verb = rest.find(arg => !arg.startsWith('-'))",
+    "to": "const verb = rest[0]",
+    "why": "a sending verb is found past the options before it"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "verb !== undefined && GIT_SENDING_VERBS.get(sub) === verb",
+    "to": "GIT_SENDING_VERBS.get(sub) === verb",
+    "why": "a git subcommand with no verb sends nothing"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "$/i.exec(args[at + 1] ?? '')",
+    "to": "$/.exec(args[at + 1] ?? '')",
+    "why": "an alias given in any case is read"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "aliases.set(name.toLowerCase(), value)",
+    "to": "aliases.set(name, value)",
+    "why": "an alias name is read in lower case"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const alias = option === '-c' ? /^alias",
+    "to": "const alias = option === '-cx' ? /^alias",
+    "why": "an alias set with -c is read"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "    return alias.startsWith('!')\n      ? bashOutward(`${alias.slice(1)} ${rest.join(' ')}`, listed)",
+    "to": "    return alias.startsWith('!')\n      ? bashOutward(alias.slice(1), listed)",
+    "why": "a shell alias is run with its arguments"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "gitOutward([...alias.split(/\\s+/).filter(Boolean), ...rest], listed)",
+    "to": "gitOutward([...alias.split(/\\s+/).filter(Boolean)], listed)",
+    "why": "a git alias is run with its arguments"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "    return alias.startsWith('!')\n      ? bashOutward(",
+    "to": "    return false\n      ? bashOutward(",
+    "why": "an alias that starts with ! is a shell command"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": "const each = sub === 'submodule' ? rest.indexOf('foreach') : -1",
+    "to": "const each = -1",
+    "why": "git submodule foreach runs its command"
+  },
+  {
+    "file": "hooks/bash.ts",
+    "from": ".replace(/^(?:-\\S+\\s+)+/, ''),",
+    "to": ",",
+    "why": "git submodule foreach skips its options"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "const GH_OPTION_ARGS = new Set(['-R', '--repo', '--hostname'])",
+    "to": "const GH_OPTION_ARGS = new Set(['--repo', '--hostname'])",
+    "why": "gh -R takes a repository before the group"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "const GH_OPTION_ARGS = new Set(['-R', '--repo', '--hostname'])",
+    "to": "const GH_OPTION_ARGS = new Set(['-R', '--hostname'])",
+    "why": "gh --repo takes a repository before the group"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "const GH_OPTION_ARGS = new Set(['-R', '--repo', '--hostname'])",
+    "to": "const GH_OPTION_ARGS = new Set(['-R', '--repo'])",
+    "why": "gh --hostname takes a host before the group"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "arg !== undefined && named.length < 2;",
+    "to": "arg !== undefined && named.length < 1;",
+    "why": "a gh verb is read after its group"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "'auth', 'alias', 'browse',",
+    "to": "'alias', 'browse',",
+    "why": "gh auth acts on this machine"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "'alias', 'browse',",
+    "to": "'browse',",
+    "why": "gh alias acts on this machine"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "'browse', 'completion',",
+    "to": "'completion',",
+    "why": "gh browse acts on this machine"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "'completion', 'config',",
+    "to": "'config',",
+    "why": "gh completion acts on this machine"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "'config', 'extension',",
+    "to": "'extension',",
+    "why": "gh config acts on this machine"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "'extension', 'help',",
+    "to": "'help',",
+    "why": "gh extension acts on this machine"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "'help', 'search', 'status'])",
+    "to": "'search', 'status'])",
+    "why": "gh help reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "'help', 'search', 'status'])",
+    "to": "'help', 'status'])",
+    "why": "gh search reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "'help', 'search', 'status'])",
+    "to": "'help', 'search'])",
+    "why": "gh status reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "if (group === undefined || GH_LOCAL.has(group.arg)) {",
+    "to": "if (GH_LOCAL.has(group.arg)) {",
+    "why": "gh with no group asks nothing"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "  if (group.arg === 'api') {",
+    "to": "  if (group.arg === 'apix') {",
+    "why": "gh api is read by its method"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "return verb === undefined || GH_READ.test(verb.arg) ? undefined",
+    "to": "return GH_READ.test(verb?.arg ?? '') ? undefined",
+    "why": "a gh group with no verb asks nothing"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "why": "gh list reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:list|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "why": "gh view reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:list|view|diff|checks|download|watch|checkout|clone|verify|help)",
+    "why": "gh pr status reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:list|view|status|checks|download|watch|checkout|clone|verify|help)",
+    "why": "gh diff reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:list|view|status|diff|download|watch|checkout|clone|verify|help)",
+    "why": "gh checks reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:list|view|status|diff|checks|watch|checkout|clone|verify|help)",
+    "why": "gh download reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:list|view|status|diff|checks|download|checkout|clone|verify|help)",
+    "why": "gh watch reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:list|view|status|diff|checks|download|watch|clone|verify|help)",
+    "why": "gh checkout reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:list|view|status|diff|checks|download|watch|checkout|verify|help)",
+    "why": "gh clone reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:list|view|status|diff|checks|download|watch|checkout|clone|help)",
+    "why": "gh verify reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify|help)",
+    "to": "(?:list|view|status|diff|checks|download|watch|checkout|clone|verify)",
+    "why": "gh help reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "const GH_READ = /^(?:[\\w-]+-)?",
+    "to": "const GH_READ = /^",
+    "why": "a gh verb with a prefix, such as item-list, reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "/^(?:-X|--method)=?(.*)$/.exec(arg)?.[1]",
+    "to": "/^(?:-X)=?(.*)$/.exec(arg)?.[1]",
+    "why": "gh api --method=DELETE writes"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "/^(?:-X|--method)=?(.*)$/.exec(arg)?.[1]",
+    "to": "/^(?:--method)=?(.*)$/.exec(arg)?.[1]",
+    "why": "gh api -XDELETE writes"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "/^(?:-X|--method)=?(.*)$/.exec(arg)?.[1]",
+    "to": "/^(?:-X|--method)(.*)$/.exec(arg)?.[1]",
+    "why": "gh api --method=DELETE names its method without the sign"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(/^(?:-X|--method)$/.test(arg) ? args[at + 1] : '')",
+    "to": "(/^(?:-X)$/.test(arg) ? args[at + 1] : '')",
+    "why": "gh api --method PUT writes"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(/^(?:-X|--method)$/.test(arg) ? args[at + 1] : '')",
+    "to": "(/^(?:--method)$/.test(arg) ? args[at + 1] : '')",
+    "why": "gh api -X PATCH writes"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "/^(?:-[fF]|--field|--raw-field|--input)(?:=|$)|^-[fF]./",
+    "to": "/^(?:-[F]|--field|--raw-field|--input)(?:=|$)|^-[fF]./",
+    "why": "gh api -f makes it a write"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "/^(?:-[fF]|--field|--raw-field|--input)(?:=|$)|^-[fF]./",
+    "to": "/^(?:-[f]|--field|--raw-field|--input)(?:=|$)|^-[fF]./",
+    "why": "gh api -F makes it a write"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "/^(?:-[fF]|--field|--raw-field|--input)(?:=|$)|^-[fF]./",
+    "to": "/^(?:-[fF]|--raw-field|--input)(?:=|$)|^-[fF]./",
+    "why": "gh api --field makes it a write"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "/^(?:-[fF]|--field|--raw-field|--input)(?:=|$)|^-[fF]./",
+    "to": "/^(?:-[fF]|--field|--input)(?:=|$)|^-[fF]./",
+    "why": "gh api --raw-field makes it a write"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "/^(?:-[fF]|--field|--raw-field|--input)(?:=|$)|^-[fF]./",
+    "to": "/^(?:-[fF]|--field|--raw-field)(?:=|$)|^-[fF]./",
+    "why": "gh api --input makes it a write"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "/^(?:-[fF]|--field|--raw-field|--input)(?:=|$)|^-[fF]./",
+    "to": "/^(?:-[fF]|--field|--raw-field|--input)(?:$)|^-[fF]./",
+    "why": "gh api --field=value makes it a write"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "/^(?:-[fF]|--field|--raw-field|--input)(?:=|$)|^-[fF]./",
+    "to": "/^(?:-[fF]|--field|--raw-field|--input)(?:=|$)/",
+    "why": "gh api -fname=value makes it a write"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(method ?? (hasFields ? 'POST' : 'GET')).toUpperCase()",
+    "to": "(method ?? (hasFields ? 'POST' : 'GET'))",
+    "why": "gh api reads its method in any case"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "verb === 'GET' || verb === 'HEAD' ? undefined",
+    "to": "verb === 'GET' ? undefined",
+    "why": "gh api -X HEAD reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "verb === 'GET' || verb === 'HEAD' ? undefined",
+    "to": "verb === 'HEAD' ? undefined",
+    "why": "gh api -X GET reads"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "(method ?? (hasFields ? 'POST' : 'GET'))",
+    "to": "(method ?? 'GET')",
+    "why": "gh api with fields and no method posts"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "  if (endpoint === 'graphql') {",
+    "to": "  if (endpoint === 'graphqlx') {",
+    "why": "a graphql call is read by its query"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "[^@$\"'\\s]/.test(command)",
+    "to": "[^$\"'\\s]/.test(command)",
+    "why": "a graphql query read from a file may be a mutation"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "[^@$\"'\\s]/.test(command)",
+    "to": "[^@\"'\\s]/.test(command)",
+    "why": "a graphql query read from a variable may be a mutation"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": " && !/(?:^|\\s)--input\\b/.test(command)",
+    "to": "",
+    "why": "a graphql query with an input file may be a mutation"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "return /\\bmutation\\b/.test(command) ? 'gh api graphql mutation' : isSeen ? undefined : 'gh api graphql'",
+    "to": "return isSeen ? undefined : 'gh api graphql'",
+    "why": "a graphql mutation asks"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "return /\\bmutation\\b/.test(command) ? 'gh api graphql mutation' : isSeen ? undefined : 'gh api graphql'",
+    "to": "return /\\bmutation\\b/.test(command) ? 'gh api graphql mutation' : undefined",
+    "why": "a graphql query out of sight asks"
+  },
+  {
+    "file": "hooks/gh.ts",
+    "from": "return /\\bmutation\\b/.test(command) ? 'gh api graphql mutation' : isSeen ? undefined : 'gh api graphql'",
+    "to": "return /\\bmutation\\b/.test(command) ? 'gh api graphql mutation' : 'gh api graphql'",
+    "why": "a graphql query in sight reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "const name = tool.split('__').slice(2).join('__')",
+    "to": "const name = tool.split('__').slice(1).join('__')",
+    "why": "an MCP server's name is no verb of the tool"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "const name = tool.split('__').slice(2).join('__')",
+    "to": "const name = tool.split('__').slice(2).join('')",
+    "why": "a tool name with a double underscore reads by its words"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": ".split(/[^A-Za-z0-9]+|(?<=[a-z0-9])(?=[A-Z])/)",
+    "to": ".split(/[^A-Za-z0-9]+/)",
+    "why": "a camel-case tool name is read by its words"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": ".split(/[^A-Za-z0-9]+|(?<=[a-z0-9])(?=[A-Z])/)",
+    "to": ".split(/[^A-Za-z0-9]+|(?<=[a-z])(?=[A-Z])/)",
+    "why": "a capital after a digit starts a word"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": ".map(word => word.toLowerCase())",
+    "to": ".map(word => word)",
+    "why": "a verb is read in any case"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "    .filter(Boolean)\n  const at",
+    "to": "  const at",
+    "why": "a trailing separator is no word"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "    lead === undefined\n      ? false",
+    "to": "    lead === undefined\n      ? true",
+    "why": "a tool name with no verb asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "? !later.some((word, i) => WRITES.has(word) || (AMBIGUOUS.has(word) && JOINERS.has(later[i - 1] ?? '')))",
+    "to": "? true",
+    "why": "a read verb followed by a write asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "? !later.some((word, i) => WRITES.has(word) || (AMBIGUOUS.has(word) && JOINERS.has(later[i - 1] ?? '')))",
+    "to": "? !later.some(word => WRITES.has(word))",
+    "why": "a read verb joined to an ambiguous verb that writes asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "? !later.some((word, i) => WRITES.has(word) || (AMBIGUOUS.has(word) && JOINERS.has(later[i - 1] ?? '')))",
+    "to": "? !later.some((word, i) => WRITES.has(word) || AMBIGUOUS.has(word))",
+    "why": "an ambiguous word after a read verb reads unless a joiner leads it"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": ": AMBIGUOUS.has(lead) && READ_NOUNS.has(words.at(-1) ?? '')",
+    "to": ": AMBIGUOUS.has(lead)",
+    "why": "an ambiguous leading verb reads only when a read noun ends the name"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  return isRead ? undefined : tool",
+    "to": "  return undefined",
+    "why": "an MCP tool that is not a read asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "const READS = new Set(['get', 'list', 'search',",
+    "to": "const READS = new Set(['list', 'search',",
+    "why": "an MCP get reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "'get', 'list', 'search',",
+    "to": "'get', 'search',",
+    "why": "an MCP list reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "'search', 'query', 'read',",
+    "to": "'query', 'read',",
+    "why": "an MCP search reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "'query', 'read', 'fetch',",
+    "to": "'read', 'fetch',",
+    "why": "an MCP query reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "'read', 'fetch', 'lookup',",
+    "to": "'fetch', 'lookup',",
+    "why": "an MCP read reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "'fetch', 'lookup', 'find',",
+    "to": "'lookup', 'find',",
+    "why": "an MCP fetch reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "'lookup', 'find', 'view',",
+    "to": "'find', 'view',",
+    "why": "an MCP lookup reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "'find', 'view', 'show'])",
+    "to": "'view', 'show'])",
+    "why": "an MCP find reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "'find', 'view', 'show'])",
+    "to": "'find', 'show'])",
+    "why": "an MCP view reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "'find', 'view', 'show'])",
+    "to": "'find', 'view'])",
+    "why": "an MCP show reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'add',\n",
+    "to": "",
+    "why": "a read joined to add asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'apply',\n",
+    "to": "",
+    "why": "a read joined to apply asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'assign',\n",
+    "to": "",
+    "why": "a read joined to assign asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'create',\n",
+    "to": "",
+    "why": "a read joined to create asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'delete',\n",
+    "to": "",
+    "why": "a read joined to delete asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'edit',\n",
+    "to": "",
+    "why": "a read joined to edit asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'grant',\n",
+    "to": "",
+    "why": "a read joined to grant asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'insert',\n",
+    "to": "",
+    "why": "a read joined to insert asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'publish',\n",
+    "to": "",
+    "why": "a read joined to publish asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'remove',\n",
+    "to": "",
+    "why": "a read joined to remove asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'replace',\n",
+    "to": "",
+    "why": "a read joined to replace asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'respond',\n",
+    "to": "",
+    "why": "a read joined to respond asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'revoke',\n",
+    "to": "",
+    "why": "a read joined to revoke asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'send',\n",
+    "to": "",
+    "why": "a read joined to send asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'set',\n",
+    "to": "",
+    "why": "a read joined to set asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'submit',\n",
+    "to": "",
+    "why": "a read joined to submit asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'transition',\n",
+    "to": "",
+    "why": "a read joined to transition asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'update',\n",
+    "to": "",
+    "why": "a read joined to update asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'upload',\n",
+    "to": "",
+    "why": "a read joined to upload asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'write',\n",
+    "to": "",
+    "why": "a read joined to write asks"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'archive',\n",
+    "to": "",
+    "why": "archive is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'close',\n",
+    "to": "",
+    "why": "close is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'comment',\n",
+    "to": "",
+    "why": "comment is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'copy',\n",
+    "to": "",
+    "why": "copy is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'deploy',\n",
+    "to": "",
+    "why": "deploy is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'execute',\n",
+    "to": "",
+    "why": "execute is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'forward',\n",
+    "to": "",
+    "why": "forward is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'invite',\n",
+    "to": "",
+    "why": "invite is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'label',\n",
+    "to": "",
+    "why": "label is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'mark',\n",
+    "to": "",
+    "why": "mark is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'merge',\n",
+    "to": "",
+    "why": "merge is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'move',\n",
+    "to": "",
+    "why": "move is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'post',\n",
+    "to": "",
+    "why": "post is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'reply',\n",
+    "to": "",
+    "why": "reply is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'resolve',\n",
+    "to": "",
+    "why": "resolve is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'run',\n",
+    "to": "",
+    "why": "run is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'share',\n",
+    "to": "",
+    "why": "share is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "  'trash',\n",
+    "to": "",
+    "why": "trash is an ambiguous verb"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "new Set(['and', 'or', 'then'])",
+    "to": "new Set(['or', 'then'])",
+    "why": "and joins a read to an ambiguous verb that writes"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "new Set(['and', 'or', 'then'])",
+    "to": "new Set(['and', 'then'])",
+    "why": "or joins a read to an ambiguous verb that writes"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "new Set(['and', 'or', 'then'])",
+    "to": "new Set(['and', 'or'])",
+    "why": "then joins a read to an ambiguous verb that writes"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "to": "['info', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "why": "a name ending in status reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "to": "['status', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "why": "a name ending in info reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "to": "['status', 'info', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "why": "a name ending in id reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "to": "['status', 'info', 'id', 'list', 'history', 'details', 'count', 'logs']",
+    "why": "a name ending in ids reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "to": "['status', 'info', 'id', 'ids', 'history', 'details', 'count', 'logs']",
+    "why": "a name ending in list reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "to": "['status', 'info', 'id', 'ids', 'list', 'details', 'count', 'logs']",
+    "why": "a name ending in history reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "to": "['status', 'info', 'id', 'ids', 'list', 'history', 'count', 'logs']",
+    "why": "a name ending in details reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "to": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'logs']",
+    "why": "a name ending in count reads"
+  },
+  {
+    "file": "hooks/mcp.ts",
+    "from": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'count', 'logs']",
+    "to": "['status', 'info', 'id', 'ids', 'list', 'history', 'details', 'count']",
+    "why": "a name ending in logs reads"
+  },
+  {
+    "file": "hooks/outward.ts",
+    "from": "(tool === 'Bash' || tool === 'Monitor') && typeof command === 'string'",
+    "to": "tool === 'Bash' && typeof command === 'string'",
+    "why": "a Monitor's command is checked"
+  },
+  {
+    "file": "hooks/outward.ts",
+    "from": "(tool === 'Bash' || tool === 'Monitor') && typeof command === 'string'",
+    "to": "tool === 'Monitor' && typeof command === 'string'",
+    "why": "a Bash command is checked"
+  },
+  {
+    "file": "hooks/outward.ts",
+    "from": "(tool === 'Bash' || tool === 'Monitor') && typeof command === 'string'",
+    "to": "(tool === 'Bash' || tool === 'Monitor')",
+    "why": "a call with no command asks nothing"
+  },
+  {
+    "file": "hooks/outward.ts",
+    "from": "return tool.startsWith('mcp__')",
+    "to": "return tool.startsWith('mcpx__')",
+    "why": "an MCP tool is read by its name"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "return what === undefined || verdict.decision === 'deny'\n      ? verdict",
+    "to": "return what === undefined\n      ? verdict",
+    "why": "a deny beneath stays a deny"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "return what === undefined || verdict.decision === 'deny'\n      ? verdict",
+    "to": "return verdict.decision === 'deny'\n      ? verdict",
+    "why": "a call that stays here keeps its verdict"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "return verdict.decision === 'deny' ? verdict : { decision: 'ask', reason: `${$.plugin.name}: ${TEXT.failed}` }",
+    "to": "return verdict",
+    "why": "a call its own check fails on asks"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "return verdict.decision === 'deny' ? verdict : { decision: 'ask', reason: `${$.plugin.name}: ${TEXT.failed}` }",
+    "to": "return { decision: 'ask', reason: `${$.plugin.name}: ${TEXT.failed}` }",
+    "why": "a deny beneath a failed check stays a deny"
+  }
+]

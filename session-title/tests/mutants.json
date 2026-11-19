@@ -1,0 +1,206 @@
+[
+  {
+    "file": "hooks/prompts.ts",
+    "from": "const ENOUGH = 3",
+    "to": "const ENOUGH = 4",
+    "why": "the title is made again at the third prompt"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "const SHORTEST = 12",
+    "to": "const SHORTEST = 2",
+    "why": "a prompt too short says nothing of the session"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "const EXCERPT = 400",
+    "to": "const EXCERPT = 4000",
+    "why": "a long prompt is cut to an excerpt"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "const IS_TICKET = /^[A-Z][A-Z0-9]*-\\d+$/",
+    "to": "const IS_TICKET = /^[A-Z][A-Z0-9]*-\\d+/",
+    "why": "only a whole ticket key is a ticket"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "const IS_COMMAND = /^\\/[\\w:.-]+(?:\\s|$)/",
+    "to": "const IS_COMMAND = /^\\/[\\w:.-]+/",
+    "why": "a path that starts with a slash is not a command"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "|task-notification|system-reminder)/",
+    "to": "|task-notification)/",
+    "why": "a system reminder is not the person's prompt"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "|task-notification|",
+    "to": "|",
+    "why": "a task notification is not the person's prompt"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "/^<(?:command-|local-command-|bash-|",
+    "to": "/^<(?:command-|bash-|",
+    "why": "the echo of a local command is not the person's prompt"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": ".replace(/\\[(?:Image|Pasted text) #\\d+[^\\]]*\\]/g, ' ')",
+    "to": "",
+    "why": "the marks of what was attached are not words"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "(e.source ?? 'user') === 'user' && ",
+    "to": "",
+    "why": "a prompt nobody typed makes no title"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": ".normalize('NFD')",
+    "to": ".normalize('NFC')",
+    "why": "a title loses its accents"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": ".slice(0, 60)",
+    "to": ".slice(0, 600)",
+    "why": "a title is at most sixty characters"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": ".replace(/^-+|-+$/g, '')",
+    "to": "",
+    "why": "a title has no dashes at its ends"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "reply.split('\\n').find(one => one.trim() !== '') ?? ''",
+    "to": "reply",
+    "why": "the title is made of the first line of the reply"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "made === '' || isTicket(made.toUpperCase())",
+    "to": "made === ''",
+    "why": "a title that looks like a ticket is not given"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "said.map((one, index) => `${index + 1}. ${one}`).join('\\n')",
+    "to": "said.slice(-1).join('\\n')",
+    "why": "the model is asked with every prompt said so far"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "  if (isTicket(current)) {\n    return false\n  }\n",
+    "to": "",
+    "why": "a ticket name is never replaced"
+  },
+  {
+    "file": "hooks/sessions.ts",
+    "from": "meta.nameSource === 'derived' || meta.name === mine",
+    "to": "true",
+    "why": "a name the person or another hook gave is never replaced"
+  },
+  {
+    "file": "hooks/sessions.ts",
+    "from": "meta.nameSource === 'derived' || meta.name === mine",
+    "to": "meta.nameSource === 'derived'",
+    "why": "the title the mod gave stays its to replace"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "if (meta?.sessionId === e.session_id) {",
+    "to": "if (meta !== null) {",
+    "why": "only the session's own metadata says where its name came from"
+  },
+  {
+    "file": "hooks/sessions.ts",
+    "from": "entries.filter(entry => entry.name.endsWith('.json'))",
+    "to": "entries",
+    "why": "only the metadata files of sessions are read"
+  },
+  {
+    "file": "hooks/sessions.ts",
+    "from": "current === '' || current === mine",
+    "to": "true",
+    "why": "without metadata, only a name the session was born with or the mod gave is replaced"
+  },
+  {
+    "file": "hooks/sessions.ts",
+    "from": "/.claude/sessions`",
+    "to": "/.claude/session`",
+    "why": "the metadata of the live sessions is read from Claude Code's sessions folder"
+  },
+  {
+    "file": "hooks/sessions.ts",
+    "from": "  } catch {\n    return null\n  }",
+    "to": "  } catch {\n    throw new Error('half written')\n  }",
+    "why": "a metadata file another session is halfway through writing is skipped"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a failure says its message, not its name"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "if (e.reason === 'clear') {",
+    "to": "if (true) {",
+    "why": "only a /clear carries the title to the new conversation"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "if (e.source === 'startup' || e.source === 'clear') {",
+    "to": "if (true) {",
+    "why": "a resumed session keeps its prompts"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "const crossed = e.source === 'clear' ? carried : null",
+    "to": "const crossed = carried",
+    "why": "a fresh start does not take the title of an earlier /clear"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "      await update($, isTitled, () => false)\n",
+    "to": "",
+    "why": "a new conversation is titled again"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "text === undefined || isFull(before.length)",
+    "to": "text === undefined",
+    "why": "prompts after the third change nothing"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "completes(said.length) || !(await read($, isTitled))",
+    "to": "completes(said.length)",
+    "why": "a session not yet titled is titled at its next prompt"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "completes(said.length) || !(await read($, isTitled))",
+    "to": "!(await read($, isTitled))",
+    "why": "a session titled at its first prompt is titled again at its third"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "answer.sessionTitle !== undefined || ",
+    "to": "",
+    "why": "a title another hook gives is left"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "    await update($, given, () => title)\n",
+    "to": "",
+    "why": "the title given is remembered, to be replaced later"
+  }
+]

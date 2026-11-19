@@ -1,0 +1,9 @@
+#!/bin/sh
+# Refuses a commit whose subject is empty or longer than 72 characters, the rule AGENTS.md sets;
+# `pnpm install` points git at this folder.
+subject=$(grep -v '^#' "$1" | head -n 1)
+
+if [ -z "$subject" ] || [ "${#subject}" -gt 72 ]; then
+  echo "commit-msg: the subject must have 1 to 72 characters; it has ${#subject}: $subject" >&2
+  exit 1
+fi

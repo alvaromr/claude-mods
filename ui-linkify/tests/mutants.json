@@ -1,0 +1,1820 @@
+[
+  {
+    "file": "hooks/path-links.ts",
+    "from": "/```[\\s\\S]*?```|\\[",
+    "to": "/\\[",
+    "why": "a path inside a code fence stays as written"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "\\[[^\\]\\n]*\\]\\([^)\\n]*\\)|\\b",
+    "to": "\\b",
+    "why": "a path inside a markdown link stays as written"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "\\b[a-z][a-z0-9+.-]*:\\/\\/\\S+|",
+    "to": "",
+    "why": "a path inside a URL stays as written"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "`([^`\\n]+)`|",
+    "to": "",
+    "why": "a code span holding a path is linked whole"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "(?<![^\\s([{«“‘\"'¿¡*_<=])~?",
+    "to": "~?",
+    "why": "a path opens a word: a slash inside one is no path"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "*_<=])",
+    "to": "*_<])",
+    "why": "a path after an equals sign is linked"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "(?<![^\\s([{«“‘\"'¿¡*_<=])",
+    "to": "(?<![^\\s([{«“‘\"'¿¡*_<=a-z])",
+    "why": "a slash after letters is no path start"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "~?\\/(?=[^\\s/])/g",
+    "to": "~?\\/(?=[^\\s])/g",
+    "why": "a double slash is no path"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "~?\\/(?=[^\\s/])/g",
+    "to": "~?\\//g",
+    "why": "a lone slash is no path"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "[\\s.,;:!?…—|)\\]}»”’\"'*_>`]/",
+    "to": "[\\s.,;:!?)\\]}»”’\"'*_>`]/",
+    "why": "a path ends before an ellipsis, a dash or a bar"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "[\\s.,;:!?…—|)\\]}»”’\"'*_>`]/",
+    "to": "[\\s.,;:!?…—|)\\]}»”’\"'*_`]/",
+    "why": "a path ends before a closing angle bracket"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "const JOINS = /[.,*_]/",
+    "to": "const JOINS = /[,*_]/",
+    "why": "a dot can begin a name: .env does not cut its folder"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "const JOINS = /[.,*_]/",
+    "to": "const JOINS = /[.,]/",
+    "why": "an underscore can begin a name"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "const LONGEST = 300",
+    "to": "const LONGEST = 30",
+    "why": "a path is looked for up to 300 characters"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "const LINE = /:\\d+(?::\\d+)?$/",
+    "to": "const LINE = /:\\d+$/",
+    "why": "a code span path may carry a line and a column"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "const LINE = /:\\d+(?::\\d+)?$/",
+    "to": "const LINE = /:\\d+x$/",
+    "why": "a code span path may carry a line"
+  },
+  {
+    "file": "hooks/paths.tsx",
+    "from": "const MISSING_MS = 5000",
+    "to": "const MISSING_MS = 5000000000",
+    "why": "a path not there is asked again after a while"
+  },
+  {
+    "file": "hooks/paths.tsx",
+    "from": "  known.set(path, asked)\n",
+    "to": "",
+    "why": "each path is asked once per session"
+  },
+  {
+    "file": "hooks/paths.tsx",
+    "from": "    if (!found) {\n      $.clock.after(MISSING_MS, () => void known.delete(path))\n    }",
+    "to": "    if (found) {\n      $.clock.after(MISSING_MS, () => void known.delete(path))\n    }",
+    "why": "only a path not found is asked again"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "const isHomeless = (home: string, path: string) => home === '' && path.startsWith('~/')",
+    "to": "const isHomeless = (home: string, path: string) => false",
+    "why": "without a home, a ~/ path is not linked as the one at the root"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "(path.startsWith('~/') ? home + path.slice(1) : path)",
+    "to": "path",
+    "why": "a ~/ path opens from the home folder"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": ".replace(/\\(/g, '%28')",
+    "to": "",
+    "why": "an opening parenthesis in a path is escaped in its link"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": ".replace(/\\)/g, '%29')",
+    "to": "",
+    "why": "a closing parenthesis in a path is escaped in its link"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "path\n    .split('/')\n    .map(part => encodeURIComponent(part)",
+    "to": "path\n    .split('/')\n    .map(part => part",
+    "why": "a path's spaces and symbols are encoded in its link"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "`[${label.replace(/[[\\]]/g, '\\\\$&')}]",
+    "to": "`[${label}]",
+    "why": "brackets in a path are escaped in the link's label"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "return /^~?\\//.test(path) && !isHomeless(home, path) && (await exists(absolute(home, path)))",
+    "to": "return /^~?\\//.test(path) && (await exists(absolute(home, path)))",
+    "why": "a code span ~/ path with no home is not linked"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "  if (isHomeless(home, line)) {\n    return undefined\n  }",
+    "to": "",
+    "why": "a bare ~/ path with no home is not linked"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "isEnd && !/\\s/.test(line.charAt(end - 1)) && ",
+    "to": "isEnd && ",
+    "why": "a path does not end in a space"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "return end === line.length || (",
+    "to": "return (",
+    "why": "a path may run to the end of its line"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "(END.test(next) && (!JOINS.test(next) || after === '' || END.test(after)))",
+    "to": "END.test(next)",
+    "why": "a joining end cuts a name only before a space or another end"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "const [line = ''] = rest.slice(0, LONGEST).split('\\n')",
+    "to": "const line = rest.slice(0, LONGEST)",
+    "why": "a path never runs past its line"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "    if (found.index < at) {\n      continue\n    }\n",
+    "to": "",
+    "why": "what a linked path already covered is not matched again"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "const isStart = text === '/' || text === '~/'",
+    "to": "const isStart = text === '/'",
+    "why": "a path opening with ~/ is looked for"
+  },
+  {
+    "file": "hooks/path-links.ts",
+    "from": "      if (path !== undefined) {\n        drawn += markdown.slice(at, found.index) + link(home, path, path)",
+    "to": "      if (true) {\n        drawn += markdown.slice(at, found.index) + link(home, path as string, path as string)",
+    "why": "a bare path that is not there is left as written"
+  },
+  {
+    "file": "hooks/paths.tsx",
+    "from": "if (e.surface === 'mobile' || !(await shown($)).paths) {",
+    "to": "if (!(await shown($)).paths) {",
+    "why": "a path is not linked on the phone"
+  },
+  {
+    "file": "hooks/paths.tsx",
+    "from": "if (e.surface === 'mobile' || !(await shown($)).paths) {",
+    "to": "if (e.surface === 'mobile') {",
+    "why": "the paths switch in the pane turns the links off"
+  },
+  {
+    "file": "hooks/paths.tsx",
+    "from": "const home = (await $.env.get('HOME')) ?? ''",
+    "to": "const home = (await $.env.get('HOME')) ?? '/'",
+    "why": "a missing home is an empty one"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "export const SITE = /^https?:\\/\\/[^\\s()]+$/",
+    "to": "export const SITE = /^https?:\\/\\/.+$/",
+    "why": "a site holds no space or parenthesis"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "export const SITE = /^https?:\\/\\/[^\\s()]+$/",
+    "to": "export const SITE = /^https:\\/\\/[^\\s()]+$/",
+    "why": "a site may be http"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "const KEY = /^[A-Z][A-Z0-9_]*$/",
+    "to": "const KEY = /^[A-Z0-9_]*$/",
+    "why": "a project key starts with a letter"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "written.trim().replace(/\\/+$/, '')",
+    "to": "written.trim()",
+    "why": "a site's trailing slashes are dropped"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "written.trim().replace(/\\/+$/, '')",
+    "to": "written.replace(/\\/+$/, '')",
+    "why": "a site typed with spaces around is trimmed"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": ".map(key => key.trim().toUpperCase())",
+    "to": ".map(key => key.trim())",
+    "why": "a key typed in lower case is taken in capitals"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": ".map(key => key.trim().toUpperCase())",
+    "to": ".map(key => key.toUpperCase())",
+    "why": "keys typed with spaces are trimmed"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": ".filter(key => KEY.test(key))",
+    "to": "",
+    "why": "a key that is none is dropped"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "text.replace(/[.*+?^${}()|[\\]\\\\/]/g, '\\\\$&')",
+    "to": "text",
+    "why": "a site's symbols are escaped in the pattern of a prompt that is one address"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "'https?:\\\\/\\\\/\\\\S+|\\\\b(' + ticket + ')\\\\b'",
+    "to": "'\\\\b(' + ticket + ')\\\\b'",
+    "why": "a ticket inside a URL stays as written"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "'https?:\\\\/\\\\/\\\\S+|\\\\b(' + ticket + ')\\\\b'",
+    "to": "'https?:\\\\/\\\\/\\\\S+|(' + ticket + ')'",
+    "why": "a ticket is a whole word"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "'```[\\\\s\\\\S]*?```|`[^`\\\\n]*`|",
+    "to": "'`[^`\\\\n]*`|",
+    "why": "a ticket inside a code fence stays as written"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "'```[\\\\s\\\\S]*?```|`[^`\\\\n]*`|\\\\[[^\\\\]\\\\n]*\\\\]\\\\([^)\\\\n]*\\\\)|'",
+    "to": "'```[\\\\s\\\\S]*?```|`[^`\\\\n]*`|'",
+    "why": "a ticket inside a markdown link stays as written"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "'```[\\\\s\\\\S]*?```|`[^`\\\\n]*`|",
+    "to": "'```[\\\\s\\\\S]*?```|",
+    "why": "a ticket inside a code span stays as written unless it is one alone"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "codeTicket: new RegExp('^`(' + ticket + ')`$'),",
+    "to": "codeTicket: new RegExp('^`(' + ticket + ')`x$'),",
+    "why": "a code span that is one ticket is linked in its look"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "(?:^|[^a-z0-9])(${keys.join('|')})-(\\\\d+)(?!\\\\d)`, 'i')",
+    "to": "(${keys.join('|')})-(\\\\d+)(?!\\\\d)`, 'i')",
+    "why": "a ticket in a branch name is not part of a longer word"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "(?:^|[^a-z0-9])(${keys.join('|')})-(\\\\d+)(?!\\\\d)`, 'i')",
+    "to": "(?:^|[^a-z0-9])(${keys.join('|')})-(\\\\d+)(?!\\\\d)`)",
+    "why": "a branch named in lower case names its ticket"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "alone: new RegExp(`^\\\\s*(?:${escaped(site)}\\\\/browse\\\\/)?(${ticket})[\\\\s.]*$`),",
+    "to": "alone: new RegExp(`^\\\\s*(?:${escaped(site)}\\\\/browse\\\\/)?(${ticket})`),",
+    "why": "a prompt that is a ticket and more is no ticket alone"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "alone: new RegExp(`^\\\\s*(?:${escaped(site)}\\\\/browse\\\\/)?(${ticket})[\\\\s.]*$`),",
+    "to": "alone: new RegExp(`^\\\\s*(${ticket})[\\\\s.]*$`),",
+    "why": "a prompt that is a ticket's address is that ticket alone"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "startsWithTicket: new RegExp(`^(${ticket})\\\\b`),",
+    "to": "startsWithTicket: new RegExp(`(${ticket})\\\\b`),",
+    "why": "a commit names a ticket at its start"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "startsWithTicket: new RegExp(`^(${ticket})\\\\b`),",
+    "to": "startsWithTicket: new RegExp(`^(${ticket})`),",
+    "why": "a commit ticket ends at a word boundary"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "isTicket: new RegExp(`^${ticket}$`),",
+    "to": "isTicket: new RegExp(`^${ticket}`),",
+    "why": "a title that is a ticket alone is a ticket"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "if (made?.site !== s.site || made.keys !== s.keys) {",
+    "to": "if (made?.site !== s.site) {",
+    "why": "the Jira is made again when the keys change"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "if (made?.site !== s.site || made.keys !== s.keys) {",
+    "to": "if (made === undefined) {",
+    "why": "the Jira is made again when the site changes"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "jira: site === '' || keys.length === 0 ? undefined : jiraOf(site, keys)",
+    "to": "jira: keys.length === 0 ? undefined : jiraOf(site, keys)",
+    "why": "no Jira until the person says where theirs lives"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "jira: site === '' || keys.length === 0 ? undefined : jiraOf(site, keys)",
+    "to": "jira: site === '' ? undefined : jiraOf(site, keys)",
+    "why": "no Jira until the person names its projects"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "return s.jira ? made.jira : undefined",
+    "to": "return made.jira",
+    "why": "the Jira switch in the pane turns the tickets off"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "    if (id !== undefined) {\n      return link(jira, id, id)\n    }",
+    "to": "    if (id !== undefined) {\n      return found\n    }",
+    "why": "a ticket in a message is a link to it"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "return coded === undefined ? found : link(jira, found, coded)",
+    "to": "return found",
+    "why": "a code span that is one ticket is a link"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "return key === undefined ? undefined : `${key.toUpperCase()}-${number}`",
+    "to": "return key === undefined ? undefined : `${key}-${number}`",
+    "why": "a ticket in a branch name is in capitals"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "const COMMIT = /\\bgit\\b[^;&|]*\\bcommit\\b/",
+    "to": "const COMMIT = /\\bgit\\b[^;&|]*\\bcommitx\\b/",
+    "why": "a git commit names the ticket worked on"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "const COMMIT = /\\bgit\\b[^;&|]*\\bcommit\\b/",
+    "to": "const COMMIT = /\\bcommit\\b/",
+    "why": "only a git commit names the ticket worked on"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "const COMMIT = /\\bgit\\b[^;&|]*\\bcommit\\b/",
+    "to": "const COMMIT = /\\bgit\\b.*\\bcommit\\b/",
+    "why": "a commit after a separator is another command's"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "const JUST_MADE_MS = 120_000",
+    "to": "const JUST_MADE_MS = 120_000_000_000",
+    "why": "an old commit is not the one just made"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "const isJustMade = Number(at) * 1000 > now - JUST_MADE_MS",
+    "to": "const isJustMade = true",
+    "why": "a commit's ticket counts only when it was just made"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "ticketOf(jira, branch) ?? ticketOf(jira, cwd.split('/').pop() ?? '')",
+    "to": "ticketOf(jira, cwd.split('/').pop() ?? '') ?? ticketOf(jira, branch)",
+    "why": "the branch's ticket comes before the folder's"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "?? said ?? undefined",
+    "to": "?? undefined",
+    "why": "outside a ticket's branch, the ticket the person last said is worked on"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "entries.filter(entry => entry.name.endsWith('.json'))",
+    "to": "entries",
+    "why": "only the sessions' json files are read"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "meta.nameSource === 'user' : undefined",
+    "to": "meta.nameSource !== 'user' : undefined",
+    "why": "a session the person named is left as named"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "meta?.sessionId === sessionId ? meta.nameSource",
+    "to": "meta !== null ? meta.nameSource",
+    "why": "only this session's metadata says who named it"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "jira.isTicket.test(asked ?? '') || (jira.isTicket.test(current) && current !== given)",
+    "to": "jira.isTicket.test(current) && current !== given",
+    "why": "a ticket a settings hook titled the session after wins"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "jira.isTicket.test(asked ?? '') || (jira.isTicket.test(current) && current !== given)",
+    "to": "jira.isTicket.test(asked ?? '')",
+    "why": "a ticket an earlier prompt's settings hook set wins"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "jira.isTicket.test(asked ?? '') || (jira.isTicket.test(current) && current !== given)",
+    "to": "jira.isTicket.test(asked ?? '') || jira.isTicket.test(current)",
+    "why": "a title this mod gave is replaced when the ticket worked on changes"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "wanted === undefined || (asked === undefined && current === wanted)",
+    "to": "wanted === undefined",
+    "why": "a session already titled after the ticket is left as it is"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "if (isTitleSettled(asked, current, wanted) || (await isNamedByPerson($, e.session_id))) {",
+    "to": "if (isTitleSettled(asked, current, wanted)) {",
+    "why": "a name the person gave is not replaced"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "  await update($, given, () => wanted)\n\n  return { ...answer, sessionTitle: wanted }",
+    "to": "  return { ...answer, sessionTitle: wanted }",
+    "why": "the title given is remembered to tell it from a hook's"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "const RECENT_COMMITS = 20",
+    "to": "const RECENT_COMMITS = 1",
+    "why": "the autocomplete takes tickets from the recent commits"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "[...new Set([wanted ?? [], committedTo].flat())]",
+    "to": "[...[wanted ?? [], committedTo].flat()]",
+    "why": "a ticket offered twice is offered once"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "[...new Set([wanted ?? [], committedTo].flat())]",
+    "to": "[...new Set([committedTo, wanted ?? []].flat())]",
+    "why": "the ticket worked on is offered first"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "source === 'startup' || source === 'clear' || source === 'resume'",
+    "to": "source === 'clear' || source === 'resume'",
+    "why": "a new session does not inherit the last one's ticket"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "source === 'startup' || source === 'clear' || source === 'resume'",
+    "to": "source === 'startup' || source === 'resume'",
+    "why": "a cleared conversation does not inherit the ticket"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "source === 'startup' || source === 'clear' || source === 'resume'",
+    "to": "source === 'startup' || source === 'clear'",
+    "why": "a resumed conversation does not inherit the ticket"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "source === 'startup' || source === 'clear' || source === 'resume'",
+    "to": "true",
+    "why": "a compaction keeps the ticket said"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "      await update($, said, () => null)\n      await update($, given, () => null)",
+    "to": "      await update($, said, () => null)",
+    "why": "a new conversation forgets the title this mod gave"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "    return jira === undefined || !s.title ? answer : titled($, jira, e, answer)\n  })\n\n  // Asked at each prompt",
+    "to": "    return jira === undefined ? answer : titled($, jira, e, answer)\n  })\n\n  // Asked at each prompt",
+    "why": "with the title switch off, the session start is not titled"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "    return jira === undefined || !s.title ? answer : titled($, jira, e, answer)\n  })\n\n  // The title follows",
+    "to": "    return jira === undefined ? answer : titled($, jira, e, answer)\n  })\n\n  // The title follows",
+    "why": "with the title switch off, a prompt does not title the session"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "(source ?? 'user') === 'user' ? jira.alone.exec(prompt)?.[1] : undefined",
+    "to": "true ? jira.alone.exec(prompt)?.[1] : undefined",
+    "why": "only the person's own prompt says the ticket worked on"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "    if (alone !== undefined) {\n      await update($, said, () => alone)\n    }",
+    "to": "",
+    "why": "a prompt that is a ticket alone says the one worked on"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "if (jira !== undefined && isCommit(e.command) && ran.deny === undefined && ran.isError !== true) {",
+    "to": "if (jira !== undefined && ran.deny === undefined && ran.isError !== true) {",
+    "why": "only a command that commits names a ticket"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "if (jira !== undefined && isCommit(e.command) && ran.deny === undefined && ran.isError !== true) {",
+    "to": "if (jira !== undefined && isCommit(e.command) && ran.isError !== true) {",
+    "why": "a commit that was denied names no ticket"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "if (jira !== undefined && isCommit(e.command) && ran.deny === undefined && ran.isError !== true) {",
+    "to": "if (jira !== undefined && isCommit(e.command) && ran.deny === undefined) {",
+    "why": "a commit that failed names no ticket"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "return jira === undefined ? next(e) : next({ ...e, props: { ...e.props, text: linkTickets(jira, e.props.text) } })",
+    "to": "return next(e)",
+    "why": "the tickets of an assistant message are links"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "jira?.typing.test(typed) === true ? typed : undefined",
+    "to": "jira !== undefined ? typed : undefined",
+    "why": "only a key being typed offers tickets"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "const typed = token.toUpperCase()",
+    "to": "const typed = token",
+    "why": "a key typed in lower case offers tickets"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": ".filter(id => id.startsWith(typed) && id !== typed)",
+    "to": ".filter(id => id.startsWith(typed))",
+    "why": "a ticket already typed whole is not offered"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": ".filter(id => id.startsWith(typed) && id !== typed)",
+    "to": ".filter(id => id !== typed)",
+    "why": "only the tickets that start as typed are offered"
+  },
+  {
+    "file": "hooks/jira.tsx",
+    "from": "[...beneath.suggestions, ...completions(",
+    "to": "[...completions(",
+    "why": "the tickets are offered after the suggestions beneath"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "id === undefined ? [] : [{ start: index, end: index + id.length, href: browse(jira, id) }]",
+    "to": "id === undefined ? [] : [{ start: index, end: index + id.length + 1, href: browse(jira, id) }]",
+    "why": "a prompt's ticket is linked over its key alone"
+  },
+  {
+    "file": "hooks/tickets.ts",
+    "from": "id === undefined ? [] : [{ start: index, end: index + id.length, href: browse(jira, id) }]",
+    "to": "[{ start: index, end: index + (id ?? '').length, href: browse(jira, id ?? '') }]",
+    "why": "a URL in a prompt is no ticket link"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "[key, typeof given[key] === typeof value ? given[key] : value]",
+    "to": "[key, given[key] ?? value]",
+    "why": "a saved field of another type takes its default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "root === null ? undefined : `settings:${root}`",
+    "to": "`settings:${root}`",
+    "why": "a session with no root has no project settings"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "await update($, settings, () => loaded(project ?? global))",
+    "to": "await update($, settings, () => loaded(global ?? project))",
+    "why": "a session starts with its project's settings before the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: global !== undefined ? 'global' : project !== undefined ? 'project' : 'defaults',",
+    "why": "the pane says the settings are the project's when they are"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: project !== undefined ? 'project' : 'global',",
+    "why": "the pane says the settings are the defaults when nothing is saved"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject: project !== undefined,",
+    "to": "hasProject: false,",
+    "why": "the pane knows the project keeps its own settings"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "const key = source === 'project' ? await projectKey($) : 'settings'\n  const saved",
+    "to": "const key = 'settings'\n  const saved",
+    "why": "settings from a project are unsaved against the project's save"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "const saved = source === 'defaults' || key === undefined ? DEFAULTS : loaded(await $.store.get(key))",
+    "to": "const saved = key === undefined ? DEFAULTS : loaded(await $.store.get(key))",
+    "why": "settings from the defaults are unsaved against the defaults"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "await update($, origin, now => ({ ...now, isChanged: unsaved }))",
+    "to": "await update($, origin, now => ({ ...now, isChanged: false }))",
+    "why": "a change not saved is marked unsaved"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "    $.ui.toast(TEXT.noProject)\n\n    return",
+    "to": "    return",
+    "why": "a save with no project says there is none"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject: now.hasProject || where === 'project',",
+    "to": "hasProject: now.hasProject,",
+    "why": "a project save makes the project keep its own settings"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: where,\n  isChanged: false,",
+    "to": "source: where,\n  isChanged: true,",
+    "why": "a save marks the settings saved"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "  if (key !== undefined) {\n    await $.store.delete(key)\n  }",
+    "to": "  if (key !== undefined) {\n    void key\n  }",
+    "why": "forgetting the project drops its saved settings"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "\n\n  await loadSettings($)\n}\n\nlet hasStarted = false",
+    "to": "\n}\n\nlet hasStarted = false",
+    "why": "forgetting the project takes the global settings or the defaults"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "  if (!hasStarted) {\n    await start($)\n  }",
+    "to": "",
+    "why": "a hook that needs the settings loads them where no start has"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(?:\\s*,\\s*[A-Za-z][A-Za-z0-9_]*)*$/",
+    "to": "(?:\\s*,\\s*[A-Za-z][A-Za-z0-9_]*)*/",
+    "why": "keys are separated by commas and nothing else"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const KEYS = /^[A-Za-z][A-Za-z0-9_]*",
+    "to": "const KEYS = /^[A-Za-z0-9][A-Za-z0-9_]*",
+    "why": "a project key starts with a letter"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await $.ui.close({ id: PANE })\n\n    return",
+    "to": "    return",
+    "why": "the button closes the pane when it is up"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "if (SLOT.test(String(props?.key ?? ''))) {\n    return { taken: [node] }",
+    "to": "if (false) {\n    return { taken: [node] }",
+    "why": "other mods' slot elements are laid in the shared rows"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "return { rest: kept.length === 0 ? undefined : ({ ...(node as Tree), children: kept } as RenderNode), taken }",
+    "to": "return { rest: { ...(node as Tree), children: kept } as RenderNode, taken }",
+    "why": "a Box a slot element leaves empty is taken out"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "    .sort(([a], [b]) => a - b)",
+    "to": "    .sort(() => 0)",
+    "why": "the slot rows go in their numbers' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "children: items.sort((a, b) => a.place - b.place).map(({ item }) => item),",
+    "to": "children: items.map(({ item }) => item),",
+    "why": "the items of a row go in their places' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "place: place === undefined ? Infinity : Number(place)",
+    "to": "place: place === undefined ? 0 : Number(place)",
+    "why": "an item with no place goes after those that have one"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "children: [...(rest === undefined ? [] : [rest]), ...laid],",
+    "to": "children: [...laid, ...(rest === undefined ? [] : [rest])],",
+    "why": "the slot rows go after the rest of the footer"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Box key=\"slot:1.4:ui-linkify\">",
+    "to": "<Box key=\"slot:1.1:ui-linkify\">",
+    "why": "the button is fourth in the first slot row"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(s: Preferences) => s.paths || s.jira || s.images || s.draft || s.commands",
+    "to": "(s: Preferences) => s.jira || s.images || s.draft || s.commands",
+    "why": "the dot is on while paths link"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(s: Preferences) => s.paths || s.jira || s.images || s.draft || s.commands",
+    "to": "(s: Preferences) => s.paths || s.images || s.draft || s.commands",
+    "why": "the dot is on while tickets link"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(s: Preferences) => s.paths || s.jira || s.images || s.draft || s.commands",
+    "to": "(s: Preferences) => s.paths || s.jira || s.draft || s.commands",
+    "why": "the dot is on while images are drawn in messages"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(s: Preferences) => s.paths || s.jira || s.images || s.draft || s.commands",
+    "to": "(s: Preferences) => s.paths || s.jira || s.images || s.commands",
+    "why": "the dot is on while images are drawn in the box"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(s: Preferences) => s.paths || s.jira || s.images || s.draft || s.commands",
+    "to": "(s: Preferences) => s.paths || s.jira || s.images || s.draft",
+    "why": "the dot is on while commands are boxed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    forgetImages()\n    await start($)",
+    "to": "    await start($)",
+    "why": "a session start forgets the images of the last one"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await start($)\n\n    return next(e)",
+    "to": "    return next(e)",
+    "why": "a session start loads the settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (origin.kind !== 'composer' && origin.kind !== 'bridge') {",
+    "to": "if (origin.kind !== 'composer') {",
+    "why": "a prompt from the bridge is the person's own too"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (origin.kind !== 'composer' && origin.kind !== 'bridge') {",
+    "to": "if (false) {",
+    "why": "a prompt nobody typed is drawn as it is"
+  },
+  {
+    "file": "hooks/prompt-links.ts",
+    "from": "[...links].sort((a, b) => a.start - b.start)",
+    "to": "[...links]",
+    "why": "the links of a prompt are laid in the order of the text"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color=\"subtle\">{'> '}</Text>",
+    "to": "<Text color=\"subtle\">{'>'}</Text>",
+    "why": "a prompt's row starts with its marker"
+  },
+  {
+    "file": "hooks/prompt-links.ts",
+    "from": "text.slice(sorted[n - 1]?.end ?? 0, start),",
+    "to": "text.slice(0, start),",
+    "why": "the text between two links is drawn once"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{drawn}\n          {cut.after}",
+    "to": "{drawn}",
+    "why": "the text after the last link is drawn"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface === 'desktop' ? beneath : slotted(beneath, drawn($, s, $.ui.resolve(e)))",
+    "to": "return slotted(beneath, drawn($, s, $.ui.resolve(e)))",
+    "why": "in the desktop app the footer has no button"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface === 'desktop' ? beneath : slotted(beneath, drawn($, s, $.ui.resolve(e)))",
+    "to": "return beneath",
+    "why": "in the terminal the footer has the button"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface !== 'desktop' || e.props.hasSurvey\n      ? beneath",
+    "to": "return e.props.hasSurvey\n      ? beneath",
+    "why": "in the terminal the band above the prompt has no button"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface !== 'desktop' || e.props.hasSurvey\n      ? beneath",
+    "to": "return e.surface !== 'desktop'\n      ? beneath",
+    "why": "a survey up keeps the band free of the button"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "text !== '' && !pattern.test(text)",
+    "to": "!pattern.test(text)",
+    "why": "a site or keys field may be emptied"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "Number.isInteger(n) && n >= min && n <= max",
+    "to": "n >= min && n <= max",
+    "why": "a size that is no whole number is refused"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "n >= min && n <= max",
+    "to": "n > min && n <= max",
+    "why": "a size may be its minimum"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "n >= min && n <= max",
+    "to": "n >= min && n < max",
+    "why": "a size may be its maximum"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "Number.isInteger(n) && n >= min && n <= max",
+    "to": "Number.isInteger(n) && n <= max",
+    "why": "a size under its minimum is refused"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "Number.isInteger(n) && n >= min && n <= max",
+    "to": "Number.isInteger(n) && n >= min",
+    "why": "a size over its maximum is refused"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{s[key] ? '■' : '□'} {label}",
+    "to": "{s[key] ? '□' : '■'} {label}",
+    "why": "a switch on is a full square"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "dimColor={!s[key]}",
+    "to": "dimColor={false}",
+    "why": "a switch off is dim"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "to": "{o.hasProject && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "why": "the pane says a project has its own settings only when the session is not on them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.isChanged && <Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "to": "{<Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "why": "the pane marks changes as unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "variant={o.isChanged ? 'primary' : 'secondary'}",
+    "to": "variant=\"secondary\"",
+    "why": "the project save stands out while there are changes"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && (\n            <Button",
+    "to": "{(\n            <Button",
+    "why": "forgetting the project is offered only when it has settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void save($, 'global')}",
+    "to": "onPress={() => void save($, 'project')}",
+    "why": "the global save saves the global settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void change($, DEFAULTS)}",
+    "to": "onPress={() => undefined}",
+    "why": "the reset button puts the defaults back"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{count('columns', TEXT.maxWidth, 10, COLUMNS)}",
+    "to": "{count('columns', TEXT.maxWidth, 0, COLUMNS)}",
+    "why": "the largest width is at least 10"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{count('rows', TEXT.maxHeight, 3, ROWS)}",
+    "to": "{count('rows', TEXT.maxHeight, 0, ROWS)}",
+    "why": "the largest height is at least 3"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Box backgroundColor={e.surface === 'terminal' ? 'subtle' : undefined}>",
+    "to": "<Box>",
+    "why": "the terminal marks a field with a ground of its own"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "const COMMAND = /^!\\s+(\\S.*)\\r?$/",
+    "to": "const COMMAND = /^!\\s*(\\S.*)\\r?$/",
+    "why": "a line is a command only with a space after the bang"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "const COMMAND = /^!\\s+(\\S.*)\\r?$/",
+    "to": "const COMMAND = /^!\\s+(\\S.*)$/",
+    "why": "a line ending in a carriage return is a command too"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "const INLINE = /`!\\s+([^`]+)`/g",
+    "to": "const INLINE = /`!\\s*([^`]+)`/g",
+    "why": "a code span is a command only with a space after the bang"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "const FENCE = /^\\s*```/",
+    "to": "const FENCE = /^```/",
+    "why": "a fence may be indented under a list item"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "const SHOWN = 10",
+    "to": "const SHOWN = 5",
+    "why": "ten lines of output are drawn"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "const KEPT = 30_000",
+    "to": "const KEPT = 3_000",
+    "why": "30000 characters of each stream are kept"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "const COLUMNS = 80",
+    "to": "const COLUMNS = 40",
+    "why": "a surface that says no width is drawn 80 wide"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "[\\x00-\\x08\\x0b-\\x1f\\x7f]/g",
+    "to": "[\\x00-\\x08\\x0b-\\x1f]/g",
+    "why": "a delete character is dropped from the drawing"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "\\x1b\\][^\\x07\\x1b]*(?:\\x07|\\x1b\\\\)?|",
+    "to": "",
+    "why": "a link escape sequence is dropped from the drawing"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "\\u{180e}\\u{200b}-\\u{200f}",
+    "to": "\\u{180e}",
+    "why": "zero-width characters are dropped from a command"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "\\u{2066}-\\u{206f}\\u{feff}]/gu",
+    "to": "\\u{2066}-\\u{206f}]/gu",
+    "why": "a byte order mark is dropped from a command"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "[\\u{80}-\\u{9f}",
+    "to": "[",
+    "why": "C1 control characters are dropped from a command"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "command.replace(CONTROL, '').replace(UNSEEN, '').trim()",
+    "to": "command.replace(CONTROL, '').replace(UNSEEN, '')",
+    "why": "a command is drawn and run trimmed"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "command.replace(CONTROL, '').replace(UNSEEN, '').trim()",
+    "to": "command.replace(UNSEEN, '').trim()",
+    "why": "a command is drawn and run without escape sequences"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "if (!isFenced && FENCE.test(now) && fenced !== '' && closing.trim() === '```') {",
+    "to": "if (!isFenced && FENCE.test(now) && fenced !== '') {",
+    "why": "a fence holding more than the command is left whole"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "if (!isFenced && FENCE.test(now) && fenced !== '' && closing.trim() === '```') {",
+    "to": "if (FENCE.test(now) && fenced !== '' && closing.trim() === '```') {",
+    "why": "a fence opened inside another is not boxed"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "if (!isFenced && FENCE.test(now) && fenced !== '' && closing.trim() === '```') {",
+    "to": "if (!isFenced && FENCE.test(now) && closing.trim() === '```') {",
+    "why": "a fence holding a line that is no command is left whole"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "      line += 2\n      continue",
+    "to": "      line += 1\n      continue",
+    "why": "a boxed fence's lines are not drawn again"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "const found = isFenced ? '' : commandOf(now)",
+    "to": "const found = commandOf(now)",
+    "why": "a line inside a fence that holds more is no command"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "      if (!isFenced) {\n        held.push(",
+    "to": "      if (true) {\n        held.push(",
+    "why": "a code span inside a fence is no command"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "            .filter(({ command }) => command !== ''),",
+    "to": "            .filter(() => true),",
+    "why": "a code span that holds nothing but control characters is no command"
+  },
+  {
+    "file": "hooks/command-parts.ts",
+    "from": "return !('command' in part && before !== undefined && 'command' in before && before.command === part.command)",
+    "to": "return true",
+    "why": "the same command one after another is boxed once"
+  },
+  {
+    "file": "hooks/commands.tsx",
+    "from": "(await $.env.get('SHELL').catch(orElse($, 'reading SHELL', undefined))) || '/bin/sh'",
+    "to": "'/bin/sh'",
+    "why": "a command runs in the person's shell"
+  },
+  {
+    "file": "hooks/commands.tsx",
+    "from": "(await $.env.get('SHELL').catch(orElse($, 'reading SHELL', undefined))) || '/bin/sh'",
+    "to": "(await $.env.get('SHELL').catch(orElse($, 'reading SHELL', undefined))) as string",
+    "why": "with no shell set, a command runs in /bin/sh"
+  },
+  {
+    "file": "hooks/commands.tsx",
+    "from": "argv: [...DETACHED, shell, '-c', command]",
+    "to": "argv: [shell, '-c', command]",
+    "why": "a command runs in a session of its own, without the terminal"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "cut[stream] + Math.max(0, text.length - room)",
+    "to": "cut[stream] + 0",
+    "why": "the output left out is counted"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "isChanged: room > 0,",
+    "to": "isChanged: true,",
+    "why": "a full stream asks for no drawing"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "got: room > 0 ? ",
+    "to": "got: true ? ",
+    "why": "a full stream keeps no more than its limit"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "got[stream] + text.slice(0, room)",
+    "to": "got[stream] + text",
+    "why": "a stream is kept only up to its limit"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "got[stream] + (cut[stream] > 0 ? TEXT.cut(cut[stream]) : '')",
+    "to": "got[stream]",
+    "why": "the cut says how much it left out"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "stdout === '' && stderr === '' ? '(Bash completed with no output)' : stdout",
+    "to": "stdout",
+    "why": "a command that printed nothing says so to Claude"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "`<bash-input>${escaped(command)}</bash-input>`",
+    "to": "`<bash-input>${command}</bash-input>`",
+    "why": "a tag in the command cannot close its row"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "<bash-stdout>${escaped(printed)}</bash-stdout><bash-stderr>${escaped(stderr)}</bash-stderr>",
+    "to": "<bash-stdout>${printed}</bash-stdout><bash-stderr>${stderr}</bash-stderr>",
+    "why": "a tag in the output cannot close its row"
+  },
+  {
+    "file": "hooks/commands.tsx",
+    "from": "  if (stop !== undefined) {\n    stop()\n\n    return\n  }",
+    "to": "",
+    "why": "a second press while the command runs stops it"
+  },
+  {
+    "file": "hooks/commands.tsx",
+    "from": "    stops.delete(id)\n  }",
+    "to": "  }",
+    "why": "a finished command can be run again"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "exitCode === 0 ? undefined :",
+    "to": "true ? undefined :",
+    "why": "a copy that fails says so"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "stderr.trim() || `pbcopy: exit ${exitCode}`",
+    "to": "`pbcopy: exit ${exitCode}`",
+    "why": "a copy that fails says why"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "isRunning: run.status === 'running' && isLive,",
+    "to": "isRunning: run.status === 'running',",
+    "why": "a run nothing here can stop is not shown running"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "isStopped: run.status === 'running' ? !isLive : run.exitCode === null,",
+    "to": "isStopped: run.status === 'running' ? false : run.exitCode === null,",
+    "why": "a run nothing here can stop is shown stopped"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "isStopped: run.status === 'running' ? !isLive : run.exitCode === null,",
+    "to": "isStopped: run.status === 'running' ? !isLive : false,",
+    "why": "a run that ended with no exit code was stopped"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "Math.max(0, lines.length - SHOWN)",
+    "to": "Math.max(0, lines.length - SHOWN + 1)",
+    "why": "ten lines are shown whole"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "run.status === 'done' && run.exitCode !== null && run.exitCode !== 0 ?",
+    "to": "run.status === 'done' && run.exitCode !== 0 ?",
+    "why": "a run that was stopped does not say it exited"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "run.status === 'done' && run.exitCode !== null && run.exitCode !== 0 ?",
+    "to": "run.status === 'done' && run.exitCode !== null ?",
+    "why": "a run that exited well does not say it failed"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "run.exitCode === 0 && lines.length === 0,",
+    "to": "run.exitCode === 0,",
+    "why": "a run that printed something does not say it printed nothing"
+  },
+  {
+    "file": "hooks/commands.tsx",
+    "from": "      e.surface !== 'terminal' ||\n",
+    "to": "",
+    "why": "commands are boxed in the terminal alone"
+  },
+  {
+    "file": "hooks/commands.tsx",
+    "from": "      e.props.isSummary ||\n",
+    "to": "",
+    "why": "a summary's commands are not boxed"
+  },
+  {
+    "file": "hooks/commands.tsx",
+    "from": "      !(await shown($)).commands\n",
+    "to": "      false\n",
+    "why": "the commands switch in the pane turns the boxes off"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "(isFirstOfReply ? 2 : 0)",
+    "to": "(0)",
+    "why": "the first block of a reply is drawn after its bullet"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "(columns ?? COLUMNS) - indent - 5",
+    "to": "(columns ?? COLUMNS) - 5",
+    "why": "what follows the first block lines up after its bullet"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "Math.max(1, room - command.length - 5)",
+    "to": "Math.max(0, room - command.length - 5)",
+    "why": "a command always has a space before its mark"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "${isRunning ? '■' : '▶'}",
+    "to": "${'▶'}",
+    "why": "a running command shows a ■ that stops it"
+  },
+  {
+    "file": "hooks/commands.tsx",
+    "from": "done[id]?.status === 'running' && isLive",
+    "to": "done[id]?.status === 'running'",
+    "why": "a command that outlived its run shows no ■ to press"
+  },
+  {
+    "file": "hooks/commands.tsx",
+    "from": "const isFirst = n === 0 && e.props.isFirstOfReply",
+    "to": "const isFirst = n === 0",
+    "why": "only the first block of a reply is drawn after the bullet"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "const TOKEN = /\\[Image #(\\d+)\\]/g",
+    "to": "const TOKEN = /\\[Image #(\\d)\\]/g",
+    "why": "an image numbered over 9 is found"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "const CELL_PIXELS = 8",
+    "to": "const CELL_PIXELS = 4",
+    "why": "a small picture is not blown up"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "const THUMBNAIL_PIXELS = 640 * 192",
+    "to": "const THUMBNAIL_PIXELS = 64 * 192",
+    "why": "a thumbnail holds up to 640x192 pixels"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "export const COLUMNS = 80",
+    "to": "export const COLUMNS = 40",
+    "why": "a picture is drawn up to 80 cells wide"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "export const ROWS = 20",
+    "to": "export const ROWS = 10",
+    "why": "a picture is drawn up to 20 cells high"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "return head.slice(12, 16) === 'IHDR' ? { width: word(16), height: word(20) } : undefined",
+    "to": "return { width: word(16), height: word(20) }",
+    "why": "a file that is no PNG is not drawn"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "mediaType === 'image/png' && typeof data === 'string' ? pngSize(data) : undefined",
+    "to": "typeof data === 'string' ? pngSize(data) : undefined",
+    "why": "an image that is no PNG is not drawn"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (picture && !pictures.get(n)) {",
+    "to": "if (picture) {",
+    "why": "a thumbnail already kept is not replaced by the original"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "    if (message.role === 'user') {\n      keepAll(message.content)",
+    "to": "    if (true) {\n      keepAll(message.content)",
+    "why": "only the person's messages hold pasted images"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  if (exitCode === 0) {\n    for (const image of transcriptImages(stdout, isStdoutTruncated)) {",
+    "to": "  if (true) {\n    for (const image of transcriptImages(stdout, isStdoutTruncated)) {",
+    "why": "a transcript read that fails gives no image"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "`${$.plugin.root}/scripts/transcript.sh`,",
+    "to": "`${$.plugin.root}/scripts/transcripts.sh`,",
+    "why": "the images are read by the plugin's own script"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "`${$.plugin.root}/scripts/transcript.sh`,",
+    "to": "`/scripts/transcript.sh`,",
+    "why": "the script is the plugin's own, wherever it is installed"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "    root,\n    await $.session.id(),\n  ])",
+    "to": "    await $.session.id(),\n    root,\n  ])",
+    "why": "the images are read from the session's own transcript under the config folder"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "    JSON.stringify(wanted),\n    root,",
+    "to": "    JSON.stringify([]),\n    root,",
+    "why": "the script is told which images are wanted"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "isTruncated ? lines.slice(0, -1) : lines",
+    "to": "lines",
+    "why": "a transcript read cut at the limit drops its last image"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "const BOX_TRIES = 50",
+    "to": "const BOX_TRIES = 1",
+    "why": "the box's images are looked for many times, as a large screenshot is written late"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (tried >= tries || wanted.every(n => pictures.has(n))) {",
+    "to": "if (tried >= tries) {",
+    "why": "the files are no longer looked at once every picture is there"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "await $.clock.sleep(200)",
+    "to": "await $.clock.sleep(0)",
+    "why": "the box's files are looked at every 200 ms"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "const MISS_MS = 5000",
+    "to": "const MISS_MS = 5000000",
+    "why": "a miss is looked up again after 5 seconds"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  if (unknown().length > 0) {\n    await fromConversation($)",
+    "to": "  if (false) {\n    await fromConversation($)",
+    "why": "the conversation in memory gives the images"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (numbers.some(n => !pictures.has(n) || !originals.has(n))) {",
+    "to": "if (numbers.some(n => !pictures.has(n))) {",
+    "why": "the files are looked at for an original even when the conversation gave the picture"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  if (unknown().length > 0) {\n    await fromTranscript($, unknown())",
+    "to": "  if (false) {\n    await fromTranscript($, unknown())",
+    "why": "the transcript gives the images a compaction took out of memory"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  for (const n of unknown()) {\n    pictures.set(n, null)\n  }",
+    "to": "",
+    "why": "a picture nobody gave is marked as one that cannot be drawn"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (originals.get(n) === null) {\n        originals.delete(n)\n      }",
+    "to": "",
+    "why": "an original not found is looked up again after a while"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (pictures.get(n) === null) {\n        pictures.delete(n)\n      }",
+    "to": "",
+    "why": "a picture not found is looked up again after a while"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "(columns * CELL_PIXELS) / width,",
+    "to": "",
+    "why": "a picture is not drawn from fewer pixels than its cells hold"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "Math.sqrt(THUMBNAIL_PIXELS / (width * height)),",
+    "to": "1,",
+    "why": "a thumbnail holds no more pixels than its budget"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "picture != null && !unshrinkable.has(n) && isLarger(picture)",
+    "to": "picture != null && isLarger(picture)",
+    "why": "a picture that could not be shrunk is drawn at full size"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "picture != null && !unshrinkable.has(n) && isLarger(picture)",
+    "to": "picture != null && !unshrinkable.has(n)",
+    "why": "a small picture is not shrunk"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "const size = exitCode === 0 ? pngSize(png) : undefined",
+    "to": "const size = pngSize(png)",
+    "why": "a shrink that fails keeps the picture as it was"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "return original == null ? [] : [{ start: index, end: index + token.length, href: fileUrl(original) }]",
+    "to": "return [{ start: index, end: index + token.length, href: fileUrl(original ?? '') }]",
+    "why": "an image whose original is unknown is no link"
+  },
+  {
+    "file": "hooks/resend.ts",
+    "from": "return btoa(bytes.slice(0, -12) + RESEND_CHUNK + bytes.slice(-12))",
+    "to": "return btoa(bytes + RESEND_CHUNK)",
+    "why": "a picture sent again carries a chunk before its end"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  if (!wasMarked) {\n    isMarked.add(id)\n  }",
+    "to": "",
+    "why": "a picture sent again alternates between two byte sequences"
+  },
+  {
+    "file": "hooks/resend.ts",
+    "from": "const PAUSE_MS = 5000",
+    "to": "const PAUSE_MS = 500",
+    "why": "a pause is 5 seconds of no typing"
+  },
+  {
+    "file": "hooks/resend.ts",
+    "from": "const STAGGER_MS = 50",
+    "to": "const STAGGER_MS = 0",
+    "why": "the pictures are sent again 50 ms apart"
+  },
+  {
+    "file": "hooks/resend.ts",
+    "from": "typedAt !== undefined && now - typedAt >= PAUSE_MS",
+    "to": "now - (typedAt ?? 0) >= PAUSE_MS",
+    "why": "the first key typed is no return from a pause"
+  },
+  {
+    "file": "hooks/resend.ts",
+    "from": "typedAt !== undefined && now - typedAt >= PAUSE_MS",
+    "to": "typedAt !== undefined && now - typedAt > PAUSE_MS",
+    "why": "a key typed exactly after the pause is a return"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  typedAt = now\n",
+    "to": "",
+    "why": "every key typed restarts the pause"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "let columns = Math.max(1, Math.min(COLUMNS, room, Math.ceil(width / CELL_PIXELS)))",
+    "to": "let columns = Math.max(1, Math.min(COLUMNS, room))",
+    "why": "a small picture's box is no wider than its pixels need"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "let rows = Math.max(1, Math.round((columns * height) / width / 2))",
+    "to": "let rows = Math.max(1, Math.round((columns * height) / width))",
+    "why": "a cell is twice as tall as wide"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "if (rows > Math.min(ROWS, rowRoom)) {",
+    "to": "if (rows > ROWS) {",
+    "why": "a picture's box fits the rows there are room for"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "columns = Math.max(1, Math.round((rows * 2 * width) / height))",
+    "to": "columns = columns",
+    "why": "a picture too tall is narrowed to keep its shape"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  originals.clear()\n  unshrinkable.clear()",
+    "to": "  unshrinkable.clear()",
+    "why": "a new session forgets the originals of the last"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  pictures.clear()\n  originals.clear()",
+    "to": "  originals.clear()",
+    "why": "a new session forgets the pictures of the last"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  isMarked.clear()\n  draft = []",
+    "to": "  draft = []",
+    "why": "a new session forgets which pictures were sent marked"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  draft = []\n}",
+    "to": "}",
+    "why": "a new session forgets the tokens of the box"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  on('session.end', (_, e, next) => {\n    forgetImages()\n\n    return next(e)",
+    "to": "  on('session.end', (_, e, next) => {\n    return next(e)",
+    "why": "the end of a session forgets its images"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (numbers.length === 0 || e.surface !== 'terminal' || drawsPictures === false || !s.images) {",
+    "to": "if (numbers.length === 0 || e.surface !== 'terminal' || drawsPictures === false) {",
+    "why": "the images switch in the pane turns the pictures off"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (numbers.length === 0 || e.surface !== 'terminal' || drawsPictures === false || !s.images) {",
+    "to": "if (numbers.length === 0 || drawsPictures === false || !s.images) {",
+    "why": "pictures are drawn in the terminal alone"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (numbers.length === 0 || e.surface !== 'terminal' || drawsPictures === false || !s.images) {",
+    "to": "if (numbers.length === 0 || e.surface !== 'terminal' || !s.images) {",
+    "why": "a terminal that draws no pictures gets none"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (e.surface !== 'terminal' || e.props.hasSurvey || drawsPictures === false || !s.draft) {",
+    "to": "if (e.surface !== 'terminal' || drawsPictures === false || !s.draft) {",
+    "why": "a survey up keeps the band free of the pictures"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (e.surface !== 'terminal' || e.props.hasSurvey || drawsPictures === false || !s.draft) {",
+    "to": "if (e.surface !== 'terminal' || e.props.hasSurvey || drawsPictures === false) {",
+    "why": "the draft switch in the pane turns the box's pictures off"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "Math.min(limit, (columns ?? COLUMNS) - 6)",
+    "to": "(columns ?? COLUMNS) - 6",
+    "why": "a picture is no wider than the settings allow"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "{s.resend && (",
+    "to": "{true && (",
+    "why": "the resend switch turns the button under each picture off"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "const bandRows = band.isFullscreen ? Math.floor(band.maxRows / 2) : band.maxRows",
+    "to": "const bandRows = band.maxRows",
+    "why": "under the fullscreen layout the pictures take half the band's rows"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "rowRoom: Math.min(limits.rows, bandRows - 2),",
+    "to": "rowRoom: limits.rows,",
+    "why": "the box's pictures leave room for their border"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "room: Math.min(limits.columns, Math.floor(band.bodyColumns / count) - 3),",
+    "to": "room: Math.min(limits.columns, band.bodyColumns - 3),",
+    "why": "the box's pictures share its width"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "if (e.agentId === undefined && keepAll(e.message.content)) {",
+    "to": "if (keepAll(e.message.content)) {",
+    "why": "a subagent's message is no prompt of the person"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "    track($, box.text)\n    // After the key is drawn",
+    "to": "    // After the key is drawn",
+    "why": "a key typed in the box draws the band again when its tokens change"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "    track($, e.text)\n",
+    "to": "",
+    "why": "a change of the box draws the band again when its tokens change"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "numbers.join() !== draft.join()",
+    "to": "false",
+    "why": "the band is drawn again when the box's tokens change"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "now[field] !== saved[field]",
+    "to": "now[field] === saved[field]",
+    "why": "settings differ as soon as one field does"
+  },
+  {
+    "file": "hooks/reason.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a failure says its message, not its name"
+  },
+  {
+    "file": "hooks/resend.ts",
+    "from": "n * STAGGER_MS",
+    "to": "STAGGER_MS",
+    "why": "each picture waits longer than the one before to be sent again"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "/^(\\d+)\\.png$/",
+    "to": "/(\\d+)\\.png/",
+    "why": "an original is a file named by its number alone"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "`${folder}/${name}`",
+    "to": "`${name}`",
+    "why": "an original is in the folder listed"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "!isKnown(n) && names.includes",
+    "to": "names.includes",
+    "why": "a picture already kept is not read again from its file"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "&& names.includes(`${n}.png`)",
+    "to": "&& true",
+    "why": "only an image whose file is listed is read"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "block.type === 'text' ? [String(block.text)] : []",
+    "to": "[String(block.text)]",
+    "why": "only the text blocks of a message name images"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "hasImages: images.length > 0,",
+    "to": "hasImages: true,",
+    "why": "a message with no image blocks asks for no drawing again"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "images[i]?.source",
+    "to": "images[0]?.source",
+    "why": "a message names its images in the order of its image blocks"
+  },
+  {
+    "file": "hooks/image-sources.ts",
+    "from": "line.split(' ')",
+    "to": "line.split('\\n')",
+    "why": "a transcript line is a number, a type and the bytes"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": ".replace(/\\n$/, '')",
+    "to": "",
+    "why": "a stream's last newline is no line"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "stream === '' ? [] :",
+    "to": "",
+    "why": "a stream that printed nothing has no lines"
+  },
+  {
+    "file": "hooks/command-view.ts",
+    "from": "stream.replace(CONTROL, '')",
+    "to": "stream",
+    "why": "the drawing goes without control characters"
+  },
+  {
+    "file": "hooks/command-run.ts",
+    "from": "cut[stream] > 0 ? TEXT.cut(cut[stream]) : ",
+    "to": "true ? TEXT.cut(cut[stream]) : ",
+    "why": "a stream that was not cut says nothing of it"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "const png = stdout.trim()",
+    "to": "const png = stdout",
+    "why": "the picture sips printed is kept without its newline"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "thumbnailSize(picture).width < picture.width",
+    "to": "thumbnailSize(picture).width <= picture.width",
+    "why": "a picture that is no larger than its thumbnail is not larger"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "top: box.rows + 1,",
+    "to": "top: box.rows,",
+    "why": "the button that sends a picture again is on the frame’s bottom edge"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "left: 2 + Math.floor((box.columns - 1) / 2),",
+    "to": "left: Math.floor((box.columns - 1) / 2),",
+    "why": "the button that sends a picture again is past the frame’s indent"
+  },
+  {
+    "file": "hooks/pictures.ts",
+    "from": "`[Image #${n}]`",
+    "to": "`[Image ${n}]`",
+    "why": "a picture the terminal does not draw is named by its number"
+  },
+  {
+    "file": "hooks/prompt-links.ts",
+    "from": "after: text.slice(last.end),",
+    "to": "after: '',",
+    "why": "the text after the last link is kept"
+  },
+  {
+    "file": "hooks/prompt-links.ts",
+    "from": "label: text.slice(start, end),",
+    "to": "label: text.slice(start),",
+    "why": "a link’s label ends where the link does"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "isFullscreen: e.viewport?.isFullscreen === true",
+    "to": "isFullscreen: false",
+    "why": "under the fullscreen layout the pictures take half the band’s rows"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "originals.set(n, path)",
+    "to": "originals.set(n, null)",
+    "why": "every original the folder lists is noted"
+  }
+]

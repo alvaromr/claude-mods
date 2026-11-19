@@ -1,0 +1,452 @@
+[
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showParents: true,",
+    "to": "showParents: false,",
+    "why": "the parent folders show by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showTilde: true,",
+    "to": "showTilde: false,",
+    "why": "the home folder shows as ~ by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "parentColor: '#8a8a8a',",
+    "to": "parentColor: 'cyan',",
+    "why": "the parent folders are dim gray by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "nameColor: 'cyan',",
+    "to": "nameColor: '#8a8a8a',",
+    "why": "the project's folder is cyan by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const COLOR = /^(?:#(?:[0-9a-f]{3}){1,2}|[a-z][a-z0-9]*)$/i",
+    "to": "const COLOR = /^.*$/",
+    "why": "a text that is no color is refused"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(?:[0-9a-f]{3}){1,2}",
+    "to": "(?:[0-9a-f]{3}){1,3}",
+    "why": "a hex color has three or six digits"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "typeof given[key] === typeof value ? given[key] : value",
+    "to": "given[key]",
+    "why": "a saved field missing or of another type takes its default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "root === null ? undefined : `settings:${root}`",
+    "to": "`settings:${root}`",
+    "why": "where the session tells no root, nothing is saved for a project"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "loaded(project ?? global)",
+    "to": "loaded(global)",
+    "why": "a session starts with its project's saved settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "loaded(project ?? global)",
+    "to": "loaded(project)",
+    "why": "a project without its own settings starts with the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: project !== undefined ? 'project' : 'defaults',",
+    "why": "the pane says the settings are the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: global !== undefined ? 'global' : 'defaults',",
+    "why": "the pane says the settings are the project's"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject: project !== undefined,",
+    "to": "hasProject: false,",
+    "why": "a project with saved settings can forget them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = source === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = 'settings'",
+    "why": "settings from a project are unsaved against the project's save"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "source === 'defaults' || key === undefined\n      ? DEFAULTS",
+    "to": "key === undefined\n      ? DEFAULTS",
+    "why": "settings from the defaults are unsaved against the defaults"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "some(field => now[field] !== saved[field])",
+    "to": "some(field => false)",
+    "why": "a change is marked unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "current => ({ ...current, ...patch })",
+    "to": "() => ({ ...DEFAULTS, ...patch })",
+    "why": "a change keeps the settings it did not touch"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = where === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = 'settings'",
+    "why": "saving for the project keeps them under the project"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = where === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = await projectKey($)",
+    "why": "saving globally keeps them for every project"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  if (key === undefined) {\n    $.ui.toast(TEXT.noProject)",
+    "to": "  if (false) {\n    $.ui.toast(TEXT.noProject)",
+    "why": "saving for a session with no project says so"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "  source: where,",
+    "to": "  source: 'global',",
+    "why": "a saved change is the project's"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject: now.hasProject || where === 'project',",
+    "to": "hasProject: now.hasProject,",
+    "why": "a project that just saved can forget its settings"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "  source: where,\n  isChanged: false,",
+    "to": "  source: where,\n  isChanged: true,",
+    "why": "a saved change is no longer unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      await $.store.delete(key)",
+    "to": "      void key",
+    "why": "forgetting drops the project's saved settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  await loadSettings($)\n}\n\n// Where a shell",
+    "to": "}\n\n// Where a shell",
+    "why": "after forgetting, the session takes the global settings"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "moved !== undefined && (now === null || now === moved.reported) ?",
+    "to": "moved !== undefined ?",
+    "why": "a move the session reports later is followed"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "moved !== undefined && (now === null || now === moved.reported) ?",
+    "to": "moved !== undefined && now === moved.reported ?",
+    "why": "the folder of a cd stays when the session's cannot be read"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "moved !== undefined && (now === null || now === moved.reported) ?",
+    "to": "moved !== undefined && now === null ?",
+    "why": "the folder of a cd stays while the session reports the one it did"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  moved = undefined\n\n  return now",
+    "to": "  return now",
+    "why": "a move the session reports ends the cd's hold"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "home: home ?? null",
+    "to": "home: home ?? ''",
+    "why": "with no home folder known, the path shows whole"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  hasStarted = true\n  moved = undefined\n",
+    "to": "  hasStarted = true\n",
+    "why": "a new session does not keep an earlier cd"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    hasStarted = false\n",
+    "to": "",
+    "why": "a start that fails is tried again at the next drawing"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": ".some(pane => pane.id === PANE)",
+    "to": ".length > 0",
+    "why": "the button opens the pane while another pane is open"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (e.agentId === undefined) {",
+    "to": "if (true) {",
+    "why": "a subagent's end does not move the row"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (found === null || e.surface === 'desktop') {",
+    "to": "if (found === null) {",
+    "why": "the desktop app draws the folder itself"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (found === null || e.surface === 'desktop') {",
+    "to": "if (e.surface === 'desktop') {",
+    "why": "a folder not read draws no row"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "s.showTilde && found.home !== null",
+    "to": "found.home !== null",
+    "why": "the home folder shows whole when the setting says so"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "found.cwd === found.home || ",
+    "to": "",
+    "why": "the home folder itself is ~"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "found.cwd.startsWith(`${found.home}/`)",
+    "to": "found.cwd.startsWith(found.home)",
+    "why": "a folder whose name only starts like home is not under it"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "path.slice(path.lastIndexOf('/') + 1) || path",
+    "to": "path.slice(path.lastIndexOf('/') + 1)",
+    "why": "the root folder is its own name"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{s.showParents && (",
+    "to": "{(",
+    "why": "the parents hide when the setting says so"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "wrap=\"truncate-start\"",
+    "to": "wrap=\"truncate-end\"",
+    "why": "a long path gives way at its start"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text wrap=\"truncate-start\" color={s.parentColor}>",
+    "to": "<Text wrap=\"truncate-start\" color={s.nameColor}>",
+    "why": "the parents take their own color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s.nameColor} weight=\"semibold\">",
+    "to": "<Text color={s.parentColor} weight=\"semibold\">",
+    "why": "the project's folder takes its own color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s.nameColor} weight=\"semibold\">",
+    "to": "<Text color={s.nameColor}>",
+    "why": "the project's folder is bold"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "place === undefined ? Infinity : Number(place)",
+    "to": "place === undefined ? 0 : Number(place)",
+    "why": "a slot with no place goes last in its row"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": ".sort(([a], [b]) => a - b)",
+    "to": ".sort(([a], [b]) => b - a)",
+    "why": "the footer's rows come in their numbers' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "items.sort((a, b) => a.place - b.place)",
+    "to": "items.sort((a, b) => b.place - a.place)",
+    "why": "a row's slots come in their places' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "children: [...(rest === undefined ? [] : [rest]), ...laid],",
+    "to": "children: laid,",
+    "why": "what the footer drew beneath stays"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "if (SLOT.test(String(props?.key ?? ''))) {",
+    "to": "if (false) {",
+    "why": "another mod's slot is laid with this one's"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "rest: kept.length === 0 ? undefined : (",
+    "to": "rest: false ? undefined : (",
+    "why": "a Box a slot leaves empty is taken out too"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "const SLOT = /^slot:(\\d+)(?:\\.(\\d+))?:/",
+    "to": "const SLOT = /slot:(\\d+)(?:\\.(\\d+))?:/",
+    "why": "only a key that starts with slot is a slot"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isChecked ? '■' : '□'} {label}",
+    "to": "{isChecked ? '□' : '■'} {label}",
+    "why": "a switch on is a full square"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "dimColor={!isChecked}",
+    "to": "dimColor={isChecked}",
+    "why": "a switch off is dim"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "to": "{o.hasProject && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "why": "the project's settings are said to be unused only when they are"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "to": "{o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "why": "a project with no settings of its own says nothing of them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.isChanged && <Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "to": "{!o.isChanged && <Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "why": "the pane says the changes are unsaved"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const text = value.trim()",
+    "to": "const text = value",
+    "why": "a color typed with spaces around is trimmed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (isRefused) {",
+    "to": "if (false) {",
+    "why": "a text that is no color is refused with a toast"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "backgroundColor={e.surface === 'terminal' ? 'subtle' : undefined}",
+    "to": "backgroundColor=\"subtle\"",
+    "why": "only the terminal marks a field with a ground"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "backgroundColor={e.surface === 'terminal' ? 'subtle' : undefined}",
+    "to": "backgroundColor={undefined}",
+    "why": "the terminal marks a field with a ground"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "variant={o.isChanged ? 'primary' : 'secondary'}",
+    "to": "variant=\"secondary\"",
+    "why": "saving is the main button while changes are unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s[key]}>■</Text>",
+    "to": "<Text>■</Text>",
+    "why": "each color field shows its swatch"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a failure that is an Error says its message"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "failure instanceof Error ? failure.message : ''",
+    "why": "a failure that is not an Error says what it is"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "return { text, isRefused: !isValid(text) }",
+    "to": "return { text, isRefused: !isValid(value) }",
+    "why": "a text typed is judged trimmed"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "return { text, isRefused: !isValid(text) }",
+    "to": "return { text, isRefused: isValid(text) }",
+    "why": "a text the field cannot hold is refused"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "cwd === null ? null : { cwd, home: home ?? null }",
+    "to": "{ cwd: cwd as string, home: home ?? null }",
+    "why": "where the session tells no folder there is no place"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "moved !== undefined && (now === null || now === moved.reported) ? moved.to : undefined",
+    "to": "moved !== undefined && (now === null || now === moved.reported) ? moved.reported : undefined",
+    "why": "a move holds on the folder it took the session to"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": ".replace(/\\(/g, '%28')",
+    "to": "",
+    "why": "an opening parenthesis in a link is percent-encoded"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": ".replace(/\\)/g, '%29')",
+    "to": "",
+    "why": "a closing parenthesis in a link is percent-encoded"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "encodeURIComponent(part)",
+    "to": "part",
+    "why": "each part of a link is percent-encoded"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "'file://' +",
+    "to": "'file:/' +",
+    "why": "a link to a folder is a file link"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "found.cwd.slice(found.home.length)",
+    "to": "found.cwd",
+    "why": "home is replaced by ~ in the path"
+  },
+  {
+    "file": "hooks/path.ts",
+    "from": "path.slice(0, path.length - name.length)",
+    "to": "path.slice(0, path.length - name.length - 1)",
+    "why": "the parents keep their last slash"
+  }
+]

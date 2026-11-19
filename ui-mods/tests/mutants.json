@@ -1,0 +1,680 @@
+[
+  {
+    "file": "hooks/mods.ts",
+    "from": "Array.isArray(hooks?.modules)",
+    "to": "true",
+    "why": "a plugin whose hooks.json names no hooks module is no mod"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (!isMod(await json($, `${plugin.installPath}/hooks/hooks.json`))) {",
+    "to": "if (false) {",
+    "why": "a plugin whose hooks.json names no hooks module is left out of the list"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "modOf(plugin, await json($, `${plugin.installPath}/.claude-plugin/plugin.json`))",
+    "to": "modOf(plugin, undefined)",
+    "why": "a mod is listed with the description and author its plugin.json gives"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "description: typeof description === 'string' ? description : TEXT.noDescription,",
+    "to": "description: description as string,",
+    "why": "a mod with no description says so"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "const by = typeof author === 'string' ? author : (author as { name?: unknown } | undefined)?.name",
+    "to": "const by = (author as { name?: unknown } | undefined)?.name",
+    "why": "an author written as a string is the author's name"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "...(typeof by === 'string' && by !== '' ? { author: by } : {}),",
+    "to": "...(typeof by === 'string' ? { author: by } : {}),",
+    "why": "an empty author name is no author"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "isEnabled: enabled,",
+    "to": "isEnabled: true,",
+    "why": "a mod is on or off as the CLI says"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "...(scope === undefined ? {} : { scope }),",
+    "to": "...{ scope },",
+    "why": "a mod with no scope carries none"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": ".sort((a, b) => a.id.localeCompare(b.id) || (a.scope ?? '').localeCompare(b.scope ?? ''))",
+    "to": ".sort((a, b) => a.id.localeCompare(b.id))",
+    "why": "a mod installed in two scopes lists its scopes in order"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": ".sort((a, b) => a.id.localeCompare(b.id) || (a.scope ?? '').localeCompare(b.scope ?? ''))",
+    "to": ".sort((a, b) => (a.scope ?? '').localeCompare(b.scope ?? ''))",
+    "why": "the installed mods are listed by id"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "[...sorted, ...builtinMods(switches)]",
+    "to": "[...builtinMods(switches), ...sorted]",
+    "why": "the installed mods come before the built-in ones"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "[...installed].sort(",
+    "to": "installed.sort(",
+    "why": "the installed mods listed are a copy, sorted by id and scope"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "listedMods(listed, await $.settings.read({ key: 'enabledPlugins' }))",
+    "to": "listedMods(listed, undefined)",
+    "why": "the built-in mods are switched as settings say"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "{ name: 'cc-plugin-you-should-know', isOnByDefault: false },",
+    "to": "{ name: 'cc-plugin-you-should-know', isOnByDefault: true },",
+    "why": "you-should-know is off until settings turn it on"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "{ name: 'cc-plugin-diff', isOnByDefault: true },",
+    "to": "{ name: 'cc-plugin-diff', isOnByDefault: false },",
+    "why": "a built-in mod is on until settings turn it off"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "isEnabled: isLocked === true || (typeof set === 'boolean' ? set : isOnByDefault),",
+    "to": "isEnabled: typeof set === 'boolean' ? set : isOnByDefault,",
+    "why": "the locked built-in mod is on whatever settings say"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "isEnabled: isLocked === true || (typeof set === 'boolean' ? set : isOnByDefault),",
+    "to": "isEnabled: isLocked === true || (set !== undefined ? Boolean(set) : isOnByDefault),",
+    "why": "a built-in switch in settings that is no boolean is ignored"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "typeof switches === 'object' && switches !== null ? (switches as Record<string, unknown>)[id] : undefined",
+    "to": "(switches as Record<string, unknown>)[id]",
+    "why": "settings with no switches leave the built-in mods at their defaults"
+  },
+  {
+    "file": "hooks/mods.ts",
+    "from": "...(isLocked === true ? { isLocked } : {}),",
+    "to": "",
+    "why": "the built-in mod whose switch the organization holds is locked"
+  },
+  {
+    "file": "hooks/cli.ts",
+    "from": "stderr.trim() || stdout.trim() || TEXT.commandFailed(args[0], exitCode)",
+    "to": "stdout.trim() || TEXT.commandFailed(args[0], exitCode)",
+    "why": "a command that fails says what it printed on stderr"
+  },
+  {
+    "file": "hooks/cli.ts",
+    "from": "stderr.trim() || stdout.trim() || TEXT.commandFailed(args[0], exitCode)",
+    "to": "stderr.trim() || TEXT.commandFailed(args[0], exitCode)",
+    "why": "a command that fails with only stdout says what it printed"
+  },
+  {
+    "file": "hooks/cli.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a failure that is an error is said by its message"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (result.exitCode !== 0) {",
+    "to": "if (false) {",
+    "why": "a command that exits non-zero is a failure"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (switched === before && running === 0) {",
+    "to": "if (running === 0) {",
+    "why": "a list read while a switch was pressed is read again"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await update($, error, () => null)\n\n        return",
+    "to": "    return",
+    "why": "a list read well clears the last error"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await update($, error, () => messageOf(failure))\n  }\n}",
+    "to": "  }\n}",
+    "why": "a list that cannot be read says why"
+  },
+  {
+    "file": "hooks/cli.ts",
+    "from": "...(mod.scope !== undefined && SCOPES.includes(mod.scope) ? ['--scope', mod.scope] : []),",
+    "to": "...[],",
+    "why": "a mod is switched in its own scope"
+  },
+  {
+    "file": "hooks/cli.ts",
+    "from": "...(mod.scope !== undefined && SCOPES.includes(mod.scope) ? ['--scope', mod.scope] : []),",
+    "to": "...(mod.scope !== undefined ? ['--scope', mod.scope] : []),",
+    "why": "a mod with no scope the CLI takes is switched with no scope"
+  },
+  {
+    "file": "hooks/cli.ts",
+    "from": "mod.isEnabled ? 'disable' : 'enable',",
+    "to": "mod.isEnabled ? 'enable' : 'disable',",
+    "why": "an enabled mod's switch disables it"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await claude($, switchArgs(mod))",
+    "to": "await claude($, switchArgs({ ...mod, isEnabled: !mod.isEnabled }))",
+    "why": "a switch asks the CLI for the opposite of what the mod was"
+  },
+  {
+    "file": "hooks/switches.ts",
+    "from": "keyOf(one) === key ? { ...one, isEnabled } : one",
+    "to": "one.id === key.split(':')[0] ? { ...one, isEnabled } : one",
+    "why": "a switch pressed draws only its own row switched"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, mods, list => withSwitch(list, key, !mod.isEnabled))",
+    "to": "await update($, mods, list => list)",
+    "why": "a switch is drawn at once, before the CLI answers"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, mods, list => withSwitch(list, key, !mod.isEnabled))",
+    "to": "await update($, mods, list => withSwitch(list, key, mod.isEnabled))",
+    "why": "a switch is drawn the other way from what the mod was"
+  },
+  {
+    "file": "hooks/switches.ts",
+    "from": "keys.includes(key) ? keys.filter(one => one !== key) : [...keys, key]",
+    "to": "keys.includes(key) ? keys : [...keys, key]",
+    "why": "a mod switched twice is no longer pending"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      await update($, pending, flip)\n      refused.push(messageOf(failure))",
+    "to": "      refused.push(messageOf(failure))",
+    "why": "a switch the CLI refuses is no longer pending"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      refused.push(messageOf(failure))\n    } finally {",
+    "to": "    } finally {",
+    "why": "a switch the CLI refuses says why"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (refused.length > 0) {\n      await update($, error, () => refused.splice(0).join('\\n'))",
+    "to": "    if (refused.length > 0) {\n      await update($, error, () => refused.join('\\n'))",
+    "why": "the refusals are said once, then forgotten"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  if (running === 0) {\n    await refresh($)",
+    "to": "  if (true) {\n    await refresh($)",
+    "why": "the list is read back only once no switch is running"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  if (surface === 'desktop') {\n    const { isFilled }",
+    "to": "  if (false) {\n    const { isFilled }",
+    "why": "the desktop app gets the command in the prompt box, not run"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "$.ui.toast(isFilled ? TEXT.pressEnter(DOES[command]) : TEXT.typeCommand(command, DOES[command]))",
+    "to": "$.ui.toast(TEXT.pressEnter(DOES[command]))",
+    "why": "a prompt box that cannot be filled asks to type the command"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "$.ui.toast(TEXT.couldNot(DOES[command], messageOf(failure)))",
+    "to": "void failure",
+    "why": "a command that cannot run says why in a toast"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const DOES = { 'reload-plugins': TEXT.doesReload, restart: TEXT.doesRestart }",
+    "to": "const DOES = { 'reload-plugins': TEXT.doesRestart, restart: TEXT.doesReload }",
+    "why": "a toast says what its own command does"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  await $.ui.open({ id: PANE, title: TEXT.title })\n  void refresh($)",
+    "to": "  await $.ui.open({ id: PANE, title: TEXT.title })",
+    "why": "opening the pane reads the list"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await $.ui.close({ id: PANE })\n\n    return false",
+    "to": "    return false",
+    "why": "/mods closes the pane when it is up"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if ((await $.ui.panes()).some(pane => pane.id === PANE)) {\n      void refresh($)",
+    "to": "    if (true) {\n      void refresh($)",
+    "why": "a reload reads the list again only with the pane up"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if ((await $.ui.panes()).some(pane => pane.id === PANE)) {\n      void refresh($)",
+    "to": "    if (false) {\n      void refresh($)",
+    "why": "a reload with the pane up reads the list again"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await $.command.register({\n      name: 'mods',",
+    "to": "    await $.command.register({\n      name: 'mods-x',",
+    "why": "the session registers /mods"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    const unapplied = await read($, pending)\n    await update($, pending, () => [])",
+    "to": "    const unapplied = await read($, pending)",
+    "why": "the switches are no longer pending once a reload runs"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      throw failure\n    } finally {\n      void refresh($)",
+    "to": "      throw failure\n    } finally {",
+    "why": "a reload reads the list again, a plugin installed since"
+  },
+  {
+    "file": "hooks/switches.ts",
+    "from": "[...new Set([...unapplied, ...now])]",
+    "to": "[...unapplied, ...now]",
+    "why": "a switch put back by a failed reload and pressed again is pending once"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, pending, now => restored(unapplied, now))",
+    "to": "await update($, pending, now => now)",
+    "why": "a reload that fails puts the switches back"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "text: (await togglePane($)) ? TEXT.paneOpened : TEXT.paneClosed,",
+    "to": "text: (await togglePane($)) ? TEXT.paneClosed : TEXT.paneOpened,",
+    "why": "/mods says whether it opened or closed the pane"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface === 'desktop' ? beneath : slotted(beneath, drawn($, $.ui.resolve(e)))",
+    "to": "return slotted(beneath, drawn($, $.ui.resolve(e)))",
+    "why": "in the desktop app the footer has no button, the band above the prompt has"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface === 'desktop' ? beneath : slotted(beneath, drawn($, $.ui.resolve(e)))",
+    "to": "return beneath",
+    "why": "in the terminal the footer's first row holds the button"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface !== 'desktop' || e.props.hasSurvey ? beneath : slotted(beneath, drawn($, $.ui.resolve(e)))",
+    "to": "return e.surface !== 'desktop' ? beneath : slotted(beneath, drawn($, $.ui.resolve(e)))",
+    "why": "a survey above the prompt keeps the band free of the button"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface !== 'desktop' || e.props.hasSurvey ? beneath : slotted(beneath, drawn($, $.ui.resolve(e)))",
+    "to": "return e.props.hasSurvey ? beneath : slotted(beneath, drawn($, $.ui.resolve(e)))",
+    "why": "in the terminal the band above the prompt has no button"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface !== 'desktop' || e.props.hasSurvey ? beneath : slotted(beneath, drawn($, $.ui.resolve(e)))",
+    "to": "return beneath",
+    "why": "in the desktop app the band above the prompt holds the button"
+  },
+  {
+    "file": "hooks/switches.ts",
+    "from": "mod !== undefined && mod.isLocked !== true ? mod : undefined",
+    "to": "mod !== undefined ? mod : undefined",
+    "why": "the locked mod's checkbox switches nothing"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const mod = switchable(await read($, mods), key)",
+    "to": "const mod = switchable([], key)",
+    "why": "a press on a checkbox switches its mod"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (fold !== undefined) {",
+    "to": "if (false) {",
+    "why": "a press on a row unfolds its description"
+  },
+  {
+    "file": "hooks/switches.ts",
+    "from": "typeof fold === 'string' ? fold : undefined",
+    "to": "fold as string",
+    "why": "a press that names no row to unfold unfolds none"
+  },
+  {
+    "file": "hooks/switches.ts",
+    "from": "ids.includes(key) ? ids.filter(one => one !== key) : [...ids, key]",
+    "to": "ids.includes(key) ? ids : [...ids, key]",
+    "why": "a second press folds the description again"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "if (SLOT.test(String(props?.key))) {\n    return { taken: [node] }",
+    "to": "if (false) {\n    return { taken: [node] }",
+    "why": "other mods' slot elements are laid in the shared rows"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "return { rest: kept.length === 0 ? undefined : ({ ...(node as Tree), children: kept } as RenderNode), taken }",
+    "to": "return { rest: { ...(node as Tree), children: kept } as RenderNode, taken }",
+    "why": "a Box a slot element leaves empty is taken out"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "    .sort(([a], [b]) => a - b)",
+    "to": "    .sort(() => 0)",
+    "why": "the slot rows go in their numbers' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "children: items.sort((a, b) => a.place - b.place).map(({ item }) => item),",
+    "to": "children: items.map(({ item }) => item),",
+    "why": "the items of a row go in their places' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "place: place === undefined ? Infinity : Number(place)",
+    "to": "place: place === undefined ? 0 : Number(place)",
+    "why": "an item with no place goes after those that have one"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "children: [...(rest === undefined ? [] : [rest]), ...laid],",
+    "to": "children: [...laid, ...(rest === undefined ? [] : [rest])],",
+    "why": "the slot rows go after the rest of the footer"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "[...taken, own]",
+    "to": "[...taken]",
+    "why": "this mod's own element is laid with the others'"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Box key=\"slot:1.1:ui-mods\">",
+    "to": "<Box key=\"slot:1.2:ui-mods\">",
+    "why": "the button goes first in the first slot row"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "listed.filter(mod => mod.isEnabled).length",
+    "to": "listed.length",
+    "why": "the pane counts the mods that are active"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{changed.length > 0 && <Text color=\"warning\">{TEXT.unapplied(changed.length)}</Text>}",
+    "to": "{false && <Text color=\"warning\">{TEXT.unapplied(changed.length)}</Text>}",
+    "why": "the pane counts the switches not applied yet"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "variant={changed.length > 0 ? 'primary' : 'secondary'}",
+    "to": "variant=\"secondary\"",
+    "why": "the reload button stands out while switches wait"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{failed !== null && <Text color=\"error\">{failed}</Text>}",
+    "to": "{false && <Text color=\"error\">{failed}</Text>}",
+    "why": "the pane shows the error that failed a read or a switch"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{listed.length === 0 && failed === null && <Text dimColor>{TEXT.searching}</Text>}",
+    "to": "{listed.length === 0 && <Text dimColor>{TEXT.searching}</Text>}",
+    "why": "a failed read says why, not that it is still searching"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{listed.length === 0 && failed === null && <Text dimColor>{TEXT.searching}</Text>}",
+    "to": "{false && <Text dimColor>{TEXT.searching}</Text>}",
+    "why": "the pane says it is searching until the list arrives"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "surface === 'desktop' ? '#8080801f' : '#3a3f4b'",
+    "to": "'#8080801f'",
+    "why": "the terminal lights the row with a solid ground"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "surface === 'desktop' ? '#8080801f' : '#3a3f4b'",
+    "to": "'#3a3f4b'",
+    "why": "the desktop app lights the row with a faint wash"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "hoverBg: hoverBgOf(e.surface),",
+    "to": "hoverBg: hoverBgOf('terminal'),",
+    "why": "the row is lit as the surface the pane is drawn on takes it"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "= ['■', '□']",
+    "to": "= ['□', '■']",
+    "why": "a full square is on, an empty one off"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "groups: groupsOf(listed, changed, unfolded),",
+    "to": "groups: groupsOf(listed, [], unfolded),",
+    "why": "a row marks the switch not applied yet"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "groups: groupsOf(listed, changed, unfolded),",
+    "to": "groups: groupsOf(listed, changed, []),",
+    "why": "a row unfolded shows its description"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "const marketOf = (mod: Mod) => mod.id.split('@')[1] ?? ''",
+    "to": "const marketOf = (mod: Mod) => ''",
+    "why": "the mods are listed under their marketplace"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "const authorOf = (mod: Mod) => mod.author ?? TEXT.noAuthor",
+    "to": "const authorOf = (mod: Mod) => TEXT.noAuthor",
+    "why": "the mods of a marketplace are listed under their author"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "return mod.scope !== undefined && listed.some(one => one !== mod && one.id === mod.id)",
+    "to": "return mod.scope !== undefined",
+    "why": "only a plugin installed in more than one scope names its scope"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "? TEXT.inScope(name, TEXT.scopes[mod.scope] ?? mod.scope)",
+    "to": "? TEXT.inScope(name, mod.scope)",
+    "why": "a scope is named in the person's language"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "isLocked: mod.isLocked === true,",
+    "to": "isLocked: false,",
+    "why": "the locked mod's row is told apart"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "isPending: pending.includes(keyOf(mod)),",
+    "to": "isPending: false,",
+    "why": "a row marks the switch not applied yet"
+  },
+  {
+    "file": "hooks/pane.ts",
+    "from": "isOpen: unfolded.includes(keyOf(mod)),",
+    "to": "isOpen: false,",
+    "why": "a row unfolded shows its description"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "last !== undefined && last.length + 1 + word.length <= width",
+    "to": "last !== undefined && last.length + 1 + word.length <= width + 5",
+    "why": "a description is wrapped to the room"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": ": [...lines, word.slice(0, width)]",
+    "to": ": [...lines, word]",
+    "why": "a word wider than the room is cut"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "Math.max(20, columns - check - 1)",
+    "to": "columns - check - 1",
+    "why": "the room for a description is never narrower than 20"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "Array.from(boxes[0]).length + 2 + 2 * STEP",
+    "to": "0",
+    "why": "a press left of the check is the switch's, the rest folds"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "...(index > 0 ? [{ id: '', kind: 'gap' as const, text: '' }] : []),",
+    "to": "",
+    "why": "a gap separates the marketplaces"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "count: group.authors.reduce((sum, { rows }) => sum + rows.length, 0),",
+    "to": "count: group.authors.length,",
+    "why": "a marketplace counts its mods"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "{ id: '', kind: 'author' as const, text: author, count: rows.length },",
+    "to": "{ id: '', kind: 'author' as const, text: author, count: 0 },",
+    "why": "an author counts its mods"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "...(row.isOpen ? wrap(row.description, room)",
+    "to": "...(false ? wrap(row.description, room)",
+    "why": "an unfolded row shows its description under it"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "const line = e.type === 'leave' ? undefined : lines[e.y]",
+    "to": "const line = lines[e.y]",
+    "why": "the pointer leaving the list lights no row"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "if (e.type === 'down' && (e.button ?? 'left') === 'left' && hover !== '') {",
+    "to": "if (e.type === 'down' && hover !== '') {",
+    "why": "only the left button presses a row"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "if (e.type === 'down' && (e.button ?? 'left') === 'left' && hover !== '') {",
+    "to": "if ((e.button ?? 'left') === 'left' && hover !== '') {",
+    "why": "only a press, not a move, acts on a row"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "const isSwitch = line?.kind === 'mod' && line.row?.isLocked !== true && e.x < check",
+    "to": "const isSwitch = line?.kind === 'mod' && line.row?.isLocked !== true",
+    "why": "a press right of the checkbox unfolds, it does not switch"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "const isSwitch = line?.kind === 'mod' && line.row?.isLocked !== true && e.x < check",
+    "to": "const isSwitch = line?.kind === 'mod' && e.x < check",
+    "why": "a press on a locked mod's checkbox unfolds, it does not switch"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "const isSwitch = line?.kind === 'mod' && line.row?.isLocked !== true && e.x < check",
+    "to": "const isSwitch = line.row?.isLocked !== true && e.x < check",
+    "why": "a press on a description's left unfolds, it does not switch"
+  },
+  {
+    "file": "hooks/list.ts",
+    "from": "id !== '' && id === hover ? hoverBg : undefined",
+    "to": "id === hover ? hoverBg : undefined",
+    "why": "a heading is not lit by a pointer that is over no row"
+  },
+  {
+    "file": "hooks/rows.tsx",
+    "from": "roomFor(surface.columns, check)",
+    "to": "roomFor(80, check)",
+    "why": "a description is wrapped to the room the surface gives"
+  },
+  {
+    "file": "hooks/rows.tsx",
+    "from": "if (id !== (surface.state?.hover ?? '')) {",
+    "to": "if (false) {",
+    "why": "the row under the pointer is lit"
+  },
+  {
+    "file": "hooks/rows.tsx",
+    "from": "if (post !== undefined) {",
+    "to": "if (false) {",
+    "why": "a press on a row posts it"
+  },
+  {
+    "file": "hooks/rows.tsx",
+    "from": "const ground = (id: string) => groundOf(id, hover, props.hoverBg)",
+    "to": "const ground = (id: string) => groundOf(id, '', props.hoverBg)",
+    "why": "the row under the pointer has the ground the pane gave"
+  },
+  {
+    "file": "hooks/rows.tsx",
+    "from": "{line.text.toUpperCase()}",
+    "to": "{line.text}",
+    "why": "a marketplace's name is a heading in capitals"
+  },
+  {
+    "file": "hooks/rows.tsx",
+    "from": "<Text dimColor={!row.isEnabled}>{row.name}</Text>",
+    "to": "<Text>{row.name}</Text>",
+    "why": "a disabled mod's name is dimmed"
+  },
+  {
+    "file": "hooks/rows.tsx",
+    "from": "<Text color={row.isEnabled ? 'suggestion' : 'inactive'}>",
+    "to": "<Text color=\"suggestion\">",
+    "why": "a disabled mod's checkbox is inactive"
+  },
+  {
+    "file": "hooks/rows.tsx",
+    "from": "<Text dimColor>{row.isOpen ? '▾' : '▸'}</Text>",
+    "to": "<Text dimColor>▸</Text>",
+    "why": "an unfolded row shows an open arrow"
+  },
+  {
+    "file": "hooks/rows.tsx",
+    "from": "{row.isPending && <Text color=\"warning\"> •</Text>}",
+    "to": "",
+    "why": "a pending row carries a mark"
+  }
+]

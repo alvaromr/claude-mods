@@ -1,0 +1,19 @@
+# The pet's Swift lint, run by the gate with --strict, so a warning fails it too.
+# The defaults stand, except where they disagree with the repo's style.
+
+# The width Prettier wraps at (.prettierrc.json).
+line_length: 120
+
+# Multi-line literals end in a comma, as Prettier's "trailingComma": "all".
+trailing_comma:
+  mandatory_comma: true
+
+disabled_rules:
+  # The pet reads what a program printed or a file holds whatever its bytes,
+  # never nil for one stray byte, so it decodes lossily on purpose (lossyText).
+  - optional_data_string_conversion
+
+# Coordinates, offsets, loop counters and a count keep their usual short names;
+# the list replaces SwiftLint's own, so its `id` is listed again.
+identifier_name:
+  excluded: [id, x, y, dx, dy, i, n, ms, at]

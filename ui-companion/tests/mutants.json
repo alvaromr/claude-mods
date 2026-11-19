@@ -1,0 +1,1238 @@
+[
+  {
+    "file": "hooks/modes.ts",
+    "from": "vigilante: { isOn: true,",
+    "to": "vigilante: { isOn: false,",
+    "why": "the vigilante comments from the start"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "ROLLING: readonly Mode[] = ['resumen', 'pendientes']",
+    "to": "ROLLING: readonly Mode[] = ['resumen']",
+    "why": "the next steps are one text kept up to date"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "export const NOTHING = '—'",
+    "to": "export const NOTHING = '-'",
+    "why": "a mode with nothing to say answers a dash"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "{ value: 'never', label: TEXT.alertNever },",
+    "to": "",
+    "why": "an alert can be turned off"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "'low', 'medium', 'high', 'xhigh', 'max']",
+    "to": "'low', 'medium', 'high', 'xhigh']",
+    "why": "the pane offers every effort"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "['haiku', 'sonnet', 'opus', 'fable']",
+    "to": "['haiku', 'sonnet', 'opus']",
+    "why": "the pane offers every model"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "troll: TEXT.system.troll(),",
+    "to": "troll: TEXT.system.asesor(NOTHING),",
+    "why": "the troll mocks what the assistant did"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "vigilante: 'warning',",
+    "to": "vigilante: 'error',",
+    "why": "each mode has its own color"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "chosen === 'pendientes' ? TEXT.nextSteps : chosen",
+    "to": "chosen",
+    "why": "the pendientes text is titled the next steps"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "text.length > room ?",
+    "to": "text.length >= room ?",
+    "why": "a text of exactly the room is not cut"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "clip(text.trim(), 300)",
+    "to": "clip(text.trim(), 3000)",
+    "why": "a tool error is cut at 300 characters"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "clip(JSON.stringify(input), 200)",
+    "to": "clip(JSON.stringify(input), 2000)",
+    "why": "a tool input is cut at 200 characters"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "clip(text.trim(), 1500)",
+    "to": "clip(text.trim(), 15000)",
+    "why": "a message is cut at 1500 characters"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "${isError ? failed : ''}",
+    "to": "${failed}",
+    "why": "only a tool call that failed says so"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "text === undefined ? TEXT.failed :",
+    "to": "text !== undefined ? TEXT.failed :",
+    "why": "a failed tool call gives its error when it has one"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "role === 'user', said.join",
+    "to": "role === 'assistant', said.join",
+    "why": "the model is told who spoke"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "filter(part => part !== '')",
+    "to": "filter(part => true)",
+    "why": "a message with no text adds no empty line"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "messages.map(told).filter(Boolean)",
+    "to": "messages.map(told)",
+    "why": "a message that says nothing is left out"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "ask === 'redo' ? undefined : kept",
+    "to": "kept",
+    "why": "a kept text made again is read as not written"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "own.covered > messages.length ? 0",
+    "to": "own.covered >= messages.length ? 0",
+    "why": "a text covering all the conversation reads nothing new"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "? 0 : own.covered",
+    "to": "? 0 : 0",
+    "why": "a kept text reads only what it lacks"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "own?.text ?? TEXT.blank",
+    "to": "TEXT.blank",
+    "why": "a mode that keeps a text reads it"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "note.mode === chosen && !isSame(note, target)",
+    "to": "note.mode === chosen",
+    "why": "a note made again is not shown to the model"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": ".slice(-5)",
+    "to": ".slice(-6)",
+    "why": "the model reads its last five notes"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "message.role === 'user' && message.text.trim() !== ''",
+    "to": "message.role === 'user'",
+    "why": "the turn starts at the person's last prompt with words"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "const tail = messages.length - 12",
+    "to": "const tail = messages.length - 10",
+    "why": "the model reads at least the last 12 messages"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "Math.min(prompted, tail)",
+    "to": "Math.max(prompted, tail)",
+    "why": "a short turn reads its whole turn and more"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "summary === undefined ? [] :",
+    "to": "true ? [] :",
+    "why": "a mode of notes starts from the summary"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "(digests[rolling]?.covered ?? 0) !== length",
+    "to": "(digests[rolling]?.covered ?? 0) === length",
+    "why": "a text lacks messages when it covers fewer than the transcript"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "return lacks(chosen) ? [",
+    "to": "return true ? [",
+    "why": "a kept text that lacks nothing asks nothing"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "ask: 'summary' as const }] : []",
+    "to": "ask: 'own' as const }] : []",
+    "why": "the summary a mode of notes starts from is asked as a summary"
+  },
+  {
+    "file": "hooks/brief.ts",
+    "from": "...(lacks('resumen') ?",
+    "to": "...(true ?",
+    "why": "a mode of notes asks the summary only when it lacks messages"
+  },
+  {
+    "file": "hooks/reply.ts",
+    "from": "reply === '' || reply === NOTHING",
+    "to": "reply === NOTHING",
+    "why": "an empty reply is silence"
+  },
+  {
+    "file": "hooks/reply.ts",
+    "from": "reply.reason === 'api-error' ?",
+    "to": "false ?",
+    "why": "an API refusal says its error and status"
+  },
+  {
+    "file": "hooks/reply.ts",
+    "from": "${reply.status ?? ''}",
+    "to": "${reply.status}",
+    "why": "a refusal with no status says none"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "const KEPT = 20",
+    "to": "const KEPT = 21",
+    "why": "a mode keeps its newest twenty notes"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": " && note.text === other.text",
+    "to": "",
+    "why": "a note rewritten is not the one it was"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "(own.at(-1)?.n ?? 0) + 1",
+    "to": "own.length + 1",
+    "why": "a mode numbers on from its last note"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "target !== undefined && own.length === all.length",
+    "to": "false",
+    "why": "a note made again that was discarded meanwhile is gone"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "isSilent(text) ? own : [...own, added]",
+    "to": "[...own, added]",
+    "why": "a silent reply adds no note"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": ".slice(-KEPT)",
+    "to": "",
+    "why": "the oldest notes past the limit are dropped"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "list.filter(kept => kept.mode !== mode)",
+    "to": "list",
+    "why": "a mode's reply replaces its own notes and no other mode's"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "{ ...kept, covered: 0 }",
+    "to": "{ ...kept }",
+    "why": "a compaction zeroes what a kept text covers"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "ROLLING.flatMap(each => {",
+    "to": "ROLLING.slice(1).flatMap(each => {",
+    "why": "a compaction zeroes every kept text"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "sent: kept.sent,",
+    "to": "sent: undefined,",
+    "why": "a kept text's card shows the points sent"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "isOld: index > 0,",
+    "to": "isOld: index > 1,",
+    "why": "every note but the newest is old"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "    .reverse()\n",
+    "to": "\n",
+    "why": "the newest note comes first"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "title: TEXT.note(note.n),",
+    "to": "title: TEXT.note(index),",
+    "why": "a note is titled by its own number"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "sent: note.sent,",
+    "to": "sent: undefined,",
+    "why": "a note's card shows the points sent"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "discardKey: `discard-${note.n}`,",
+    "to": "discardKey: `discard-${index}`,",
+    "why": "each note's discard button is its own"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "^\\s*([-*•]",
+    "to": "^([-*•]",
+    "why": "an indented item is a point"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "[-*•]|\\d+[.)]",
+    "to": "[-*•]",
+    "why": "a numbered item is a point"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "isItem || all.length === 0",
+    "to": "isItem",
+    "why": "what comes before the first item is a point"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "line.trim() !== ''",
+    "to": "true",
+    "why": "blank lines are no part of a point"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "notes.find(note => note.mode === chosen && note.n === n)",
+    "to": "notes.find(note => note.n === n)",
+    "why": "a note is looked up in its own mode"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "points(part).every(",
+    "to": "points(part).some(",
+    "why": "a text is sent only while it holds every point drawn"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "now?.text === text ?",
+    "to": "true ?",
+    "why": "a kept text written in place of the one sent is not marked"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "[...(item.sent ?? []), ...points(part)]",
+    "to": "[...points(part)]",
+    "why": "the points sent add to those already sent"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "note.mode === chosen && note.n === n && note.text === text",
+    "to": "note.n === n && note.text === text",
+    "why": "a note of another mode is not marked sent"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "note.mode === chosen && note.n === n && note.text === text",
+    "to": "note.mode === chosen && note.n === n",
+    "why": "a note written in place of the one sent is not marked"
+  },
+  {
+    "file": "hooks/alerts.ts",
+    "from": "when === 'always' || (when === 'minimized' && now === 'minimized')",
+    "to": "when === 'always' || when === 'minimized'",
+    "why": "a minimized alert shows only while the pane is away"
+  },
+  {
+    "file": "hooks/alerts.ts",
+    "from": "isOn && isAlerting(alert, now)",
+    "to": "isAlerting(alert, now)",
+    "why": "a mode that is off raises no alert"
+  },
+  {
+    "file": "hooks/alerts.ts",
+    "from": "warned !== undefined && now !== 'off' &&",
+    "to": "warned !== undefined &&",
+    "why": "no alert is drawn while the advisor is off"
+  },
+  {
+    "file": "hooks/alerts.ts",
+    "from": "title === mode ? [] : [title]",
+    "to": "[title]",
+    "why": "an alert's heading repeats no title equal to its mode"
+  },
+  {
+    "file": "hooks/alerts.ts",
+    "from": "['companion', mode,",
+    "to": "[mode,",
+    "why": "an alert's heading names the companion"
+  },
+  {
+    "file": "hooks/alerts.ts",
+    "from": ".alert === 'always'",
+    "to": ".alert !== 'never'",
+    "why": "opening the pane puts away the alerts shown while minimized"
+  },
+  {
+    "file": "hooks/alerts.ts",
+    "from": ".filter(([each]) => SETUPS[each as Mode].isOn)",
+    "to": ".filter(([each]) => true)",
+    "why": "a reset puts away the alerts of the modes it turns off"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "isOn: on !== false,",
+    "to": "isOn: on === true,",
+    "why": "the advisor is on unless saved off"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "startsOpen: opens === true,",
+    "to": "startsOpen: opens !== false,",
+    "why": "a new session starts it minimized only when saved so"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "each === (asMode(shownMode) ?? 'vigilante')",
+    "to": "each === asMode(shownMode)",
+    "why": "settings saved with an unknown mode fall to the vigilante"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "keptHasAlerts === false",
+    "to": "keptHasAlerts !== false",
+    "why": "old settings without alerts load alerts never"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "own.model ?? keptModel",
+    "to": "own.model",
+    "why": "old settings give every mode the model they kept"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "own.effort ?? keptEffort",
+    "to": "own.effort",
+    "why": "old settings give every mode the effort they kept"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "typeof own.isOn === 'boolean'",
+    "to": "own.isOn !== undefined",
+    "why": "a mode's on switch of another kind takes its default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "typeof named === 'string' ? named",
+    "to": "named !== undefined ? named",
+    "why": "a model of another kind takes its default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "WHENS.find(known => known.value === own.alert)?.value ?? ",
+    "to": "(own.alert as 'never') ?? ",
+    "why": "an alert moment the pane does not offer takes its default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "typeof texts[each] === 'string' ?",
+    "to": "texts[each] !== undefined ?",
+    "why": "a prompt of another kind is left out"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "keptSetups === undefined && shownMode !== undefined",
+    "to": "shownMode !== undefined",
+    "why": "settings with their own setups are not read as old"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "JSON.stringify(loaded(session))",
+    "to": "JSON.stringify(session)",
+    "why": "unsaved settings are compared as saved ones are read"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "setups[shown].isOn ? shown :",
+    "to": "true ? shown :",
+    "why": "the pane shows the first mode on when its own is off"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(MODES.find(each => setups[each].isOn) ?? shown)",
+    "to": "(MODES.find(each => setups[each].isOn) ?? 'vigilante')",
+    "why": "the pane keeps its mode when none is on"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: global !== undefined ? 'global' : project !== undefined ? 'project' : 'defaults',",
+    "why": "the project's settings win over the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "was.hasProject || where === 'project'",
+    "to": "where === 'project'",
+    "why": "saving as global keeps whether the project has its own"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "prompts: written })",
+    "to": "prompts: {} })",
+    "why": "the prompts kept before settings are migrated"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": ".sort(([a], [b]) => a - b)",
+    "to": ".sort(([a], [b]) => b - a)",
+    "why": "slot rows are laid in their numbers' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "items.sort((a, b) => a.place - b.place)",
+    "to": "items.sort((a, b) => b.place - a.place)",
+    "why": "a row's items are laid in their places' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "place === undefined ? Infinity : Number(place)",
+    "to": "place === undefined ? 0 : Number(place)",
+    "why": "an element with no place comes last in its row"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "kept.length === 0 ? undefined :",
+    "to": "false ? undefined :",
+    "why": "a Box left empty by what is taken out goes with it"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "[...taken, own]",
+    "to": "[own]",
+    "why": "other mods' slot elements are laid with this mod's"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": "ask === 'own' && commentedAt === length",
+    "to": "false",
+    "why": "a turn's end and a mode turned on that land together are one comment"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "(await read($, notes)).findLast(kept => kept.mode === chosen)",
+    "to": "(await read($, notes)).findLast(() => true)",
+    "why": "a note made again is the last of its own mode"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "effort === 'auto' ? {} : { effort }",
+    "to": "{ effort }",
+    "why": "an auto effort is left to the model"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "...effortAsked(picked),",
+    "to": "...effortAsked('auto'),",
+    "why": "a mode asks the model at the effort it was set to"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "prompts[chosen] ?? SYSTEM[chosen]",
+    "to": "SYSTEM[chosen]",
+    "why": "the prompt the person wrote is the one the model reads"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "prompts[chosen] ?? SYSTEM[chosen]",
+    "to": "prompts[chosen] ?? ''",
+    "why": "a mode the person wrote no prompt for asks with its own"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "system: promptOf(await read($, prompts), chosen),",
+    "to": "system: promptOf({}, chosen),",
+    "why": "the model reads the prompts the person kept"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "model: named,\n    system:",
+    "to": "model: 'sonnet',\n    system:",
+    "why": "each mode asks its own model"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  await update($, errors, all => ({ ...all, [chosen]: undefined }))\n\n  if (ask === 'own') {",
+    "to": "  if (ask === 'own') {",
+    "why": "a mode's next success clears its error"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (!(await read($, setups))[chosen].isOn) {",
+    "to": "if (false) {",
+    "why": "a comment of a mode turned off meanwhile is dropped"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "commented.set(chosen, messages.length)",
+    "to": "commented.set(chosen, -1)",
+    "why": "a mode's own comment is remembered by the transcript's length"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": "return isQuiet ? 'nothing' : 'text'",
+    "to": "return 'text'",
+    "why": "a silent reply leaves a kept text as it was"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (keep === 'text') {",
+    "to": "if (false) {",
+    "why": "a mode that keeps a text writes it"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (keep !== 'note') {",
+    "to": "if (false) {",
+    "why": "a mode that keeps a text adds no note"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{ text, covered: messages.length }",
+    "to": "{ text, covered: 0 }",
+    "why": "a kept text covers the messages it was written from"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await warn($, { mode: chosen, title: titleOf(chosen), text })",
+    "to": "",
+    "why": "a kept text written is warned of above the prompt"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": "return isQuiet && ask !== 'redo' ? 'nothing' : 'note'",
+    "to": "return isQuiet ? 'nothing' : 'note'",
+    "why": "a note made again that comes out silent leaves none"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "!isGone && !isQuiet && note !== undefined",
+    "to": "!isQuiet && note !== undefined",
+    "why": "a note that was discarded meanwhile is not warned of"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (!isQueued(waiting, chosen, ask)) {",
+    "to": "if (true) {",
+    "why": "what is asked while the model answers is answered once"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": "queued.mode === chosen && ",
+    "to": "",
+    "why": "what another mode asks is not taken for what a mode already asked"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": " && queued.ask === ask",
+    "to": "",
+    "why": "a mode asked again in another way is queued again"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (isBusy) {",
+    "to": "if (false) {",
+    "why": "one model call at a time"
+  },
+  {
+    "file": "hooks/reply.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a refused model is said by its message"
+  },
+  {
+    "file": "hooks/view.ts",
+    "from": "now !== 'off' && isOn",
+    "to": "now !== 'off'",
+    "why": "a switched off advisor reads no turn"
+  },
+  {
+    "file": "hooks/view.ts",
+    "from": "now !== 'off' && isOn",
+    "to": "isOn",
+    "why": "an advisor that is off reads no turn"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const reads = async ($: Engine) => isReading(await read($, view), await read($, isOn))",
+    "to": "const reads = async ($: Engine) => isReading(await read($, view), true)",
+    "why": "the advisor reads the turns as the pane's switch says"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "length === 0 || !(await reads($))",
+    "to": "!(await reads($))",
+    "why": "a mode turned on with nothing said yet asks no model"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "(await $.session.messages()).length > 0) {\n    void think",
+    "to": "(await $.session.messages()).length >= 0) {\n    void think",
+    "why": "regenerar with nothing said asks no model"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (sent.deny !== undefined) {",
+    "to": "if (false) {",
+    "why": "a note a plugin refuses is not marked sent"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "TEXT.sentHeader(chosen, n),",
+    "to": "",
+    "why": "the transcript shows what the companion sent, headed"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "...part.split('\\n'),",
+    "to": "part,",
+    "why": "the transcript shows what the companion sent a line to a row"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "for (const line of sentLines(chosen, n, part)) {",
+    "to": "for (const line of sentLines(chosen, undefined, part)) {",
+    "why": "the transcript names the note the companion sent"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await (n === undefined\n",
+    "to": "await (n !== undefined\n",
+    "why": "a point sent is marked in the kept text or the note it came from"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "list.filter(note => !(note.mode === chosen && note.n === n))",
+    "to": "list.filter(note => note.n !== n)",
+    "why": "a note is discarded alone, in its own mode"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "update($, notes, list => withoutNote(list, chosen, n))",
+    "to": "update($, notes, list => list)",
+    "why": "a card's discard drops its note"
+  },
+  {
+    "file": "hooks/notes.ts",
+    "from": "list.filter(note => note.mode !== chosen)",
+    "to": "list.filter(() => false)",
+    "why": "discarding all drops the mode's notes alone"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "update($, notes, list => withoutNotes(list, chosen))",
+    "to": "update($, notes, list => list)",
+    "why": "the delete all button drops the mode's notes"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "text.trim() === '' || ",
+    "to": "",
+    "why": "a prompt left empty is the mode's own again"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": " || text.trim() === SYSTEM[chosen].trim()",
+    "to": "",
+    "why": "a prompt equal to the mode's own is the mode's own again"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "[chosen]: keptPrompt(chosen, text) }",
+    "to": "[chosen]: text }",
+    "why": "a prompt kept for a mode is the one the person wrote, cleaned of the mode's own"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": ".filter(each => ROLLING.includes(each))",
+    "to": ".filter(() => true)",
+    "why": "turning the pane on catches up the kept texts alone"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "MODES.filter(each => setups[each].isOn)",
+    "to": "MODES.filter(() => true)",
+    "why": "only the modes on comment"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "isDismissed: change.isOn === false,",
+    "to": "isDismissed: false,",
+    "why": "a mode turned off has its alert gone"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (isDismissed) {",
+    "to": "if (false) {",
+    "why": "a mode turned off has its alert put away"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "isAnswering: change.isOn === true && !was.isOn,",
+    "to": "isAnswering: change.isOn === true,",
+    "why": "a mode already on does not answer again when it is set"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "isAnswering: change.isOn === true && !was.isOn,",
+    "to": "isAnswering: false,",
+    "why": "a mode turned on answers at once"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "global === undefined && (choice !== undefined || written !== undefined)",
+    "to": "false",
+    "why": "settings kept before the global ones are taken up"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "global === undefined && (choice",
+    "to": "(choice",
+    "why": "settings kept before the global ones are taken up only while there are none"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (isMigrating(global, choice, written)) {",
+    "to": "if (false) {",
+    "why": "the store's old choice and prompts are migrated"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await $.store.delete('choice')",
+    "to": "",
+    "why": "the migrated choice is dropped from the store"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "loaded(project ?? global)",
+    "to": "loaded(global ?? project)",
+    "why": "a session starts from its project's settings first"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, mode, shown => startMode(shown, s.setups))",
+    "to": "await update($, mode, shown => shown)",
+    "why": "the shown mode, if off, gives way to the first one on"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (key === undefined) {\n    $.ui.toast(TEXT.noProject)",
+    "to": "if (false) {\n    $.ui.toast(TEXT.noProject)",
+    "why": "a session that tells no project cannot save for it"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await $.store.delete(key)",
+    "to": "",
+    "why": "forgetting the project's settings deletes them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, alerts, afterReset)",
+    "to": "",
+    "why": "a reset puts away the alerts of the modes it turns off"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, alerts, shown => afterOpening(shown, all))",
+    "to": "",
+    "why": "opening the pane puts away the alerts it shows"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "=== 'open' ? minimize($) : show($)",
+    "to": "!== 'open' ? minimize($) : show($)",
+    "why": "the footer button puts away an open pane and brings back a closed one"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={commenting ? 'success' : 'inactive'}>",
+    "to": "<Text color=\"success\">",
+    "why": "the footer dot is gray while no mode comments"
+  },
+  {
+    "file": "hooks/view.ts",
+    "from": "modesOn(setups).length > 0",
+    "to": "modesOn(setups).length >= 0",
+    "why": "the footer dot is hollow while no mode is on"
+  },
+  {
+    "file": "hooks/view.ts",
+    "from": "isReading(now, isOn) && ",
+    "to": "",
+    "why": "the footer dot is hollow while the advisor reads nothing"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const commenting = isCommenting(now, await read($, isOn), await read($, setups))",
+    "to": "const commenting = isCommenting(now, await read($, isOn), SETUPS)",
+    "why": "the footer dot follows the modes the person turned on"
+  },
+  {
+    "file": "hooks/view.ts",
+    "from": "if (isUp && isOff) {",
+    "to": "if (false) {",
+    "why": "a pane that stayed up is the advisor on"
+  },
+  {
+    "file": "hooks/view.ts",
+    "from": "return 'open'",
+    "to": "return 'minimized'",
+    "why": "a pane that stayed up is the advisor open"
+  },
+  {
+    "file": "hooks/view.ts",
+    "from": "isInteractive && ",
+    "to": "",
+    "why": "a session that is not interactive does not start minimized"
+  },
+  {
+    "file": "hooks/view.ts",
+    "from": "startsOpen && ",
+    "to": "",
+    "why": "a new session starts minimized only when set to"
+  },
+  {
+    "file": "hooks/view.ts",
+    "from": "(await isEmpty())",
+    "to": "true",
+    "why": "a session with a conversation already does not start minimized"
+  },
+  {
+    "file": "hooks/view.ts",
+    "from": "const isOff = now === 'off'",
+    "to": "const isOff = true",
+    "why": "a session whose advisor is already on keeps its view"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isInteractive: e.isInteractive,\n        startsOpen: await read($, startsOpen),",
+    "to": "isInteractive: e.isInteractive,\n        startsOpen: true,",
+    "why": "a new session starts minimized as the person set it"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isInteractive: e.isInteractive,",
+    "to": "isInteractive: true,",
+    "why": "a session that is not interactive is told so when it starts"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await update($, isThinking, () => false)\n\n    await loadSettings($)",
+    "to": "    await loadSettings($)",
+    "why": "a reload while the model answers lowers the thinking flag"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if ((await read($, view)) === 'off') {",
+    "to": "if ((await read($, view)) !== 'off') {",
+    "why": "the command opens the advisor when it is off and turns it off otherwise"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": "agentId === undefined && reason === 'answer'",
+    "to": "reason === 'answer'",
+    "why": "a subagent's turn is not read"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": "agentId === undefined && reason === 'answer'",
+    "to": "agentId === undefined",
+    "why": "a turn cut short is not read"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isOwnAnswer(e.agentId, e.reason) && (await reads($))",
+    "to": "(await reads($))",
+    "why": "a turn's end that is not the conversation's answer is not read"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": "trigger !== 'precompute' && ",
+    "to": "",
+    "why": "a precompute does not zero what the kept texts cover"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": " && agentId === undefined && skip === undefined",
+    "to": " && skip === undefined",
+    "why": "a subagent's compaction does not zero what the kept texts cover"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": " && skip === undefined",
+    "to": "",
+    "why": "a vetoed compaction does not zero what the kept texts cover"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (isCompaction(e.trigger, e.agentId, done.skip)) {",
+    "to": "if (false) {",
+    "why": "a compaction of the conversation zeroes what the kept texts cover"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "e.surface === 'desktop' ? beneath :",
+    "to": "false ? beneath :",
+    "why": "the desktop's footer is left to the band"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (e.props.hasSurvey) {",
+    "to": "if (false) {",
+    "why": "a question asked above the prompt has the band to itself"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "e.surface === 'desktop' ? slotted(beneath, await drawn($, elements)) : beneath",
+    "to": "beneath",
+    "why": "the desktop's band carries the button"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (shown.length === 0) {\n      return laid",
+    "to": "if (false) {\n      return laid",
+    "why": "no alert shown leaves the band as it is"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isSent ? dismiss($, warned.mode) : undefined",
+    "to": "dismiss($, warned.mode)",
+    "why": "an alert stays when its inclusion did not go"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "share($, warned.mode, warned.text, warned.n)",
+    "to": "share($, warned.mode, warned.text)",
+    "why": "an alert's inclusion sends the note it shows"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": ".then(() => dismiss($, warned.mode))",
+    "to": ".then(() => undefined)",
+    "why": "an alert's deletion puts the alert away"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void dismiss($, warned.mode)}",
+    "to": "onPress={() => undefined}",
+    "why": "the alert's ✕ puts it away"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": ".then(() => catchUp($))",
+    "to": ".then(() => undefined)",
+    "why": "switching the pane on catches the kept texts up"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isEditing ? TEXT.backToNotes : TEXT.prompts",
+    "to": "TEXT.prompts",
+    "why": "the prompts view has a way back to the notes"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "o.hasProject && o.source !== 'project' &&",
+    "to": "o.hasProject &&",
+    "why": "the pane says the project has its own settings only when it is not using them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && (",
+    "to": "{true && (",
+    "why": "forget the project's settings is offered only when it has some"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "variant={o.isChanged ? 'primary' : 'secondary'}",
+    "to": "variant=\"secondary\"",
+    "why": "saving for the project stands out while there are unsaved changes"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{written[each] !== undefined && (",
+    "to": "{true && (",
+    "why": "a prompt can be reset only once edited"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "e.surface === 'terminal' ? 'subtle' : undefined",
+    "to": "undefined",
+    "why": "the terminal marks a prompt's field with a ground"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "value={promptOf(written, each)}",
+    "to": "value={promptOf({}, each)}",
+    "why": "a prompt's field shows the one written"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "dimColor={!setup[each].isOn}",
+    "to": "dimColor={false}",
+    "why": "the modes off are dim among the modes"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{ isOn: !isModeOn }",
+    "to": "{ isOn: isModeOn }",
+    "why": "the state button flips the shown mode"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{(powered || shown.length > 0) && (",
+    "to": "{true && (",
+    "why": "with the pane off and nothing to show there are no buttons"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{!ROLLING.includes(chosen) && shown.length > 0 && (",
+    "to": "{shown.length > 0 && (",
+    "why": "a kept text has no delete all button"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{powered && shown.length === 0 && !thinking && (",
+    "to": "{powered && shown.length === 0 && (",
+    "why": "the idle line is not shown while the model thinks"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{powered && thinking && (",
+    "to": "{thinking && (",
+    "why": "a pane that is off does not say it thinks"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{failed !== undefined && <Text",
+    "to": "{true && <Text",
+    "why": "the pane says why a mode wrote nothing only when it failed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{!powered && (",
+    "to": "{false && (",
+    "why": "a pane that is off says it reads no turns"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isModeOn ? TEXT.idle[chosen] : TEXT.modeOff",
+    "to": "TEXT.idle[chosen]",
+    "why": "a mode that is off says so when it has nothing to show"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "borderDimColor={entry.isOld}",
+    "to": "borderDimColor={false}",
+    "why": "the old notes are dim"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isSent(entry.sent, point) ? (",
+    "to": "false ? (",
+    "why": "a point sent shows as included"
+  },
+  {
+    "file": "hooks/share.ts",
+    "from": "sent?.includes(point) === true",
+    "to": "false",
+    "why": "a point already sent is known as sent"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "void share($, chosen, point, entry.n)",
+    "to": "void share($, chosen, point, undefined)",
+    "why": "a point is sent from the note it is in"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void discard($, chosen, entry.n)}",
+    "to": "onPress={() => void discard($, chosen, undefined)}",
+    "why": "a card's discard drops that note"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (isSameTurn(ask, commented.get(chosen), messages.length)) {",
+    "to": "if (false) {",
+    "why": "a turn's end and a mode turned on that land together are one comment"
+  },
+  {
+    "file": "hooks/turns.ts",
+    "from": "ask === 'own' && ",
+    "to": "",
+    "why": "a summary asked at the length a mode last commented at is still asked"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "`${chosen}${prompts[chosen] === undefined ? '' : TEXT.edited}`",
+    "to": "chosen",
+    "why": "a prompt the person edited is marked in the pane"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "?.value ?? 'minimized'",
+    "to": "?.value ?? 'never'",
+    "why": "a label the pane does not offer is read as the alert while minimized"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "when.value === alert)?.label ?? ''",
+    "to": "when.value === alert)?.label ?? 'x'",
+    "why": "an alert moment the pane does not offer has no label"
+  },
+  {
+    "file": "hooks/modes.ts",
+    "from": "when.label === label)",
+    "to": "when.label !== label)",
+    "why": "the pane reads a label back as the moment it stands for"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "root === null ? undefined : `settings:${root}`",
+    "to": "`settings:${root}`",
+    "why": "a session that tells no root keeps no project settings"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "`settings:${root}`",
+    "to": "`${root}`",
+    "why": "a project's settings are kept under its own key in the store"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "projectKeyOf(await $.session.root().catch(orElse($, 'reading the project root', null)))",
+    "to": "projectKeyOf(null)",
+    "why": "a project's settings are kept under its root folder"
+  }
+]

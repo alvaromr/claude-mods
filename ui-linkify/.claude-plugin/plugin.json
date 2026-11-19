@@ -1,0 +1,7 @@
+{
+  "name": "ui-linkify",
+  "version": "0.4.0",
+  "description": "Links and pictures in the conversation: every absolute or ~/ path an assistant message names, spaces included, as a link that opens it when it exists; every Jira ticket an assistant message or a prompt names as a link to it, the session titled after the ticket worked on (the branch's, one prompted alone, or one committed to); in the prompt box, while a project's key is typed, the tickets of the branch and of the recent commits offered; and in the terminal the PNG images pasted into a prompt under its row, its [Image #n] a link that opens the original, and those pasted into the box above it till it is sent, each sent again, for a terminal that drops it, at the first key typed after a pause or with a button under it; and in the terminal each `! command` an assistant message proposes, on its own line or as a code span in a sentence, boxed as a row with a ▶ that runs it in the session's folder, shows what it prints as it comes, with a ■ that stops it, and hands Claude what it printed, as bash mode does, and a ⧉ that copies it to paste in a terminal when it asks for input (macOS). A button in the footer's first row opens a pane with all of it, the Jira site and keys included.",
+  "author": { "name": "alvaro.martin" },
+  "types": "./types/index.d.ts"
+}

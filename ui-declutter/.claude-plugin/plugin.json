@@ -1,0 +1,7 @@
+{
+  "name": "ui-declutter",
+  "version": "0.1.2",
+  "description": "Folds each span of tool calls (reads, searches, commands, the browser, the web, MCP tools, skills) and edits made with nothing else between them into one line in a border, which a press unfolds into a row per call, on a timeline, and a row per file; a call pressed opens its result's head, then all of it, a file its diff. The files a command changed count as edits, and an edit that failed is counted apart with why. A button in the footer's first row opens a pane with the switch back to the engine's own drawing, and the diffs', the commands' and the skills' level, each hide (nowhere), group (in the span's line) or normal (as the engine draws them). Terminal only.",
+  "author": { "name": "alvaro.martin" },
+  "types": "./types/index.d.ts"
+}

@@ -1,0 +1,788 @@
+[
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showIcon: true,",
+    "to": "showIcon: false,",
+    "why": "the branch icon shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showBranch: true,",
+    "to": "showBranch: false,",
+    "why": "the branch shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showFiles: true,",
+    "to": "showFiles: false,",
+    "why": "the files changed show by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showLines: true,",
+    "to": "showLines: false,",
+    "why": "the lines changed show by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showAhead: true,",
+    "to": "showAhead: false,",
+    "why": "the commits no remote has show by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showCommit: true,",
+    "to": "showCommit: false,",
+    "why": "the commit button shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showIntegrate: true,",
+    "to": "showIntegrate: false,",
+    "why": "the integrate button shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "icon: '⎇',",
+    "to": "icon: '*',",
+    "why": "the branch icon is ⎇ by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "commitLabel: TEXT.defaultCommitLabel,",
+    "to": "commitLabel: TEXT.defaultIntegrateLabel,",
+    "why": "the commit button is labelled commit"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "integrateLabel: TEXT.defaultIntegrateLabel,",
+    "to": "integrateLabel: TEXT.defaultCommitLabel,",
+    "why": "the integrate button is labelled integrar"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "commitPrompt: TEXT.defaultCommitPrompt,",
+    "to": "commitPrompt: TEXT.defaultIntegratePrompt,",
+    "why": "the commit button asks for a commit"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "integratePrompt: TEXT.defaultIntegratePrompt,",
+    "to": "integratePrompt: TEXT.defaultCommitPrompt,",
+    "why": "the integrate button asks to integrate the changes"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "iconColor: 'red',",
+    "to": "iconColor: 'cyan',",
+    "why": "the icon is red by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "branchColor: '#8a8a8a',",
+    "to": "branchColor: 'cyan',",
+    "why": "the branch is gray by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "addedColor: 'success',",
+    "to": "addedColor: 'cyan',",
+    "why": "the lines added are the theme's success by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "removedColor: 'error',",
+    "to": "removedColor: 'cyan',",
+    "why": "the lines removed are the theme's error by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "mutedColor: '#8a8a8a',",
+    "to": "mutedColor: 'cyan',",
+    "why": "the secondary text is gray by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['icon', TEXT.iconField, 0, 4],",
+    "to": "['icon', TEXT.iconField, 1, 4],",
+    "why": "the icon may be left empty"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['icon', TEXT.iconField, 0, 4],",
+    "to": "['icon', TEXT.iconField, 0, 40],",
+    "why": "the icon takes at most four characters"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['commitLabel', TEXT.commitField, 1, 24],",
+    "to": "['commitLabel', TEXT.commitField, 0, 24],",
+    "why": "a button's label is not left empty"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['commitLabel', TEXT.commitField, 1, 24],",
+    "to": "['commitLabel', TEXT.commitField, 1, 240],",
+    "why": "a button's label takes at most 24 characters"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['commitPrompt', TEXT.promptField, 1, 500],",
+    "to": "['commitPrompt', TEXT.promptField, 0, 500],",
+    "why": "what a button sends is not left empty"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['commitPrompt', TEXT.promptField, 1, 500],",
+    "to": "['commitPrompt', TEXT.promptField, 1, 5000],",
+    "why": "what a button sends takes at most 500 characters"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['integrateLabel', TEXT.integrateField, 1, 24],",
+    "to": "['integrateLabel', TEXT.integrateField, 0, 24],",
+    "why": "the integrate button's label is not left empty"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['integratePrompt', TEXT.promptField, 1, 500],",
+    "to": "['integratePrompt', TEXT.promptField, 0, 500],",
+    "why": "what the integrate button sends is not left empty"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "text.length >= min && text.length <= max",
+    "to": "text.length > min && text.length <= max",
+    "why": "a text may be as short as the least allowed"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "text.length >= min && text.length <= max",
+    "to": "text.length >= min && text.length < max",
+    "why": "a text may be as long as the most allowed"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const COLOR = /^(?:#(?:[0-9a-f]{3}){1,2}|[a-z][a-z0-9]*)$/i",
+    "to": "const COLOR = /^.*$/",
+    "why": "a text that is no color is refused"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(?:[0-9a-f]{3}){1,2}",
+    "to": "(?:[0-9a-f]{3}){1,3}",
+    "why": "a hex color has three or six digits"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "const READ_MS = 10_000",
+    "to": "const READ_MS = 30_000",
+    "why": "git is given ten seconds for each part it reads"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "...(cwd === undefined ? {} : { cwd })",
+    "to": "...{}",
+    "why": "a /cd is read in the folder it names"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "'git', '--no-optional-locks', 'status',",
+    "to": "'git', 'status',",
+    "why": "reading the status takes no lock the person's git needs"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "'--porcelain=v2', '--branch', '-uall'",
+    "to": "'--porcelain=v2', '-uall'",
+    "why": "the status tells the branch"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "'--porcelain=v2', '--branch', '-uall'",
+    "to": "'--porcelain=v2', '--branch', '-unormal'",
+    "why": "an untracked folder is counted file by file"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "status !== undefined && status.exitCode === 0",
+    "to": "status !== undefined",
+    "why": "a folder that is no repository leaves the footer as the engine draws it"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "head === '(detached)' ? (field(/^# branch\\.oid (\\w{7})/m) ?? head) : head",
+    "to": "head",
+    "why": "a detached head shows the start of its commit"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "line !== '' && !line.startsWith('#')",
+    "to": "line !== ''",
+    "why": "the status's headers are not files"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "Number(row[column]) || 0",
+    "to": "Number(row[column])",
+    "why": "a binary file counts no lines"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "lines !== undefined && lines.exitCode === 0",
+    "to": "lines !== undefined",
+    "why": "a count of lines that failed is left out, not shown as none"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (mine === latest) {",
+    "to": "if (true) {",
+    "why": "an answer that comes back after a newer one is dropped"
+  },
+  {
+    "file": "hooks/moves.ts",
+    "from": "    case 'started':\n      return undefined",
+    "to": "    case 'started':\n      return move",
+    "why": "a new session forgets an earlier cd"
+  },
+  {
+    "file": "hooks/moves.ts",
+    "from": "    case 'moved':\n      return { to: event.to, reported: event.reported }",
+    "to": "    case 'moved':\n      return move",
+    "why": "a move takes the reads to the folder it names"
+  },
+  {
+    "file": "hooks/moves.ts",
+    "from": "return event.now === null || event.now === move?.reported ? move : undefined",
+    "to": "return event.now === move?.reported ? move : undefined",
+    "why": "the folder of a cd stays when the session's cannot be read"
+  },
+  {
+    "file": "hooks/moves.ts",
+    "from": "return event.now === null || event.now === move?.reported ? move : undefined",
+    "to": "return event.now === null ? move : undefined",
+    "why": "the folder of a cd stays while the session reports the one it did"
+  },
+  {
+    "file": "hooks/moves.ts",
+    "from": "return event.now === null || event.now === move?.reported ? move : undefined",
+    "to": "return move",
+    "why": "a move the session reports later is followed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (e.agentId === undefined) {",
+    "to": "if (true) {",
+    "why": "a subagent's end does not read the repository"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "'Bash', 'Edit', 'Write', 'NotebookEdit'",
+    "to": "'Edit', 'Write', 'NotebookEdit'",
+    "why": "a shell command may change the repository"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "'Bash', 'Edit', 'Write', 'NotebookEdit'",
+    "to": "'Bash', 'Write', 'NotebookEdit'",
+    "why": "an edit may change the repository"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "'Bash', 'Edit', 'Write', 'NotebookEdit'",
+    "to": "'Bash', 'Edit', 'NotebookEdit'",
+    "why": "a write may change the repository"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "'Bash', 'Edit', 'Write', 'NotebookEdit'",
+    "to": "'Bash', 'Edit', 'Write'",
+    "why": "a notebook edit may change the repository"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const SETTLE_MS = 1000",
+    "to": "const SETTLE_MS = 100",
+    "why": "the repository is read once the tools have been still for a second"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      settling?.cancel()\n",
+    "to": "",
+    "why": "the tools close together are one read"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  moved = nextMove(moved, { kind: 'started' })\n",
+    "to": "",
+    "why": "a start drops the folder an earlier cd took the session to"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    hasStarted = false\n",
+    "to": "",
+    "why": "a start that fails is tried again at the next drawing"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "typeof given[key] === typeof value ? given[key] : value",
+    "to": "given[key]",
+    "why": "a saved field missing or of another type takes its default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "root === null ? undefined : `settings:${root}`",
+    "to": "`settings:${root}`",
+    "why": "where the session tells no root, nothing is saved for a project"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "loaded(project ?? global)",
+    "to": "loaded(global)",
+    "why": "a session starts with its project's saved settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "loaded(project ?? global)",
+    "to": "loaded(project)",
+    "why": "a project without its own settings starts with the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: project !== undefined ? 'project' : 'defaults',",
+    "why": "the pane says the settings are the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: global !== undefined ? 'global' : 'defaults',",
+    "why": "the pane says the settings are the project's"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject: project !== undefined,",
+    "to": "hasProject: false,",
+    "why": "a project with saved settings can forget them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = source === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = 'settings'",
+    "why": "settings from a project are unsaved against the project's save"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "source === 'defaults' || key === undefined\n      ? DEFAULTS",
+    "to": "key === undefined\n      ? DEFAULTS",
+    "why": "settings from the defaults are unsaved against the defaults"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "some(field => now[field] !== saved[field])",
+    "to": "some(field => false)",
+    "why": "a change is marked unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "current => ({ ...current, ...patch })",
+    "to": "() => ({ ...DEFAULTS, ...patch })",
+    "why": "a change keeps the settings it did not touch"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = where === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = 'settings'",
+    "why": "saving for the project keeps them under the project"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = where === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = await projectKey($)",
+    "why": "saving globally keeps them for every project"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  if (key === undefined) {\n    $.ui.toast(TEXT.noProject)",
+    "to": "  if (false) {\n    $.ui.toast(TEXT.noProject)",
+    "why": "saving for a session with no project says so"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "  source: where,\n  isChanged: false,\n",
+    "to": "  source: 'global',\n  isChanged: false,\n",
+    "why": "a saved change is the project's"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject: now.hasProject || where === 'project',",
+    "to": "hasProject: now.hasProject,",
+    "why": "a project that just saved can forget its settings"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "  source: where,\n  isChanged: false,",
+    "to": "  source: where,\n  isChanged: true,",
+    "why": "a saved change is no longer unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      await $.store.delete(key)",
+    "to": "      void key",
+    "why": "forgetting drops the project's saved settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  await loadSettings($)\n}\n\n// The panel away",
+    "to": "}\n\n// The panel away",
+    "why": "after forgetting, the session takes the global settings"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "if (typeof props?.key === 'string' && SLOT.test(props.key)) {",
+    "to": "if (false) {",
+    "why": "another mod's slot is laid with this one's"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "rest: kept.length === 0 ? undefined : (",
+    "to": "rest: false ? undefined : (",
+    "why": "a Box a slot leaves empty is taken out too"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "const SLOT = /^slot:(\\d+)(?:\\.(\\d+))?:/",
+    "to": "const SLOT = /slot:(\\d+)(?:\\.(\\d+))?:/",
+    "why": "only a key that starts with slot is a slot"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "place === undefined ? Infinity : Number(place)",
+    "to": "place === undefined ? 0 : Number(place)",
+    "why": "a slot with no place goes last in its row"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": ".sort(([a], [b]) => a - b)",
+    "to": ".sort(([a], [b]) => b - a)",
+    "why": "the footer's rows come in their numbers' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "items.sort((a, b) => a.place - b.place)",
+    "to": "items.sort((a, b) => b.place - a.place)",
+    "why": "a row's slots come in their places' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "children: [...(rest === undefined ? [] : [rest]), ...laid],",
+    "to": "children: laid,",
+    "why": "what the footer drew beneath stays"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Box key=\"slot:9.1:bar-git\"",
+    "to": "<Box key=\"slot:1.1:bar-git\"",
+    "why": "the git row is after the other mods' rows"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": ".some(pane => pane.id === PANE)",
+    "to": ".length > 0",
+    "why": "the button opens the pane while another pane is open"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "found === null || surface === 'desktop' || (!isTerminal && !hasCommit && !hasIntegrate)",
+    "to": "found === null || (!isTerminal && !hasCommit && !hasIntegrate)",
+    "why": "the desktop app tells the branch and commits itself"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "found === null || surface === 'desktop' || (!isTerminal && !hasCommit && !hasIntegrate)",
+    "to": "found === null || surface === 'desktop'",
+    "why": "outside the terminal a row with no button is not drawn"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "const hasCommit = isDirty && s.showCommit",
+    "to": "const hasCommit = s.showCommit",
+    "why": "the commit button shows only while there are changes"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "const isPending = isDirty || (found?.ahead ?? 0) > 0",
+    "to": "const isPending = isDirty",
+    "why": "the integrate button shows while commits are not pushed"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "const hasIntegrate = isPending && s.showIntegrate",
+    "to": "const hasIntegrate = s.showIntegrate",
+    "why": "the integrate button shows only while there is pending work"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "/^\\/(\\S+)\\s*([\\s\\S]*)$/",
+    "to": "/\\/(\\S+)\\s*([\\s\\S]*)$/",
+    "why": "only a text that starts with a slash is a command"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "$.command.run(slash)",
+    "to": "$.command.run({ command: slash.command, args: '' })",
+    "why": "a command a button sends keeps its arguments"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "$.prompt.submit({ text, asUser: true })",
+    "to": "$.prompt.submit({ text, asUser: false })",
+    "why": "a prompt a button sends goes as the person's"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "isTerminal && isDirty && (s.showFiles || hasLines)",
+    "to": "isDirty && (s.showFiles || hasLines)",
+    "why": "outside the terminal the files changed are not shown"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "isTerminal && isDirty && (s.showFiles || hasLines)",
+    "to": "isTerminal && isDirty",
+    "why": "with files and lines both hidden the changes part is left out"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "const hasLines = s.showLines && found.added !== null",
+    "to": "const hasLines = found.added !== null",
+    "why": "the lines hide when the setting says so"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "isTerminal && found.ahead > 0 && s.showAhead",
+    "to": "found.ahead > 0 && s.showAhead",
+    "why": "outside the terminal the commits not pushed are not shown"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "hasHead: isTerminal && (s.showIcon || s.showBranch)",
+    "to": "hasHead: isTerminal",
+    "why": "with the icon and the branch hidden no head is drawn"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "hasHead: isTerminal && (s.showIcon || s.showBranch)",
+    "to": "hasHead: s.showIcon || s.showBranch",
+    "why": "outside the terminal the branch is not shown"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{s.showIcon && s.icon !== '' && ",
+    "to": "{s.showIcon && ",
+    "why": "an icon left empty shows nothing"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{s.showBranch && <Text color={s.branchColor}>{found.branch}</Text>}",
+    "to": "{<Text color={s.branchColor}>{found.branch}</Text>}",
+    "why": "the branch hides when the setting says so"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s.iconColor}>",
+    "to": "<Text color={s.branchColor}>",
+    "why": "the icon takes its own color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s.branchColor}>{found.branch}</Text>",
+    "to": "<Text color={s.iconColor}>{found.branch}</Text>",
+    "why": "the branch takes its own color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isTerminal && (at > 0 || hasHead)",
+    "to": "isTerminal && at > 0",
+    "why": "the parts after the branch are led by a dot"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isTerminal && (at > 0 || hasHead)",
+    "to": "isTerminal",
+    "why": "the first part has no dot where there is no branch"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isTerminal && (at > 0 || hasHead)",
+    "to": "at > 0 || hasHead",
+    "why": "outside the terminal the parts are not told apart by dots"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isTerminal && <Button key=\"bar-git-settings\"",
+    "to": "{<Button key=\"bar-git-settings\"",
+    "why": "outside the terminal there is no ⚙"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{s.showFiles && <Text color={s.mutedColor}>{TEXT.files(found.dirty)}</Text>}",
+    "to": "{<Text color={s.mutedColor}>{TEXT.files(found.dirty)}</Text>}",
+    "why": "the files hide when the setting says so"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s.mutedColor}>{TEXT.files(found.dirty)}</Text>",
+    "to": "<Text color={s.addedColor}>{TEXT.files(found.dirty)}</Text>",
+    "why": "the files take the secondary color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s.addedColor}>",
+    "to": "<Text color={s.removedColor}>",
+    "why": "the lines added take their own color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s.removedColor}> -{found.removed}</Text>",
+    "to": "<Text color={s.addedColor}> -{found.removed}</Text>",
+    "why": "the lines removed take their own color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text key=\"ahead\" color={s.mutedColor}>",
+    "to": "<Text key=\"ahead\" color={s.addedColor}>",
+    "why": "the commits not pushed take the secondary color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text key={`sep.${at}`} color={s.mutedColor}>",
+    "to": "<Text key={`sep.${at}`} color={s.addedColor}>",
+    "why": "the dots take the secondary color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isChecked ? '■' : '□'} {label}",
+    "to": "{isChecked ? '□' : '■'} {label}",
+    "why": "a switch on is a full square"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "dimColor={!isChecked}",
+    "to": "dimColor={isChecked}",
+    "why": "a switch off is dim"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "to": "{o.hasProject && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "why": "the project's settings are said to be unused only when they are"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "to": "{o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "why": "a project with no settings of its own says nothing of them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.isChanged && <Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "to": "{!o.isChanged && <Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "why": "the pane says the changes are unsaved"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const text = value.trim()",
+    "to": "const text = value",
+    "why": "a text typed with spaces around is trimmed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (isRefused) {",
+    "to": "if (false) {",
+    "why": "a text that will not do is refused with a toast"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "backgroundColor={e.surface === 'terminal' ? 'subtle' : undefined}",
+    "to": "backgroundColor=\"subtle\"",
+    "why": "only the terminal marks a field with a ground"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "backgroundColor={e.surface === 'terminal' ? 'subtle' : undefined}",
+    "to": "backgroundColor={undefined}",
+    "why": "the terminal marks a field with a ground"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "variant={o.isChanged ? 'primary' : 'secondary'}",
+    "to": "variant=\"secondary\"",
+    "why": "saving is the main button while changes are unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s[key]}>■</Text>",
+    "to": "<Text>■</Text>",
+    "why": "each color field shows its swatch"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a failure that is an Error says its message"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "failure instanceof Error ? failure.message : ''",
+    "why": "a failure that is not an Error says what it is"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "return { text, isRefused: !isValid(text) }",
+    "to": "return { text, isRefused: !isValid(value) }",
+    "why": "a text typed is judged trimmed"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "return { text, isRefused: !isValid(text) }",
+    "to": "return { text, isRefused: isValid(text) }",
+    "why": "a text the field cannot hold is refused"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "?? ''\n",
+    "to": "?? 'x'\n",
+    "why": "a status with no branch line has no branch"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "(\\w{7})",
+    "to": "(\\w{8})",
+    "why": "a detached head is the first seven characters of the commit"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "added: isCounted ? sum(0) : null",
+    "to": "added: isCounted ? sum(1) : null",
+    "why": "the first column of the lines is the lines added"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "removed: isCounted ? sum(1) : null",
+    "to": "removed: isCounted ? sum(0) : null",
+    "why": "the second column of the lines is the lines removed"
+  },
+  {
+    "file": "hooks/repo.ts",
+    "from": "ahead: Number(unpushed?.stdout.trim()) || 0",
+    "to": "ahead: Number(unpushed?.stdout.trim())",
+    "why": "commits that could not be counted are 0"
+  },
+  {
+    "file": "hooks/row.ts",
+    "from": "return command === undefined ? undefined : { command, args }",
+    "to": "return { command: command as string, args }",
+    "why": "a text that is no slash command is a prompt"
+  }
+]

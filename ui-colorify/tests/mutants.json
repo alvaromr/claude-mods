@@ -1,0 +1,320 @@
+[
+  {
+    "file": "hooks/parts.ts",
+    "from": "const marker = fence === undefined ? MARKER.exec(line) : null",
+    "to": "const marker = MARKER.exec(line)",
+    "why": "an alert inside a code fence stays as written"
+  },
+  {
+    "file": "hooks/parts.ts",
+    "from": "const heading = fence === undefined ? HEADING.exec(line) : null",
+    "to": "const heading = HEADING.exec(line)",
+    "why": "a heading inside a code fence stays as written"
+  },
+  {
+    "file": "hooks/parts.ts",
+    "from": "fence = fence === undefined ? opened : fence === opened ? undefined : fence",
+    "to": "fence = fence === undefined ? opened : undefined",
+    "why": "a code fence is closed only by the same fence"
+  },
+  {
+    "file": "hooks/parts.ts",
+    "from": "const HEADING = /^ {0,3}(#{1,6})\\s+(.*?)(?:\\s+#+)?\\s*$/",
+    "to": "const HEADING = /^ {0,3}(#{1,6})\\s+(.*?)\\s*$/",
+    "why": "a heading's closing hashes are not part of its title"
+  },
+  {
+    "file": "hooks/parts.ts",
+    "from": "\\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\\]\\s*$/i",
+    "to": "\\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\\].*$/i",
+    "why": "a marker with text on its line is no alert"
+  },
+  {
+    "file": "hooks/parts.ts",
+    "from": "    if (fence === undefined && QUOTED.test(line)) {",
+    "to": "    if (false) {",
+    "why": "a quote without a marker is framed"
+  },
+  {
+    "file": "hooks/parts.ts",
+    "from": "title.replace(/\\*\\*|__|`/g, '')",
+    "to": "title",
+    "why": "a heading's code and bold marks are taken off"
+  },
+  {
+    "file": "hooks/parts.ts",
+    "from": "'#'.repeat(part.heading)",
+    "to": "'#'",
+    "why": "a heading turned off goes beneath at its own level"
+  },
+  {
+    "file": "hooks/parts.ts",
+    "from": "...part.body.split('\\n').map(line => `> ${line}`),",
+    "to": "...part.body.split('\\n'),",
+    "why": "an alert turned off goes beneath with every line quoted"
+  },
+  {
+    "file": "hooks/parts.ts",
+    "from": "...(part.kind === 'QUOTE' ? [] : [`> [!${part.kind}]`]),",
+    "to": "",
+    "why": "an alert turned off goes beneath with its marker"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "surfaces.includes('terminal')",
+    "to": "true",
+    "why": "the alerts are taught only where a terminal draws them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (!teachesAlerts(e.surfaces) || !(await ready($)).on) {",
+    "to": "if (!teachesAlerts(e.surfaces)) {",
+    "why": "the mod off teaches no alert"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "surface === 'terminal' && !isSummary",
+    "to": "surface === 'terminal'",
+    "why": "a summary is left as Claude Code draws it"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "surface === 'terminal' && !isSummary",
+    "to": "!isSummary",
+    "why": "only the terminal's replies are drawn"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "'heading' in part && s.headings.on",
+    "to": "'heading' in part",
+    "why": "headings turned off are drawn as Claude Code draws them"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "'kind' in part && s.looks[part.kind].on",
+    "to": "'kind' in part",
+    "why": "an alert turned off is drawn as Claude Code draws a quote"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "s.on && parts.some(",
+    "to": "parts.some(",
+    "why": "the mod off draws nothing of a reply"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "(isFirstOfReply ? BULLET : 0)",
+    "to": "0",
+    "why": "what follows a reply's first block lines up past its bullet"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "viewport?.columns ?? COLUMNS",
+    "to": "viewport?.columns ?? 120",
+    "why": "a row is eighty columns wide where the surface tells none"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "(origin === 'composer' || origin === 'bridge')",
+    "to": "true",
+    "why": "only the person's own prompts are framed"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "s.on && surface === 'terminal' && ",
+    "to": "surface === 'terminal' && ",
+    "why": "the mod off frames no prompt"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "s.on && surface === 'terminal' && ",
+    "to": "s.on && ",
+    "why": "only the terminal's prompts are framed"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "s.prompts.frame !== 'normal' && ",
+    "to": "",
+    "why": "a prompt set to normal is drawn as Claude Code draws it"
+  },
+  {
+    "file": "hooks/drawing.ts",
+    "from": "panes.some(pane => pane.id === id)",
+    "to": "panes.length > 0",
+    "why": "the button closes the pane when it is up and opens it when it is not"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const columns = columnsOf(e.viewport) - indent",
+    "to": "const columns = columnsOf(e.viewport)",
+    "why": "an alert's lines stop at the row's edge past the bullet"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s.on ? 'success' : 'inactive'}>",
+    "to": "<Text color=\"success\">",
+    "why": "the button's dot is gray while the mod is off"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "isTooLong: title.length > LONGEST_TITLE",
+    "to": "isTooLong: false",
+    "why": "a title past 30 characters is refused"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const LONGEST_TITLE = 30",
+    "to": "const LONGEST_TITLE = 31",
+    "why": "a title of exactly 30 characters is the longest taken"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const title = text.trim()",
+    "to": "const title = text",
+    "why": "a title is taken without the spaces around it"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void copyText($, part.body, e.surface)}",
+    "to": "onPress={() => void copyText($, e.props.text, e.surface)}",
+    "why": "the ⧉ copies the alert's text alone, without its marker"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "  if ((await read($, origin)).isChanged) {",
+    "to": "  if (false) {",
+    "why": "a reload keeps the session's unsaved changes"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "frame: oneOf(ALERT_FRAMES, look.frame, fallback.frame),",
+    "to": "frame: look.frame as AlertFrame,",
+    "why": "a saved frame out of its options takes its default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "frame: oneOf(PROMPT_FRAMES, prompts.frame, DEFAULTS.prompts.frame),",
+    "to": "frame: prompts.frame as PromptFrame,",
+    "why": "a saved prompt frame out of its options takes its default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(typeof value === 'boolean' ? value : fallback)",
+    "to": "(value as boolean)",
+    "why": "a saved switch of another type takes its default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(typeof value === 'string' ? value : fallback)",
+    "to": "(value as string)",
+    "why": "a saved colour or title of another type takes its default"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "const project = key === undefined ? undefined : await $.store.get(key)",
+    "to": "const project = undefined",
+    "why": "a project's own settings win over the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults'",
+    "to": "project !== undefined ? 'project' : 'defaults'",
+    "why": "with no project settings, the global ones are the session's"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "root === null ? undefined : `settings:${root}`",
+    "to": "root === null ? undefined : 'settings'",
+    "why": "a project's settings are kept apart from the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "JSON.stringify(now) !== JSON.stringify(saved)",
+    "to": "false",
+    "why": "a session that changed its settings is told so"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject: now.hasProject || where === 'project'",
+    "to": "hasProject: where === 'project'",
+    "why": "saving as global keeps what is known of the project's own settings"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject && source !== 'project'",
+    "to": "hasProject",
+    "why": "the pane says the project has settings of its own only when the session did not start from them"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "{ ...now.looks[kind], ...patch }",
+    "to": "{ ...patch }",
+    "why": "changing one field of an alert keeps its other fields"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "TEXT.colors[color] ?? TEXT.softColors[color] ?? color",
+    "to": "TEXT.colors[color] ?? color",
+    "why": "a prompt's soft colours are named in the person's words"
+  },
+  {
+    "file": "hooks/rule.ts",
+    "from": "Math.max(1, columns)",
+    "to": "columns",
+    "why": "a line is at least one character wide"
+  },
+  {
+    "file": "hooks/rule.ts",
+    "from": "dashed ? '╌' : '─'",
+    "to": "'─'",
+    "why": "a dashed line is drawn with dashes"
+  },
+  {
+    "file": "hooks/rule.ts",
+    "from": "wrap: 'truncate-end'",
+    "to": "wrap: 'wrap'",
+    "why": "a line is cut at the row's edge rather than wrapped"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "const SLOT = /^slot:(\\d+)(?:\\.(\\d+))?:/",
+    "to": "const SLOT = /slot:(\\d+)(?:\\.(\\d+))?:/",
+    "why": "only a key that starts with slot: is a slot"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "for (const item of [...taken, own]) {",
+    "to": "for (const item of [...taken]) {",
+    "why": "the mod's own button is laid with the other mods' slots"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": ".sort(([a], [b]) => a - b)",
+    "to": ".sort(() => 0)",
+    "why": "the slot rows are laid in their numbers' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "items.sort((a, b) => a.place - b.place)",
+    "to": "items",
+    "why": "the slots of a row are laid in their places' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "place === undefined ? Infinity : Number(place)",
+    "to": "place === undefined ? 0 : Number(place)",
+    "why": "a slot with no place goes after the placed ones"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "kept.length === 0 ? undefined : ",
+    "to": "",
+    "why": "a box the slots leave empty is taken out with them"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a failure says its message, not its name"
+  }
+]

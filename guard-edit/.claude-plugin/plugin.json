@@ -1,0 +1,6 @@
+{
+  "name": "guard-edit",
+  "version": "0.1.2",
+  "description": "Denies Bash commands that write a file of a git project (sed -i, redirections, tee, scripts that write files, cp or mv over a file): such edits go through Edit or Write, so they show their diff and /rewind can undo them.",
+  "author": { "name": "alvaro.martin" }
+}

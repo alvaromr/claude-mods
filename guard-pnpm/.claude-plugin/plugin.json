@@ -1,0 +1,6 @@
+{
+  "name": "guard-pnpm",
+  "version": "0.1.0",
+  "description": "Denies Bash commands that run npm, npx or yarn: pnpm only.",
+  "author": { "name": "alvaro.martin" }
+}

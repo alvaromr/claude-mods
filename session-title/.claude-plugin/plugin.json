@@ -1,0 +1,7 @@
+{
+  "name": "session-title",
+  "version": "0.1.2",
+  "description": "Titles a session that has no name yet with a short Spanish summary of your own first prompts, and again once there are three of them.",
+  "author": { "name": "alvaro.martin" },
+  "types": "./types/index.d.ts"
+}

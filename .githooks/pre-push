@@ -1,0 +1,13 @@
+#!/bin/sh
+# Runs every mod's mutants, which the pre-commit hook leaves out as they take
+# minutes, and audits the dependencies, before every push; `pnpm install`
+# points git at this folder.
+set -eu
+cd "$(git rev-parse --show-toplevel)"
+
+for list in */tests/mutants.json; do
+  [ -f "$list" ] || continue
+  node scripts/mutate.mjs "${list%%/*}"
+done
+
+exec pnpm audit

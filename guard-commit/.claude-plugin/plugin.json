@@ -1,0 +1,6 @@
+{
+  "name": "guard-commit",
+  "version": "0.1.0",
+  "description": "Denies Bash commands that attribute a commit or PR to Claude, or that sign one.",
+  "author": { "name": "alvaro.martin" }
+}

@@ -1,0 +1,110 @@
+[
+  {
+    "file": "hooks/register.ts",
+    "from": "    if (e.isInteractive) {",
+    "to": "    if (true) {",
+    "why": "a headless session does not start the pet"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "pet($, 'start').then(",
+    "to": "pet($, 'open').then(",
+    "why": "a starting session only starts the pet, which leaves it closed when its person quit it"
+  },
+  {
+    "file": "hooks/launch.ts",
+    "from": "exitCode === 0 ? undefined",
+    "to": "false ? undefined",
+    "why": "a pet that fails to open as the session starts is said"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "(error: unknown) => {\n          $.ui.log(TEXT.openFailedLog(String(error)))\n        },",
+    "to": "() => {},",
+    "why": "a launcher that cannot run at the start is said"
+  },
+  {
+    "file": "hooks/launch.ts",
+    "from": "TEXT.openFailedLog(stderr.trim())",
+    "to": "TEXT.openFailedLog(stderr)",
+    "why": "the launcher's complaint is said trimmed"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "    } catch (error) {\n      $.ui.log(TEXT.registerFailedLog(",
+    "to": "    } catch (error) {\n      throw error\n      $.ui.log(TEXT.registerFailedLog(",
+    "why": "a command that cannot be registered does not keep the pet from opening"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "name: 'pet',",
+    "to": "name: 'mascota',",
+    "why": "the command is /pet"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "{ command: 'pet' }",
+    "to": "{ command: 'mascota' }",
+    "why": "/pet runs the pet's launcher"
+  },
+  {
+    "file": "hooks/launch.ts",
+    "from": "args.trim() === TEXT.quit",
+    "to": "args === TEXT.quit",
+    "why": "/pet salir closes it, whatever the spaces around"
+  },
+  {
+    "file": "hooks/launch.ts",
+    "from": "args.trim() === TEXT.quit ? 'quit' : 'open'",
+    "to": "'open'",
+    "why": "/pet salir closes the pet"
+  },
+  {
+    "file": "hooks/launch.ts",
+    "from": "args.trim() === TEXT.quit ? 'quit' : 'open'",
+    "to": "'quit'",
+    "why": "/pet opens the pet"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "const action = actionOf(e.args)",
+    "to": "const action = actionOf('')",
+    "why": "/pet asks the launcher what its person typed"
+  },
+  {
+    "file": "hooks/launch.ts",
+    "from": "  if (exitCode !== 0) {\n    return TEXT.runFailed(",
+    "to": "  if (false) {\n    return TEXT.runFailed(",
+    "why": "a pet that fails to open or close says why"
+  },
+  {
+    "file": "hooks/launch.ts",
+    "from": "TEXT.runFailed(isQuit, stderr.trim())",
+    "to": "TEXT.runFailed(!isQuit, stderr.trim())",
+    "why": "the failure says whether opening or closing failed"
+  },
+  {
+    "file": "hooks/launch.ts",
+    "from": "return isQuit ? TEXT.closed : TEXT.opened",
+    "to": "return isQuit ? TEXT.opened : TEXT.closed",
+    "why": "the command says whether the pet opened or closed"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "stderr: reasonOf(error) }))",
+    "to": "stderr: '' }))",
+    "why": "a launcher that cannot run at all says why"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a failure says its message, not its name"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "{ timeoutMs: 180_000 }",
+    "to": "{ timeoutMs: 1_000 }",
+    "why": "the first run has time to compile the pet"
+  }
+]

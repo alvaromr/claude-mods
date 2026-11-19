@@ -1,0 +1,2240 @@
+[
+  {
+    "file": "hooks/calls.ts",
+    "from": "const EDITS = new Set(['Edit', 'Write'])",
+    "to": "const EDITS = new Set(['Edit'])",
+    "why": "a Write is an edit of its span"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "CALLS.has(tool) || tool.startsWith('mcp__') ? ('calls' as const)",
+    "to": "CALLS.has(tool) ? ('calls' as const)",
+    "why": "an MCP tool's call joins its span"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "  'Skill',\n  'TaskStop',",
+    "to": "  'TaskStop',",
+    "why": "a skill loaded joins its span"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "const ENDINGS = new Set(['completed', 'failed', 'killed'])",
+    "to": "const ENDINGS = new Set(['completed', 'failed'])",
+    "why": "a task killed ends with a notice of its span"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "isErrored: status === 'failed',",
+    "to": "isErrored: false,",
+    "why": "the notice of a task that failed is marked failed"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "isInterrupted: status === 'killed',",
+    "to": "isInterrupted: false,",
+    "why": "the notice of a task killed is marked stopped"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "?.subagent_type === 'web-fetch') {",
+    "to": "?.subagent_type !== 'web-fetch') {",
+    "why": "a web-fetch agent stands in for WebFetch"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "{ is: tool => tool === 'Grep' || tool === 'Glob', verb: 'searched for ', noun: 'pattern' },",
+    "to": "{ is: tool => tool === 'Grep', verb: 'searched for ', noun: 'pattern' },",
+    "why": "a glob is counted among the patterns searched"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "{ is: tool => tool === 'WebSearch' || tool === 'WebFetch', verb: '', noun: 'web lookup' },",
+    "to": "{ is: tool => tool === 'WebSearch', verb: '', noun: 'web lookup' },",
+    "why": "a fetch is counted among the web lookups"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "{ is: tool => CHECKS.has(tool), verb: 'checked ', noun: 'task' },",
+    "to": "{ is: tool => false, verb: 'checked ', noun: 'task' },",
+    "why": "the calls that look at tasks are counted as checked"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "const CHECKS = new Set(['TaskOutput', 'TaskList', 'TaskGet', 'CronList'])",
+    "to": "const CHECKS = new Set(['TaskOutput', 'TaskList', 'TaskGet'])",
+    "why": "a look at the cron jobs is counted as a task checked"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "tool.startsWith('mcp__') && !tool.startsWith(BROWSER), verb: '', noun: 'MCP call' },",
+    "to": "tool.startsWith('mcp__'), verb: '', noun: 'MCP call' },",
+    "why": "a browser action is not counted as an MCP call too"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": ".filter(({ n }) => n > 0)",
+    "to": ".filter(({ n }) => n >= 0)",
+    "why": "a kind with no call is left out of the words"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "`${verb}${n} ${noun}${n === 1 ? '' : 's'}`",
+    "to": "`${verb}${n} ${noun}s`",
+    "why": "one call is counted in the singular"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "return text.charAt(0).toUpperCase() + text.slice(1)",
+    "to": "return text",
+    "why": "the words of the calls start with a capital"
+  },
+  {
+    "file": "hooks/cells.ts",
+    "from": "isIn(NO_CELL) ? 0 :",
+    "to": "isIn(NO_CELL) ? 1 :",
+    "why": "a combining mark takes no cell"
+  },
+  {
+    "file": "hooks/cells.ts",
+    "from": "isIn(TWO_CELLS) ? 2 : 1",
+    "to": "isIn(TWO_CELLS) ? 1 : 1",
+    "why": "a wide character or an emoji takes two cells"
+  },
+  {
+    "file": "hooks/cells.ts",
+    "from": "if (widthOf(text) <= room) {",
+    "to": "if (widthOf(text) < room) {",
+    "why": "a text that fits its room exactly is not clipped"
+  },
+  {
+    "file": "hooks/cells.ts",
+    "from": "if (used > room - 1) {",
+    "to": "if (used > room) {",
+    "why": "a clipped text leaves a cell for its ellipsis"
+  },
+  {
+    "file": "hooks/cells.ts",
+    "from": "    if (used > room) {\n      break\n    }\n\n    kept = char + kept",
+    "to": "    if (used >= room) {\n      break\n    }\n\n    kept = char + kept",
+    "why": "a text cut from the left fills its room"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "[/doesn't want to proceed|was rejected/, TEXT.reasons.rejected],",
+    "to": "[/was rejected/, TEXT.reasons.rejected],",
+    "why": "an edit the person declined is said rejected"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "[/denied|no verdict/, TEXT.reasons.denied],",
+    "to": "[/denied/, TEXT.reasons.denied],",
+    "why": "an edit with no verdict is said denied"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "[/has not been read yet/, TEXT.reasons.notRead],",
+    "to": "[/has not been read/, TEXT.reasons.notRead],",
+    "why": "an edit of a file not read first says so"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "[/not found in file/, TEXT.reasons.notFound],",
+    "to": "[/not found/, TEXT.reasons.notFound],",
+    "why": "an edit whose text is not in the file says so"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "[/modified since read/, TEXT.reasons.changedSinceRead],",
+    "to": "[/modified/, TEXT.reasons.changedSinceRead],",
+    "why": "an edit of a file changed since its read says so"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "[/does not exist/, TEXT.reasons.missing],",
+    "to": "[/exist/, TEXT.reasons.missing],",
+    "why": "an edit of a missing file says so"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "[/No changes to make/, TEXT.reasons.noChanges],",
+    "to": "[/No changes/, TEXT.reasons.noChanges],",
+    "why": "an edit that changes nothing says so"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "[/Found \\d+ matches/, TEXT.reasons.severalMatches],",
+    "to": "[/Found \\d+ match/, TEXT.reasons.severalMatches],",
+    "why": "an edit whose text matches several times says so"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "      .replace(/<\\/?tool_use_error>/g, '')",
+    "to": "",
+    "why": "an unknown failure's cause is shown without the engine's error tags"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "      .replace(/\\s+/g, ' ')\n      .trim(),\n    40,",
+    "to": "      .trim(),\n    40,",
+    "why": "an unknown failure's cause is shown on one line"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "    40,\n  ) ||",
+    "to": "    400,\n  ) ||",
+    "why": "an unknown failure's cause is cut to a few words"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "    TEXT.reasons.unknown)",
+    "to": "    '')",
+    "why": "an edit that failed with no cause is said failed"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "[...text.matchAll(REMINDER)].flatMap(([, reminder = '']) =>",
+    "to": "[text].flatMap(reminder =>",
+    "why": "a prompt that quotes a task notification is not taken for one"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "const INTERRUPTION = /^\\[Request interrupted by user/",
+    "to": "const INTERRUPTION = /\\[Request interrupted by user/",
+    "why": "only a text that starts so is the interruption"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "failed.forEach(id => stopped.add(id))",
+    "to": "failed.forEach(() => undefined)",
+    "why": "the calls an interruption cut are marked stopped"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "    if (role === 'assistant') {\n      failed = []\n    }",
+    "to": "",
+    "why": "only the failures since the model last spoke are cut by an interruption"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "if (block.is_error === true) {\n          failed.push(id)",
+    "to": "if (true) {\n          failed.push(id)",
+    "why": "a result that succeeded is not marked stopped by an interruption"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "answers.set(id, block.is_error === true)",
+    "to": "answers.set(id, false)",
+    "why": "a call whose result is an error is marked errored"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "part?.type === 'document'",
+    "to": "part?.type === 'file'",
+    "why": "a PDF a read took in is told apart"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "part?.type === 'tool_reference'",
+    "to": "false",
+    "why": "the tools a search loaded are its result"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "task !== '' && isEnding(status) && notified.get(task) === 1",
+    "to": "task !== '' && isEnding(status) && notified.get(task) !== 0",
+    "why": "a task that notifies more than once leaves its notices to the engine"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "task !== '' && isEnding(status) &&",
+    "to": "task !== '' &&",
+    "why": "a notice of a task that has not ended is no call"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "task !== '' && isEnding(status)",
+    "to": "isEnding(status)",
+    "why": "a notice that names no task is no call"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "if (text.replace(REMINDER, '').trim() !== '') {",
+    "to": "if (false) {",
+    "why": "a prompt typed beside a notice ends the span"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "if (!hasNotice && !blocks.some(block => block.type === 'tool_result')) {",
+    "to": "if (!hasNotice) {",
+    "why": "the results the calls get back do not end the span"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "if (!hasNotice && !blocks.some(block => block.type === 'tool_result')) {",
+    "to": "if (!blocks.some(block => block.type === 'tool_result')) {",
+    "why": "a notice that a task ended does not end the span"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "block.type === 'tool_use' || (block.type === 'text' && String(block.text).trim() !== '')",
+    "to": "block.type === 'tool_use'",
+    "why": "text from the model ends the span"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "} else if (block.type === 'tool_use' ||",
+    "to": "} else if (block.type === 'tool_use' && false ||",
+    "why": "a tool of another kind ends the span"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "isRunning: !answers.has(id),",
+    "to": "isRunning: false,",
+    "why": "a call with no result is running"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "isInterrupted: stopped.has(id),",
+    "to": "isInterrupted: false,",
+    "why": "an interrupted call is stopped"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "...(answers.get(id) === true ? { failure: reasonOf(outputs.get(id) ?? '') } : {}),",
+    "to": "",
+    "why": "an edit that failed carries why"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "if (type === 'create' && typeof content === 'string') {",
+    "to": "if (false) {",
+    "why": "a created file's hunk is its lines, all added"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "content.replace(/\\n$/, '')",
+    "to": "content",
+    "why": "a created file's last newline is no line"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "typeof file.filePath === 'string' && Array.isArray(file.hunks)",
+    "to": "Array.isArray(file.hunks)",
+    "why": "a file a command changed with no path is left out"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "typeof file.filePath === 'string' && Array.isArray(file.hunks)",
+    "to": "typeof file.filePath === 'string'",
+    "why": "a file a command changed with no hunks is left out"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "bytes < 1024 * 1024 ?",
+    "to": "bytes < 1024 ?",
+    "why": "a size under a megabyte is in kilobytes"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "`${(bytes / 1024 / 1024).toFixed(1)} MB`",
+    "to": "`${Math.round(bytes / 1024 / 1024)} MB`",
+    "why": "a size in megabytes has a decimal"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "typeof width === 'number' && typeof height === 'number' ? [`${width}×${height}`] : []",
+    "to": "[`${width}×${height}`]",
+    "why": "an image with no dimensions tells none"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "typeof file?.originalSize === 'number' ? [kilobytes(file.originalSize)] : []",
+    "to": "[kilobytes(Number(file?.originalSize))]",
+    "why": "a read with no size tells none"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "? [TEXT.readPdf, ...size].join(' · ')",
+    "to": "? [TEXT.readPdf, ...box, ...size].join(' · ')",
+    "why": "a PDF read tells its size, no dimensions"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "const minus = ` −${removed(hunks)}${isKnown ? '' : ' ?'}`",
+    "to": "const minus = ` −${removed(hunks)}`",
+    "why": "removed lines not all known are marked with a question mark"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "const added = (hunks: readonly Hunk[]) => hunks.flatMap(hunk => hunk.lines).filter(line => line.startsWith('+')).length",
+    "to": "const added = (hunks: readonly Hunk[]) => hunks.flatMap(hunk => hunk.lines).filter(line => !line.startsWith('-')).length",
+    "why": "added lines are those that start with a plus"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "if (diff.length + joined + line.length > TEXT_LENGTH) {",
+    "to": "if (diff.length + joined + line.length > TEXT_LENGTH * 10) {",
+    "why": "a diff too long to draw is cut at a line"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "    if (lines.length < hunk.lines.length) {\n      break\n    }",
+    "to": "",
+    "why": "no hunk follows one that was cut"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "const old = lines.filter(line => !line.startsWith('+')).length",
+    "to": "const old = lines.length",
+    "why": "a cut hunk's header counts the old lines it kept"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "const now = lines.filter(line => !line.startsWith('-')).length",
+    "to": "const now = lines.length",
+    "why": "a cut hunk's header counts the new lines it kept"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "    if (lines.length === 0) {\n      break\n    }",
+    "to": "",
+    "why": "a hunk of which no line fits draws no header"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "room -= line.length + 1",
+    "to": "room -= 1",
+    "why": "the lines that fit a drawing are counted by their length"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "Math.round(ms / 100) < 600 ?",
+    "to": "Math.round(ms / 1000) < 60 ?",
+    "why": "a time that rounds to a minute is not told in seconds"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "`${Math.floor(whole / 60)}m ${whole % 60}s`",
+    "to": "`${Math.floor(whole / 60)}m ${whole}s`",
+    "why": "a time over a minute is told in minutes and seconds"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "typeof command === 'string'\n      ? command",
+    "to": "typeof command === 'string'\n      ? ''",
+    "why": "a call's subject is its command"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": ": typeof file === 'string'\n        ? file.split('/').pop()",
+    "to": ": typeof file === 'string'\n        ? file",
+    "why": "a call's subject is its file's name"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "Object.values(rest).find(value => typeof value === 'string')",
+    "to": "undefined",
+    "why": "a call with neither command nor file has its first text for subject"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "text.replace(/\\s+/g, ' ').trim()",
+    "to": "text",
+    "why": "a subject is on one line"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "path.startsWith(cwd) ? path.slice(cwd.length) : path",
+    "to": "path",
+    "why": "a path under the session's folder is shown from it"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "const PATH_LENGTH = 60",
+    "to": "const PATH_LENGTH = 6000",
+    "why": "a long path keeps its end"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "const files = [...new Set(shown)]",
+    "to": "const files = shown",
+    "why": "the edits of one file name it once"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "files.length === 1 ? (files[0] ?? '') : TEXT.files(files.length)",
+    "to": "TEXT.files(files.length)",
+    "why": "a single file is named in the edits' words"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "span.calls.length > 0 && span.isTimed ?",
+    "to": "span.calls.length > 0 ?",
+    "why": "a span with no time tells none"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "span.calls.length > 0 && span.isTimed ?",
+    "to": "span.isTimed ?",
+    "why": "a span of edits alone tells no time"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "span.failed === 0 ? '' : `${words === '' ? '' : ' · '}${TEXT.failed(span.failed)}`",
+    "to": "`${words === '' ? '' : ' · '}${TEXT.failed(span.failed)}`",
+    "why": "a span with no failed edit counts none"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "`${words === '' ? '' : ' · '}${TEXT.failed(span.failed)}`",
+    "to": "` · ${TEXT.failed(span.failed)}`",
+    "why": "failed edits alone are not led by a separator"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "span.isOpen ? '▾' : '▸'",
+    "to": "span.isOpen ? '▸' : '▾'",
+    "why": "the arrow shows whether the span is unfolded"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "if (words === '' && failure === '') {",
+    "to": "if (words === '') {",
+    "why": "a span of failed edits alone is drawn"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "span.files.every(file => file.isKnown),",
+    "to": "span.files.some(file => file.isKnown),",
+    "why": "the counts are marked unknown when some hunks are"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "widthOf(words) + (span.done > 0 ? counts.length : 0)",
+    "to": "widthOf(words)",
+    "why": "the line's length counts the edits' counts"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "span.calls.length > 0 || span.hasEditBars",
+    "to": "span.calls.length > 0",
+    "why": "files' rows with bars are as wide as the calls' rows"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "widthOf(`✗ ${file.shown}`) + 1 + widthOf(file.failure)",
+    "to": "widthOf(`✗ ${file.shown}`) + 1",
+    "why": "a failed file's row is as wide as its cause"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "widthOf(`± ${file.shown} ▸`) + countsOf(file.hunks, file.isKnown).length",
+    "to": "widthOf(`± ${file.shown} ▸`)",
+    "why": "a file's row is as wide as its counts"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "calls: commands === 'summary',",
+    "to": "calls: commands !== 'hidden',",
+    "why": "the commands are in the line only at the grouped level"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "skills: skills === 'summary',",
+    "to": "skills: skills !== 'hidden',",
+    "why": "the skills are in the line only at the grouped level"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "edits: diffs === 'summary',",
+    "to": "edits: diffs !== 'hidden',",
+    "why": "the edits are in the line only at the grouped level"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "changes: diffs === 'summary' && commands !== 'full',",
+    "to": "changes: diffs === 'summary',",
+    "why": "the files a command changed are the engine's where its commands are full"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "changes: diffs === 'summary' && commands !== 'full',",
+    "to": "changes: commands !== 'full',",
+    "why": "the files a command changed follow the diffs' level"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "call.tool === 'Skill' ? shown.skills : shown.calls",
+    "to": "shown.calls",
+    "why": "a skill follows the skills' level"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "item.kind === 'calls' && item.call.tool === 'Bash'",
+    "to": "item.kind === 'calls'",
+    "why": "only a command may have changed files"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "isCallShown(item.call, shown) || (shown.changes && isCommand(item)),",
+    "to": "isCallShown(item.call, shown),",
+    "why": "a command hidden still draws the span for the files it changed"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "items: span.items.filter(item => !unfolded.has(idOf(item))),",
+    "to": "items: span.items,",
+    "why": "a run the engine unfolded is left out of the span's line"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "? [fresh.find(own => own.tool_use_id === item.call.tool_use_id) ?? item.call]",
+    "to": "? [item.call]",
+    "why": "a call the drawing gives is taken fresher than the conversation's"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "item.kind === 'calls' && isCallShown(item.call, shown)\n      ? [fresh",
+    "to": "item.kind === 'calls'\n      ? [fresh",
+    "why": "the calls of a hidden kind are not in the line"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "? shown.edits && item.edit.failure === undefined",
+    "to": "? shown.edits",
+    "why": "the result of an edit that failed is not asked for"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "      : shown.changes && isCommand(item)\n        ? [item.call.tool_use_id ?? '']",
+    "to": "      : isCommand(item)\n        ? [item.call.tool_use_id ?? '']",
+    "why": "the result of a command is asked for only when its files count"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "tool === 'Read' && pictures.has(id) && open.includes(`row:${id}`)",
+    "to": "tool === 'Read' && pictures.has(id)",
+    "why": "what an image read took in is asked for once opened"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "tool === 'Read' && pictures.has(id) && open.includes(`row:${id}`)",
+    "to": "pictures.has(id) && open.includes(`row:${id}`)",
+    "why": "only a read is asked for what it took in"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "[{ ...item.edit, hunks: outcomes.get(item.edit.id)?.hunks ?? null, isChange: false }]",
+    "to": "[{ ...item.edit, hunks: outcomes.get(item.edit.id)?.hunks ?? [], isChange: false }]",
+    "why": "an edit whose result is unknown has unknown hunks"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "      : shown.changes && isCommand(item)\n        ? (outcomes",
+    "to": "      : isCommand(item)\n        ? (outcomes",
+    "why": "the files a command changed are left out where they do not count"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "isChange: true,",
+    "to": "isChange: false,",
+    "why": "a file a command changed is told from an edit"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "const isRefused = call.isErrored && timing?.isAsked && !timing.hasRun",
+    "to": "const isRefused = call.isErrored && timing?.isAsked",
+    "why": "a call that ran and failed is not taken for refused"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "const isRefused = call.isErrored && timing?.isAsked && !timing.hasRun",
+    "to": "const isRefused = call.isErrored && !timing?.hasRun",
+    "why": "a call refused by the person's answer is not approved"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "(isRefused ? 'not approved' : undefined)",
+    "to": "undefined",
+    "why": "a call the person did not approve says so"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "? (timing?.ranMs ?? waitedOf(timing)) : 0,",
+    "to": "? waitedOf(timing) : 0,",
+    "why": "a call's time is how long its tool ran, not its approval"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "? (timing?.ranMs ?? waitedOf(timing)) : 0,",
+    "to": "? (timing?.ranMs ?? waitedOf(timing)) : timing?.ranMs,",
+    "why": "a refused call's time is nothing"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "ms: timing?.ranMs ?? waitedOf(timing),",
+    "to": "ms: waitedOf(timing),",
+    "why": "an edit's time is how long it ran, not its approval"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "timing?.startedAt === undefined || timing.endedAt === undefined ? undefined",
+    "to": "timing?.startedAt === undefined ? undefined",
+    "why": "a call not ended has no waited time"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "times.some(time => time.startedAt !== undefined && time.endedAt === undefined)",
+    "to": "times.some(time => time.startedAt !== undefined)",
+    "why": "only what started and did not end is live"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "[] : [time.endedAt ?? now])",
+    "to": "[] : [time.endedAt ?? 0])",
+    "why": "a call still running ends at now on the span's clock"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "isTimed: rows.some(row => row.ms !== undefined || row.call.isRunning)",
+    "to": "isTimed: rows.some(row => row.ms !== undefined)",
+    "why": "a span with a call running is timed"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "|| edits.some(time => time.ms !== undefined),",
+    "to": "|| false,",
+    "why": "a span of edits with times is timed"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "starts.length === 0 ? rows.reduce((sum, row) => sum + (row.ms ?? 0), 0) : Math.max(...ends) - origin",
+    "to": "Math.max(...ends) - origin",
+    "why": "a span with no clock times is the sum of its calls' times"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "starts.length === 0 ? rows.reduce((sum, row) => sum + (row.ms ?? 0), 0) : Math.max(...ends) - origin",
+    "to": "starts.length === 0 ? rows.reduce((sum, row) => sum + (row.ms ?? 0), 0) : Math.max(...ends) - Math.max(...starts)",
+    "why": "a span's time runs from its first start"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "const track = Math.max(total, 1)",
+    "to": "const track = total",
+    "why": "a span of no time still has a track"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "const size = Math.max(1, cellOf(end) - cellOf(ran))",
+    "to": "const size = cellOf(end) - cellOf(ran)",
+    "why": "a tool that ran for a moment draws at least a cell"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "const lead = Math.min(cellOf(ran), cells - size)",
+    "to": "const lead = cellOf(ran)",
+    "why": "a bar never runs past the end of the track"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "first ??= lead",
+    "to": "first = lead",
+    "why": "the wait ends where the row's first tool began"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "if (first !== undefined && before !== undefined) {",
+    "to": "if (first !== undefined) {",
+    "why": "the first row has no wait before it"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "if (last?.mark === mark) {",
+    "to": "if (false) {",
+    "why": "marks alike are one run"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "export const isTall = (rows: number) => rows > TALL",
+    "to": "export const isTall = (rows: number) => rows >= TALL",
+    "why": "a span of exactly fifteen rows is not tall"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "deny === undefined && !call.isRunning && !call.isErrored && !call.isInterrupted",
+    "to": "deny === undefined && !call.isRunning && !call.isInterrupted",
+    "why": "a call that failed is a row of its own"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "deny === undefined && !call.isRunning && !call.isErrored && !call.isInterrupted",
+    "to": "!call.isRunning && !call.isErrored && !call.isInterrupted",
+    "why": "a call refused is a row of its own"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "deny === undefined && !call.isRunning && !call.isErrored && !call.isInterrupted",
+    "to": "deny === undefined && !call.isErrored && !call.isInterrupted",
+    "why": "a call running is a row of its own"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "deny === undefined && !call.isRunning && !call.isErrored && !call.isInterrupted",
+    "to": "deny === undefined && !call.isRunning && !call.isErrored",
+    "why": "a call stopped is a row of its own"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "lastCall?.tool === row.call.tool &&",
+    "to": "",
+    "why": "calls of different tools are not one row"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "subject(lastCall.input) === subject(row.call.input) &&",
+    "to": "",
+    "why": "calls on different inputs are not one row"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "last.rows.every(isPlain) &&",
+    "to": "",
+    "why": "a run with a call failed takes no more calls"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "isPlain(row)\n      ) {",
+    "to": "true\n      ) {",
+    "why": "a call that failed does not join the run before it"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "          !edit.isChange &&\n",
+    "to": "",
+    "why": "a file a command changed is not summed with an edit"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "          edit.failure === undefined &&\n",
+    "to": "",
+    "why": "an edit that failed is a row of its own"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "last.path === edit.path &&",
+    "to": "",
+    "why": "edits of different files are not one row"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "          last.failure === undefined &&\n",
+    "to": "",
+    "why": "an edit does not join a row of a failed one"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "          last.ids.length > 0\n",
+    "to": "          true\n",
+    "why": "an edit does not join the row of a file a command changed"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "last.isKnown &&= edit.hunks !== null",
+    "to": "",
+    "why": "a row of edits not all known has unknown counts"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const wide = room < 50 ? 10 : Math.max(20, Math.floor(room / 3))",
+    "to": "const wide = room < 50 ? 10 : 20",
+    "why": "a wide screen's bar grows with it"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const wide = room < 50 ? 10 : Math.max(20, Math.floor(room / 3))",
+    "to": "const wide = room < 50 ? 20 : Math.max(20, Math.floor(room / 3))",
+    "why": "a narrow screen's bar is shorter"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "STATUS_ROOM >= MIN_LABEL ? wide : 0",
+    "to": "STATUS_ROOM >= 0 ? wide : 0",
+    "why": "a row too narrow for its bar goes without one"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const hasBars = isTimed && cells > 0",
+    "to": "const hasBars = cells > 0",
+    "why": "an untimed span draws no bars"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const labelRoom = Math.max(MIN_LABEL, room - 3 - (cells > 0 ? cells + 1 : 0) - STATUS_ROOM)",
+    "to": "const labelRoom = room - 3 - (cells > 0 ? cells + 1 : 0) - STATUS_ROOM",
+    "why": "a label keeps its least room on any screen"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "      entries.length > 1 &&\n",
+    "to": "",
+    "why": "a file row alone draws no bar"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "entries.some(entry => entry.kind === 'file' && entry.ids.some(id => editTimes.get(id)?.startedAt !== undefined)),",
+    "to": "true,",
+    "why": "file rows draw bars only when some edit has a time"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "rowWidth: 1 + 1 + labelRoom + 1 + (hasBars ? cells + 1 : 0) + STATUS_ROOM,",
+    "to": "rowWidth: 1 + 1 + labelRoom + 1 + STATUS_ROOM,",
+    "why": "the rows' width holds their bar"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "noteRoom: Math.floor(room / 2),",
+    "to": "noteRoom: room,",
+    "why": "a note under a row has half the room"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "rows.filter(row => row.deny !== undefined).length +",
+    "to": "",
+    "why": "the note under a refused call counts as a row"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "(open.includes(`row:${id}`) ? Math.min(length, open.includes(`full:${id}`) ? length : OUTPUT_LINES) + 2 : 0)",
+    "to": "(open.includes(`row:${id}`) ? Math.min(length, OUTPUT_LINES) + 2 : 0)",
+    "why": "a call opened in full counts all its result's lines"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "(open.includes(`row:${id}`) ? Math.min(length, open.includes(`full:${id}`) ? length : OUTPUT_LINES) + 2 : 0)",
+    "to": "(open.includes(`row:${id}`) ? Math.min(length, open.includes(`full:${id}`) ? length : OUTPUT_LINES) : 0)",
+    "why": "a call opened counts its input and its result's note too"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "(open.includes(file.key) ? diffRows(file.hunks) : 0)",
+    "to": "0",
+    "why": "a file opened counts its diff's lines"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "isKnown: some.every(edit => edit.hunks !== null),",
+    "to": "isKnown: true,",
+    "why": "a file with an edit of unknown hunks has unknown counts"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "hunks: some.flatMap(edit => edit.hunks ?? []),",
+    "to": "hunks: (some[0]?.hunks ?? []),",
+    "why": "a file's hunks are all its edits'"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "tone: deny !== undefined ? ('warning' as const) : hasFailed ? ('error' as const) : ('success' as const),",
+    "to": "tone: hasFailed ? ('error' as const) : ('success' as const),",
+    "why": "a refused call's bar is a warning"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const took = isTimedRow ? seconds(group.reduce((sum, row) => sum + (row.ms ?? 0), 0)) : ''",
+    "to": "const took = isTimedRow ? seconds(group[0].ms ?? 0) : ''",
+    "why": "a run's status is the sum of its calls' times"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "? 'denied'",
+    "to": "? 'refused'",
+    "why": "a refused call's status says denied"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "? 'running'",
+    "to": "? 'busy'",
+    "why": "a running call's status says running"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "`${took}${call.isErrored ? ' ✗' : ''}`",
+    "to": "`${took}`",
+    "why": "a call that failed ends in a cross"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const hasFailed = call.isErrored || call.isInterrupted",
+    "to": "const hasFailed = call.isErrored",
+    "why": "a call stopped is drawn as failed"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "call.tool.split('__').pop() ?? call.tool",
+    "to": "call.tool",
+    "why": "an MCP tool's row is named by its tool, not its server"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const times = count > 1 ? ` ×${count}` : ''",
+    "to": "const times = ''",
+    "why": "a run of calls alike says how many"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const isWhole = !isOpen || clipped === whole",
+    "to": "const isWhole = true",
+    "why": "an opened row draws a clipped input whole beneath"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const isWhole = !isOpen || clipped === whole",
+    "to": "const isWhole = clipped === whole",
+    "why": "a closed row draws its input clipped"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const clipped = clip(whole, room - widthOf(name) - 1 - times.length)",
+    "to": "const clipped = clip(whole, room - widthOf(name) - 1)",
+    "why": "the input is clipped to what the name and the count leave"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": ".replace(/<system-reminder>[\\s\\S]*?<\\/system-reminder>/g, '')",
+    "to": "",
+    "why": "the engine's notes for the model are not a call's output"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": ".replace(/\\n+$/, '')",
+    "to": "",
+    "why": "a result's trailing blank lines are not lines"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "? ['Running…']",
+    "to": "? ['']",
+    "why": "a running call's result says running"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "call.tool === 'Read' && !call.isErrored",
+    "to": "call.tool === 'Read'",
+    "why": "a read that failed shows its error"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "`Read ${lines.length} ${lines.length === 1 ? 'line' : 'lines'}`",
+    "to": "`Read ${lines.length} lines`",
+    "why": "a read of one line says line"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": ": (media ?? `Read ${picture}`),",
+    "to": ": `Read ${picture}`,",
+    "why": "a read of an image tells what it took in"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "[picture === undefined ? '(No output)' : `(${picture})`]",
+    "to": "['(No output)']",
+    "why": "a result with no text names the picture it holds"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "lines.join('') === ''",
+    "to": "lines.length === 0",
+    "why": "a result of blank lines says it has no output"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "? fitting(lines.map(text => resultLine(text, width)))",
+    "to": "? lines",
+    "why": "a result asked in full is clipped to the row"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": ": lines.slice(0, OUTPUT_LINES)",
+    "to": ": lines",
+    "why": "a result opened shows its first ten lines"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "rest: call.tool === 'Read' ? 0 : lines.length - said.length",
+    "to": "rest: lines.length - said.length",
+    "why": "a read leaves no lines out"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "LEVELS.find(({ value }) => value === given[key])?.value ?? DEFAULTS[key]",
+    "to": "(given[key] as Level | undefined) ?? DEFAULTS[key]",
+    "why": "a level that is none of the three takes its default"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "isOn: typeof given.isOn === 'boolean' ? given.isOn : DEFAULTS.isOn,",
+    "to": "isOn: Boolean(given.isOn ?? DEFAULTS.isOn),",
+    "why": "a switch of another kind takes its default"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "startsOpen: typeof given.startsOpen === 'boolean' ? given.startsOpen : DEFAULTS.startsOpen,",
+    "to": "startsOpen: Boolean(given.startsOpen ?? DEFAULTS.startsOpen),",
+    "why": "a start of another kind takes its default"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "isOn: true,",
+    "to": "isOn: false,",
+    "why": "the mod starts on"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "startsOpen: false,\n}",
+    "to": "startsOpen: true,\n}",
+    "why": "spans start folded"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "diffs: 'summary',\n  commands",
+    "to": "diffs: 'full',\n  commands",
+    "why": "the diffs start grouped"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "commands: 'summary',\n  skills",
+    "to": "commands: 'full',\n  skills",
+    "why": "the commands start grouped"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "skills: 'summary',\n  startsOpen",
+    "to": "skills: 'full',\n  startsOpen",
+    "why": "the skills start grouped"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: global !== undefined ? 'global' : project !== undefined ? 'project' : 'defaults',",
+    "why": "a project's own settings come before the global ones"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "hasProject: project !== undefined,",
+    "to": "hasProject: false,",
+    "why": "a session says its project has settings of its own"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": ".some(field => now[field] !== saved[field])",
+    "to": ".some(field => field !== 'startsOpen' && now[field] !== saved[field])",
+    "why": "every setting counts as a change unsaved"
+  },
+  {
+    "file": "hooks/footer.ts",
+    "from": "const SLOT = /^slot:(\\d+)(?:\\.(\\d+))?:/",
+    "to": "const SLOT = /slot:(\\d+)(?:\\.(\\d+))?:/",
+    "why": "a key that only contains a slot is no slot"
+  },
+  {
+    "file": "hooks/footer.ts",
+    "from": "if (taken.length === 0) {\n    return { rest: node, taken }",
+    "to": "if (false) {\n    return { rest: node, taken }",
+    "why": "a tree with no slotted element is kept whole"
+  },
+  {
+    "file": "hooks/footer.ts",
+    "from": "rest: kept.length === 0 ? undefined : ({ ...(node as Tree), children: kept } as RenderNode)",
+    "to": "rest: ({ ...(node as Tree), children: kept } as RenderNode)",
+    "why": "a Box a slotted element leaves empty goes with it"
+  },
+  {
+    "file": "hooks/footer.ts",
+    "from": "place: place === undefined ? Infinity : Number(place)",
+    "to": "place: place === undefined ? 0 : Number(place)",
+    "why": "a slot with no place goes last in its row"
+  },
+  {
+    "file": "hooks/footer.ts",
+    "from": ".sort(([a], [b]) => a - b)",
+    "to": "",
+    "why": "the rows are in their numbers' order"
+  },
+  {
+    "file": "hooks/footer.ts",
+    "from": "items.sort((a, b) => a.place - b.place)",
+    "to": "items",
+    "why": "a row's elements are in their places' order"
+  },
+  {
+    "file": "hooks/footer.ts",
+    "from": "children: [...(rest === undefined ? [] : [rest]), ...laid],",
+    "to": "children: [...laid, ...(rest === undefined ? [] : [rest])],",
+    "why": "the shared rows come after the rest of the footer"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "hasJq && (await read($, isOn))",
+    "to": "await read($, isOn)",
+    "why": "without jq every row is the engine's"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "hasJq && (await read($, isOn))",
+    "to": "hasJq",
+    "why": "off, every row is the engine's"
+  },
+  {
+    "file": "hooks/notices.ts",
+    "from": "(exitCode === 0 ? undefined : TEXT.needsJq)",
+    "to": "(exitCode === 0 ? TEXT.needsJq : undefined)",
+    "why": "a missing jq is told to the person"
+  },
+  {
+    "file": "hooks/notices.ts",
+    "from": "(failure: unknown) => TEXT.cannotCheckJq(",
+    "to": "(failure: unknown) => undefined && TEXT.cannotCheckJq(",
+    "why": "a check for jq that cannot run is told"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (missing !== undefined && hasJq) {",
+    "to": "if (missing !== undefined) {",
+    "why": "a missing jq is told once"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    hasJq = false\n    $.ui.status(missing)",
+    "to": "    hasJq = true\n    $.ui.status(missing)",
+    "why": "without jq the rows are not drawn"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await note($, e.tool_use_id, { startedAt: await $.clock.now() })",
+    "to": "await note($, e.tool_use_id, {})",
+    "why": "a tool's start is noted for the timeline"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "): Timing => ({\n  endedAt,",
+    "to": "): Timing => ({",
+    "why": "a tool's end is noted for the timeline"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "...(deny === undefined ? {} : { deny }),",
+    "to": "",
+    "why": "a refusal by the tool is noted with its reason"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "verdict.decision === 'allow'\n    ? undefined\n    : verdict.decision === 'ask'",
+    "to": "verdict.decision === 'ask'",
+    "why": "an allowed call is noted as neither asked nor refused"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "verdict.decision === 'ask'\n      ? { isAsked: true }\n      : { deny: verdict.reason ?? verdict.rule ?? 'not allowed' }",
+    "to": "{ isAsked: true }",
+    "why": "a call refused by the check is noted with its reason"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "verdict.decision === 'ask'\n      ? { isAsked: true }\n      : { deny: verdict.reason ?? verdict.rule ?? 'not allowed' }",
+    "to": "{ deny: verdict.reason ?? verdict.rule ?? 'not allowed' }",
+    "why": "a call the person is asked about is noted as asked"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "{ deny: verdict.reason ?? verdict.rule ?? 'not allowed' }",
+    "to": "{ deny: verdict.reason ?? 'not allowed' }",
+    "why": "a call refused by a rule says the rule"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "{ deny: verdict.reason ?? verdict.rule ?? 'not allowed' }",
+    "to": "{ deny: verdict.rule ?? 'not allowed' }",
+    "why": "a call refused with a reason says the reason"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "{ deny: verdict.reason ?? verdict.rule ?? 'not allowed' }",
+    "to": "{ deny: verdict.reason ?? verdict.rule ?? '' }",
+    "why": "a call refused with no reason says not allowed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await note($, e.tool_use_id, { deny: e.reason })",
+    "to": "await note($, e.tool_use_id, {})",
+    "why": "a call the classic hook denied is noted with why"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "on('classic.PostToolUse', async ($, e, next) => {\n    await note($, e.tool_use_id, { hasRun: true, ranMs: e.duration_ms })",
+    "to": "on('classic.PostToolUse', async ($, e, next) => {\n    await note($, e.tool_use_id, {})",
+    "why": "a tool that ran is noted with how long"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "on('classic.PostToolUseFailure', async ($, e, next) => {\n    await note($, e.tool_use_id, { hasRun: true, ranMs: e.duration_ms })",
+    "to": "on('classic.PostToolUseFailure', async ($, e, next) => {\n    await note($, e.tool_use_id, {})",
+    "why": "a tool that ran and failed is noted with how long"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (e.surface !== 'terminal') {\n      return slotted(beneath, [])",
+    "to": "if (false) {\n      return slotted(beneath, [])",
+    "why": "the footer button is drawn on the terminal only"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (!hasStarted) {\n      hasStarted = true\n      $.clock.after(0, () => void start($))\n    }",
+    "to": "",
+    "why": "a resumed session that draws before its start loads the settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={isActive ? 'success' : 'inactive'}>{isActive ? '●' : '○'}</Text> declutter",
+    "to": "<Text color={isActive ? 'success' : 'inactive'}>●</Text> declutter",
+    "why": "the footer button's dot is hollow while the mod is off"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Box key=\"slot:1.3:ui-declutter\">",
+    "to": "<Box key=\"slot:2.3:ui-declutter\">",
+    "why": "the footer button sits in the first slot row"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Box key=\"slot:1.3:ui-declutter\">",
+    "to": "<Box key=\"slot:1.0:ui-declutter\">",
+    "why": "the footer button comes third in its row"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if ((await $.ui.panes()).some(pane => pane.id === PANE)) {",
+    "to": "if (false) {",
+    "why": "the footer button closes the pane when it is up"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await $.ui.open({ id: PANE, title: TEXT.title })",
+    "to": "await $.ui.close({ id: PANE })",
+    "why": "the footer button opens the pane when it is not up"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "to": "{o.hasProject && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "why": "the pane says the project has its own settings only when they are not the ones in use"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.isChanged && <Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "to": "",
+    "why": "the pane says the settings are unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isActive && (\n          <Box flexDirection=\"column\">\n            {level('diffs'",
+    "to": "{(\n          <Box flexDirection=\"column\">\n            {level('diffs'",
+    "why": "the levels are offered only while the mod is on"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isActive && (\n          <Box flexDirection=\"column\">\n            {check('startsOpen'",
+    "to": "{(\n          <Box flexDirection=\"column\">\n            {check('startsOpen'",
+    "why": "the start of the spans is offered only while the mod is on"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "          : update($, skills, () => value))\n      await changed($)",
+    "to": "          : update($, skills, () => value))",
+    "why": "a level changed counts as an unsaved change"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, opened, withoutSpans)\n              await update($, startsOpen, was => !was)",
+    "to": "await update($, startsOpen, was => !was)",
+    "why": "a new start of the spans forgets the presses that turned some"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "variant={o.isChanged ? 'primary' : 'secondary'}",
+    "to": "variant=\"secondary\"",
+    "why": "saving for the project is the main button while changes are unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && (\n            <Button\n              key=\"forget-project\"",
+    "to": "{(\n            <Button\n              key=\"forget-project\"",
+    "why": "forgetting the project's settings is offered only where it has some"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void apply($, DEFAULTS).then(() => changed($))}",
+    "to": "onPress={() => void apply($, DEFAULTS)}",
+    "why": "resetting counts as an unsaved change"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await loadSettings($)\n\n  // A check that cannot run",
+    "to": "\n  // A check that cannot run",
+    "why": "a session starts with the settings saved for it"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await apply($, loaded(project ?? global))",
+    "to": "await apply($, loaded(global ?? project))",
+    "why": "a session starts with its project's settings before the global ones"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, origin, () => provenanceOf(project, global))",
+    "to": "",
+    "why": "a session knows where its settings came from"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = source === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = 'settings'",
+    "why": "unsaved changes are measured against the project's saved settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "source === 'defaults' || key === undefined ? DEFAULTS : loaded(await $.store.get(key))",
+    "to": "loaded(await $.store.get(key ?? 'settings'))",
+    "why": "unsaved changes are measured against the defaults when nothing was saved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "$.ui.toast(TEXT.noProject)",
+    "to": "",
+    "why": "a session that tells no project says it cannot save for it"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "hasProject: was.hasProject || where === 'project',",
+    "to": "hasProject: where === 'project',",
+    "why": "saving globally keeps the project's settings known"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await $.store.set(key, await current($))",
+    "to": "await $.store.set(key, DEFAULTS)",
+    "why": "saving stores the session's settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await $.store.delete(key)\n  }\n\n  await loadSettings($)",
+    "to": "  }\n\n  await loadSettings($)",
+    "why": "forgetting the project's settings deletes them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = where === 'project' ? await projectKey($) : 'settings'\n\n  if (key === undefined) {",
+    "to": "const key = where === 'project' ? 'settings' : 'settings'\n\n  if (key === undefined) {",
+    "why": "saving for the project stores under the project's key"
+  },
+  {
+    "file": "hooks/opened.ts",
+    "from": "startsOpen !== open.includes(`span:${first}`)",
+    "to": "open.includes(`span:${first}`)",
+    "why": "spans start as the settings say"
+  },
+  {
+    "file": "hooks/opened.ts",
+    "from": "startsOpen !== open.includes(`span:${first}`)",
+    "to": "startsOpen",
+    "why": "a press turns a span from how spans start"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (head === undefined) {\n    return <Box />",
+    "to": "if (head === undefined) {\n    return <Box {...FRAME} />",
+    "why": "a span with nothing to tell draws nothing"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{done.length > 0 ? tally(head.counts) : ''}",
+    "to": "{tally(head.counts)}",
+    "why": "a span with no edit done tells no counts"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "isOpen ? Math.max(0, head.width - head.length) : 0",
+    "to": "0",
+    "why": "an unfolded line is padded to the rows' width"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  if (!isOpen) {\n    return <Box {...FRAME}>{line}</Box>\n  }",
+    "to": "",
+    "why": "a folded span draws only its line"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{hasBars && isRowOpen ? ' '.repeat(cells + 1) : hasBars ? [...barOf(group, before, tone), ' '] : ''}",
+    "to": "{hasBars ? [...barOf(group, before, tone), ' '] : ''}",
+    "why": "an opened row's bar room is blank"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{hasBars && isRowOpen ? ' '.repeat(cells + 1) : hasBars ? [...barOf(group, before, tone), ' '] : ''}",
+    "to": "{hasBars && isRowOpen ? ' '.repeat(cells + 1) : ''}",
+    "why": "a row of a timed span draws its bar"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "tool === 'Bash' ? '$' : (Array.from(name)[0] ?? '').toUpperCase()",
+    "to": "(Array.from(name)[0] ?? '').toUpperCase()",
+    "why": "a command's row starts with a dollar"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isWhole ? null : <Text>{whole}</Text>}",
+    "to": "{null}",
+    "why": "an opened row draws its whole input beneath where it was clipped"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{rest > 0 && !isFull ? (",
+    "to": "{false ? (",
+    "why": "a result with lines left out offers to show them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": ") : rest > 0 ? (\n                <Text dimColor>{restLabel(rest)}</Text>",
+    "to": ") : false ? (\n                <Text dimColor>{restLabel(rest)}</Text>",
+    "why": "a result shown in full says how many lines did not fit"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void update($, opened, now => withFull(now, ownId))}",
+    "to": "onPress={() => void update($, opened, now => now)}",
+    "why": "the button for the rest of a result shows all of it"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isFull && isTall(said.length) ? (",
+    "to": "{false ? (",
+    "why": "a long result shown in full ends with a button that folds it"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isFull && isTall(said.length) ? (",
+    "to": "{isFull ? (",
+    "why": "a short result shown in full has no fold button"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text dimColor={!own.isErrored} color={own.isErrored ? 'error' : undefined}>",
+    "to": "<Text dimColor>",
+    "why": "the result of a call that failed is drawn as an error"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "...(first.deny === undefined ? [] : [deniedRow(first)])",
+    "to": "",
+    "why": "a refused call has a note under it with why"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "would: clip(`⊘ ${subject(call.input)}`, room),",
+    "to": "would: clip(`⊘`, room),",
+    "why": "the note under a refused call says what it would have run"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "clip(`denied · ${deny.replace(/\\s+/g, ' ')}`, room)",
+    "to": "clip(`denied · ${deny}`, room)",
+    "why": "a refusal's reason is on one line"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (file.failure !== undefined) {\n      const { name: struck",
+    "to": "if (false) {\n      const { name: struck",
+    "why": "an edit that failed is struck through with why"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const times = file.ids.length > 1 ? ` ×${file.ids.length}` : ''",
+    "to": "const times = ''",
+    "why": "a file edited more than once says how many times"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "${isOpen ? '▾' : '▸'}`, Math.max(4, room.label - counts.length))",
+    "to": "${'▸'}`, Math.max(4, room.label - counts.length))",
+    "why": "a file's arrow shows whether its diff is open"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "const took = isTimed ? seconds(file.ids.reduce((sum, id) => sum + (editTimes.get(id)?.ms ?? 0), 0)) : ''",
+    "to": "const took = ''",
+    "why": "a file's row tells its edits' time"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isFileOpen && file.hunks.length > 0 && (",
+    "to": "{isFileOpen && (",
+    "why": "a file with no hunks opens no diff"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isFileOpen && file.hunks.length > 0 && (",
+    "to": "{file.hunks.length > 0 && (",
+    "why": "a file's diff is drawn only once opened"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isTall(diffRows(file.hunks)) ? (",
+    "to": "{false ? (",
+    "why": "a long diff opened ends with a button that folds it"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isTallSpan(rows, fileRows, outputs, open) ? (",
+    "to": "{false ? (",
+    "why": "a tall span unfolded ends with a button that folds it"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "ended = Math.max(ended ?? -Infinity, time.endedAt ?? now)",
+    "to": "ended = time.endedAt ?? now",
+    "why": "the wait before a row starts when the latest row before it ended"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const now = isLive([...rows, ...editTimes.values()]) ? await $.clock.now() : 0",
+    "to": "const now = 0",
+    "why": "a span still running ends now on its clock"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "done: edits.filter(edit => edit.failure === undefined),",
+    "to": "done: edits,",
+    "why": "the edits that failed are counted apart"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const wanted = wantedOf(span, shown, calls, pictures, open)",
+    "to": "const wanted: string[] = []",
+    "why": "a span reads the results it needs"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "export const RETRIES = 2",
+    "to": "export const RETRIES = 0",
+    "why": "a result the transcript does not hold yet is read again"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "export const RETRIES = 2",
+    "to": "export const RETRIES = 200",
+    "why": "a result the transcript never holds is read again only a few times"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "for (const line of isTruncated ? lines.slice(0, -1) : lines) {",
+    "to": "for (const line of lines) {",
+    "why": "the last result of a cut output is left out"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (exitCode === 0) {\n    for (const",
+    "to": "if (true) {\n    for (const",
+    "why": "a failed jq reads no result"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "(await $.env.get('CLAUDE_CONFIG_DIR')) ?? `${await $.env.get('HOME')}/.claude`",
+    "to": "`${await $.env.get('HOME')}/.claude`",
+    "why": "the transcript is read from the configured folder"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const wanted = unknownOf(pending, results)",
+    "to": "const wanted = [...pending]",
+    "why": "a result already known is not read again"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (kind !== undefined) {\n      keep(id, e.props.output)\n    }",
+    "to": "",
+    "why": "an edit's result as the row drew it is kept"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      keep(call.tool_use_id, call.output)",
+    "to": "",
+    "why": "the results of the calls a run drew are kept"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      keep(e.props.tool_use_id, e.props.output)",
+    "to": "",
+    "why": "a result drawn under a row is kept"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "id !== undefined && typeof output === 'object' && output !== null",
+    "to": "id !== undefined",
+    "why": "a result that is no object is not kept"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "unfolded.has(id) || (isExpanded === true && !unfoldedHere.has(id))",
+    "to": "(isExpanded === true && !unfoldedHere.has(id))",
+    "why": "a call of a run the engine unfolded is the engine's"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "(isExpanded === true && !unfoldedHere.has(id))",
+    "to": "(isExpanded === true)",
+    "why": "a call of a run the mod unfolded draws by its own level"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "unfolded.has(id) || (isExpanded === true && !unfoldedHere.has(id))",
+    "to": "unfolded.has(id)",
+    "why": "a call drawn in full (ctrl+o) is the engine's"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      e.surface !== 'terminal' ||\n      !(await isDrawing($)) ||\n      (await isGone($, id, e.props.isRunning))",
+    "to": "      !(await isDrawing($)) ||\n      (await isGone($, id, e.props.isRunning))",
+    "why": "a tool row is the engine's off the terminal"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      e.surface !== 'terminal' ||\n      !(await isDrawing($)) ||\n      (await isGone($, id, e.props.isRunning))",
+    "to": "      e.surface !== 'terminal' ||\n      (await isGone($, id, e.props.isRunning))",
+    "why": "a tool row is the engine's while the mod is off"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      e.surface !== 'terminal' ||\n      !(await isDrawing($)) ||\n      (await isGone($, id, e.props.isRunning))",
+    "to": "      e.surface !== 'terminal' ||\n      !(await isDrawing($))",
+    "why": "a row the conversation no longer holds is the engine's"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "isRead && !isRunning && !spans.has(id)",
+    "to": "isRead && !spans.has(id)",
+    "why": "a row still running may not be in the conversation yet"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "isRead && !isRunning && !spans.has(id)",
+    "to": "!isRunning && !spans.has(id)",
+    "why": "a conversation that could not be read leaves no row gone"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (level === 'full') {\n      return next(e)\n    }\n\n    const shown = await shownOf($)\n    const own",
+    "to": "    const shown = await shownOf($)\n    const own",
+    "why": "a call whose level is normal is the engine's"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (drawerOf(span, shown) !== id) {\n      return <Box />\n    }\n\n    return drawSpan($, { Box, Button, Code, Text }, span, shown, [own]",
+    "to": "    return drawSpan($, { Box, Button, Code, Text }, span, shown, [own]",
+    "why": "a row that is not its span's first draws nothing"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "...(call.isErrored ? { failure: reasonOf(",
+    "to": "...(false ? { failure: reasonOf(",
+    "why": "an edit not yet in the conversation that failed carries why"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "e.props.origin.kind !== 'task-notification' ||",
+    "to": "",
+    "why": "only a task notification is drawn as a notice"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "!isEnding(task.status ?? '') ||",
+    "to": "",
+    "why": "a notice of a task that has not ended is the engine's"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "e.props.isExpanded ||\n      e.surface !== 'terminal'\n    ) {",
+    "to": "e.surface !== 'terminal'\n    ) {",
+    "why": "a notice drawn in full (ctrl+o) is the engine's"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "e.props.isExpanded ||\n      e.surface !== 'terminal'\n    ) {",
+    "to": "e.props.isExpanded\n    ) {",
+    "why": "a notice is the engine's off the terminal"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "(await read($, commands)) === 'full'",
+    "to": "false",
+    "why": "a notice is the engine's where the commands are normal"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "(await isGone($, id, false)) || (await read($, commands)) === 'full'",
+    "to": "(await read($, commands)) === 'full'",
+    "why": "a notice the conversation no longer holds is the engine's"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "call: noticeCall(task.id, task.status ?? '', e.props.text)",
+    "to": "call: noticeCall(task.id, task.status ?? '', '')",
+    "why": "a notice not yet in the conversation draws its own summary"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (drawerOf(span, shown) !== id) {\n      return <Box />\n    }\n\n    return drawSpan($, { Box, Button, Code, Text }, span, shown, [], ",
+    "to": "    return drawSpan($, { Box, Button, Code, Text }, span, shown, [], ",
+    "why": "a notice that is not its span's first draws nothing"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (level !== undefined && level !== 'full') {\n      const { Box } = $.ui.resolve(e)",
+    "to": "    if (false) {\n      const { Box } = $.ui.resolve(e)",
+    "why": "the result under a row folded in its span is not drawn"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (level !== undefined && level !== 'full') {",
+    "to": "    if (level !== undefined) {",
+    "why": "the result under a row whose level is normal is the engine's"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (e.props.tool === 'Bash' && (await read($, diffs)) === 'hidden') {",
+    "to": "if (e.props.tool === 'Bash' && (await read($, diffs)) !== 'summary') {",
+    "why": "a command's result keeps its diff where the diffs are not hidden"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (e.props.tool === 'Bash' && (await read($, diffs)) === 'hidden') {",
+    "to": "if ((await read($, diffs)) === 'hidden') {",
+    "why": "only a command's result loses its diff"
+  },
+  {
+    "file": "hooks/outcome.ts",
+    "from": "const { bashEditDiff, ...rest } = output as { bashEditDiff?: unknown }",
+    "to": "const { bashEditDiff, ...rest } = { ...(output as { bashEditDiff?: unknown }), bashEditDiff: undefined }",
+    "why": "a command's result loses only its diff where diffs are hidden"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": " else {\n      unfolded.delete(id)\n    }",
+    "to": "",
+    "why": "a run folded again by the engine goes back to its span"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (e.props.isExpanded) {\n      return next(e)\n    }\n\n    await read($, revision)",
+    "to": "    await read($, revision)",
+    "why": "a run the engine unfolded draws as the engine does"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (treatment === 'engine') {\n      return next(e)\n    }",
+    "to": "",
+    "why": "a run whose kinds are all normal is the engine's"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (treatment === 'rows') {\n      ids.forEach(id => unfoldedHere.add(id))",
+    "to": "    if (false) {\n      ids.forEach(id => unfoldedHere.add(id))",
+    "why": "a run with some kind normal draws its rows each by its own level"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "ids.forEach(id => unfoldedHere.add(id))",
+    "to": "",
+    "why": "the rows of a run the mod unfolded are told from the engine's"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (!ids.includes(drawerOf(span, shown) ?? '')) {",
+    "to": "if (false) {",
+    "why": "a run that is not its span's first draws nothing"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "e.props.calls.some(call => call.isRunning),",
+    "to": "false,",
+    "why": "a run with a call running may not be in the conversation yet"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "...(call.isErrored ? { failure: reasonOf(typeof output === 'string' ? output : '') } : {}),",
+    "to": "",
+    "why": "an edit of a run not yet in the conversation that failed carries why"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    forgetScan()\n    unfolded.clear()",
+    "to": "    unfolded.clear()",
+    "why": "a new conversation forgets the last one's scan"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    unfolded.clear()\n    unfoldedHere.clear()",
+    "to": "    unfoldedHere.clear()",
+    "why": "a new conversation forgets the runs the engine unfolded"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    fetches.clear()\n    results.clear()",
+    "to": "    results.clear()",
+    "why": "a new conversation forgets its web-fetch agents"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    results.clear()\n    pending.clear()\n    misses.clear()",
+    "to": "    pending.clear()\n    misses.clear()",
+    "why": "a new conversation forgets the results it read"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    pending.clear()\n    misses.clear()",
+    "to": "    misses.clear()",
+    "why": "a new conversation forgets the results asked for"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    misses.clear()\n",
+    "to": "",
+    "why": "a new conversation forgets the reads it tried in vain"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "lostIn(resultIds, results).forEach(id => results.delete(id))",
+    "to": "",
+    "why": "a result that arrives replaces the one found nowhere"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "originKind === 'task-notification' ||\n      blocks.some(",
+    "to": "blocks.some(",
+    "why": "a new notice redraws the rows before it"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "blocks.some(block => block.type === 'tool_use' || block.type === 'tool_result')",
+    "to": "false",
+    "why": "a new tool row redraws the rows"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (isCall && (await isDrawing($))) {",
+    "to": "if (isCall) {",
+    "why": "a mod that is off does not redraw rows"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    forgetScan()\n    lostIn(resultIds",
+    "to": "    lostIn(resultIds",
+    "why": "a new row makes the conversation be read again"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "conversation.webFetches.forEach(id => fetches.add(id))",
+    "to": "",
+    "why": "the web-fetch agents found in the conversation draw as WebFetch"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "scanned ??= $.session",
+    "to": "scanned = $.session",
+    "why": "one read of the conversation serves concurrent draws"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    .catch((failure: unknown) => {\n      forgetScan()\n",
+    "to": "    .catch((failure: unknown) => {\n",
+    "why": "a read of the conversation cut short is not kept"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": "kindOf(tool) === 'edits' ? ('diffs' as const)",
+    "to": "kindOf(tool) === 'edits' ? ('commands' as const)",
+    "why": "an edit is drawn by the diffs' level"
+  },
+  {
+    "file": "hooks/calls.ts",
+    "from": ": tool === 'Skill' ? ('skills' as const)",
+    "to": ": false ? ('skills' as const)",
+    "why": "a skill is drawn by the skills' level"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "key === 'diffs' ? read($, diffs)",
+    "to": "key === 'diffs' ? read($, commands)",
+    "why": "a call is read at the level its kind has"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "key === 'skills' ? read($, skills)",
+    "to": "key === 'skills' ? read($, commands)",
+    "why": "a skill is read at the skills' level"
+  },
+  {
+    "file": "hooks/notices.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a failure is told by its message"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "(root === null ? undefined : `settings:${root}`)",
+    "to": "(root === null ? 'settings' : `settings:${root}`)",
+    "why": "a session that tells no root has no project to save for"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "source: where,",
+    "to": "source: 'project',",
+    "why": "saving records where the settings went"
+  },
+  {
+    "file": "hooks/settings.ts",
+    "from": "isChanged: false,\n  hasProject: was.hasProject",
+    "to": "isChanged: was.isChanged,\n  hasProject: was.hasProject",
+    "why": "saved settings are no longer unsaved"
+  },
+  {
+    "file": "hooks/opened.ts",
+    "from": "open.includes(key) ? open.filter(opened => opened !== key) : [...open, key]",
+    "to": "[...open, key]",
+    "why": "a press on what is open closes it"
+  },
+  {
+    "file": "hooks/opened.ts",
+    "from": "open.includes(key) ? open.filter(opened => opened !== key) : [...open, key]",
+    "to": "open.filter(opened => opened !== key)",
+    "why": "a press on what is closed opens it"
+  },
+  {
+    "file": "hooks/opened.ts",
+    "from": "key !== `row:${id}` && key !== `full:${id}`",
+    "to": "key !== `row:${id}`",
+    "why": "a row closed forgets that its whole result was asked"
+  },
+  {
+    "file": "hooks/opened.ts",
+    "from": "open.filter(key => !key.startsWith('span:'))",
+    "to": "open",
+    "why": "the presses that turned spans are forgotten"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, opened, withoutSpans)\n  await update($, startsOpen, () => s.startsOpen)",
+    "to": "await update($, startsOpen, () => s.startsOpen)",
+    "why": "settings applied start every span as they say"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "`${pluginRoot}/scripts/transcript.sh`,",
+    "to": "`${pluginRoot}/scripts/transcripts.sh`,",
+    "why": "the results are read by the plugin's own script"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "  root,\n  session,\n]",
+    "to": "  session,\n  root,\n]",
+    "why": "the results are read from the session's own transcript under the config folder"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await $.session.id(), $.plugin.root)",
+    "to": "await $.session.id(), '')",
+    "why": "the script is the plugin's own, wherever it is installed"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "  JSON.stringify(wanted),",
+    "to": "  JSON.stringify([]),",
+    "why": "jq is told which results are wanted"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "const lines = stdout.split('\\n').filter(Boolean)",
+    "to": "const lines = stdout.split('\\n')",
+    "why": "a blank line is no result"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "(misses.get(id) ?? 0) < RETRIES",
+    "to": "(misses.get(id) ?? 0) <= RETRIES",
+    "why": "a result is read again no more often than allowed"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "[...ids].filter(id => !results.has(id))",
+    "to": "[...ids]",
+    "why": "an id with a result is not asked for again"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "ids.filter(id => results.get(id) === null)",
+    "to": "ids.filter(id => !results.has(id))",
+    "why": "an id not asked for yet is not one found nowhere"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "ids.map(id => results.get(id) ?? null)",
+    "to": "ids.map(id => results.get(id))",
+    "why": "an id with no result is told as found nowhere"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "lostIn(again, results).forEach(id => results.delete(id))",
+    "to": "",
+    "why": "a result found nowhere is asked for again after a while"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "kindOf(call.tool) === 'edits'\n    ? {",
+    "to": "false\n    ? {",
+    "why": "an edit the conversation does not hold yet is an edit of its span"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "?.file_path ?? '')",
+    "to": "?.file_path ?? '?')",
+    "why": "an edit with no path has an empty one"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "unfolded.add(id)\n      unfoldedHere.delete(id)",
+    "to": "unfoldedHere.delete(id)",
+    "why": "a run the engine unfolds is the engine's"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "unfolded.add(id)\n      unfoldedHere.delete(id)",
+    "to": "unfolded.add(id)",
+    "why": "a run the engine unfolds is no longer one the mod unfolded"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "levels.every(level => level === 'full')",
+    "to": "levels.some(level => level === 'full')",
+    "why": "a run is the engine's only if all its kinds are normal"
+  },
+  {
+    "file": "hooks/span.ts",
+    "from": "failed: edits.filter(edit => edit.failure !== undefined),",
+    "to": "failed: [],",
+    "why": "the edits that failed are told from the rest"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "isRead: false,",
+    "to": "isRead: true,",
+    "why": "a conversation that could not be read says so"
+  },
+  {
+    "file": "hooks/conversation.ts",
+    "from": "blocks.filter(block => block.type === 'tool_result')",
+    "to": "blocks",
+    "why": "only the results a message holds are ids of results"
+  },
+  {
+    "file": "hooks/timeline.ts",
+    "from": "if (time?.startedAt !== undefined) {\n        ended",
+    "to": "if (true) {\n        ended",
+    "why": "a row that has not started moves no wait"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "(entry): entry is FileLine => entry.kind === 'file'",
+    "to": "(entry): entry is FileLine => true",
+    "why": "the call rows are not file rows"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "entry.ids.map(id => editTimes.get(id)) : entry.rows",
+    "to": "entry.ids.map(id => editTimes.get(id)) : []",
+    "why": "a call's row draws its bar of its own times"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "sum + 1 + hunk.lines.length",
+    "to": "sum + hunk.lines.length",
+    "why": "a hunk's head is a line of its diff"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "room.label - widthOf(words.name) - 1 - widthOf(words.about) - words.times.length) + 1",
+    "to": "room.label - widthOf(words.name) - 1 - widthOf(words.about) - words.times.length)",
+    "why": "a row keeps a blank before its bar"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "widthOf(words.name) - 1",
+    "to": "words.name.length - 1",
+    "why": "a wide name takes its cells of the label's room"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "status: Math.max(0, room.status - status.length),",
+    "to": "status: Math.max(0, room.status),",
+    "why": "a status is set to its column by its own length"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "name: clip(`✗ ${file.shown}`, room),",
+    "to": "name: `✗ ${file.shown}`,",
+    "why": "a failed file's name is cut to the room"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "why: clip(file.failure, room),",
+    "to": "why: file.failure,",
+    "why": "a failed file's reason is cut to the room"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "Math.max(4, room.label - counts.length)",
+    "to": "room.label - counts.length",
+    "why": "a file's name keeps four cells however narrow the screen"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "gap: Math.max(0, room.label - widthOf(name) - counts.length) + 1,",
+    "to": "gap: Math.max(0, room.label - widthOf(name) - counts.length),",
+    "why": "a file row keeps a blank before its bar"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "tookGap: Math.max(0, room.status - took.length),",
+    "to": "tookGap: Math.max(0, room.status),",
+    "why": "a file's time is set to its column by its own length"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "clip(`${name} ${whole}`, width - 4)",
+    "to": "clip(`${name} ${whole}`, width)",
+    "why": "the fold button of a result is cut to the row"
+  },
+  {
+    "file": "hooks/layout.ts",
+    "from": "clip(text, width - 5)",
+    "to": "clip(text, width)",
+    "why": "a line of a result is cut to the row less its margin"
+  },
+  {
+    "file": "hooks/summary.ts",
+    "from": "isOpen ? Math.max(0, head.width - head.length) : 0",
+    "to": "isOpen ? head.width - head.length : 0",
+    "why": "a line wider than its rows is not padded"
+  }
+]

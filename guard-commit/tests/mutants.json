@@ -1,0 +1,620 @@
+[
+  {
+    "file": "hooks/git.ts",
+    "from": "['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'tag']",
+    "to": "['merge', 'rebase', 'cherry-pick', 'revert', 'am', 'tag']",
+    "why": "a git commit with an attribution is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'tag']",
+    "to": "['commit', 'rebase', 'cherry-pick', 'revert', 'am', 'tag']",
+    "why": "a git merge with an attribution is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'tag']",
+    "to": "['commit', 'merge', 'cherry-pick', 'revert', 'am', 'tag']",
+    "why": "a git rebase with an attribution is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'tag']",
+    "to": "['commit', 'merge', 'rebase', 'revert', 'am', 'tag']",
+    "why": "a git cherry-pick with an attribution is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'tag']",
+    "to": "['commit', 'merge', 'rebase', 'cherry-pick', 'am', 'tag']",
+    "why": "a git revert with an attribution is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'tag']",
+    "to": "['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'tag']",
+    "why": "a git am with an attribution is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "to": "/\\bgh\\s+(?:issue|release)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "why": "a gh pr with an attribution is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "to": "/\\bgh\\s+(?:pr|release)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "why": "a gh issue with an attribution is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "to": "/\\bgh\\s+(?:pr|issue)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "why": "a gh release with an attribution is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "to": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:edit|comment|merge|review)\\b/",
+    "why": "a gh create with an attribution is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "to": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|comment|merge|review)\\b/",
+    "why": "a gh edit with an attribution is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "to": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|merge|review)\\b/",
+    "why": "a gh comment with an attribution is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "to": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|comment|review)\\b/",
+    "why": "a gh merge with an attribution is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|comment|merge|review)\\b/",
+    "to": "/\\bgh\\s+(?:pr|issue|release)\\s+(?:create|edit|comment|merge)\\b/",
+    "why": "a gh review with an attribution is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "const ATTRIBUTION = /co-authored-by|claude-session|noreply@anthropic\\.com|generated with \\[?claude code/i",
+    "to": "const ATTRIBUTION = /claude-session|noreply@anthropic\\.com|generated with \\[?claude code/i",
+    "why": "a Co-Authored-By trailer is an attribution"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "const ATTRIBUTION = /co-authored-by|claude-session|noreply@anthropic\\.com|generated with \\[?claude code/i",
+    "to": "const ATTRIBUTION = /co-authored-by|noreply@anthropic\\.com|generated with \\[?claude code/i",
+    "why": "a Claude-Session trailer is an attribution"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "const ATTRIBUTION = /co-authored-by|claude-session|noreply@anthropic\\.com|generated with \\[?claude code/i",
+    "to": "const ATTRIBUTION = /co-authored-by|claude-session|generated with \\[?claude code/i",
+    "why": "Claude's noreply address is an attribution"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "const ATTRIBUTION = /co-authored-by|claude-session|noreply@anthropic\\.com|generated with \\[?claude code/i",
+    "to": "const ATTRIBUTION = /co-authored-by|claude-session|noreply@anthropic\\.com/i",
+    "why": "a Generated with Claude Code line is an attribution"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "generated with \\[?claude code/i",
+    "to": "generated with \\[?claude code/",
+    "why": "an attribution is found whatever its case"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'pull'])",
+    "to": "const SIGNS = new Set(['merge', 'rebase', 'cherry-pick', 'revert', 'am', 'pull'])",
+    "why": "a signed git commit is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'pull'])",
+    "to": "const SIGNS = new Set(['commit', 'rebase', 'cherry-pick', 'revert', 'am', 'pull'])",
+    "why": "a signed git merge is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'pull'])",
+    "to": "const SIGNS = new Set(['commit', 'merge', 'cherry-pick', 'revert', 'am', 'pull'])",
+    "why": "a signed git rebase is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'pull'])",
+    "to": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'revert', 'am', 'pull'])",
+    "why": "a signed git cherry-pick is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'pull'])",
+    "to": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'cherry-pick', 'am', 'pull'])",
+    "why": "a signed git revert is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'pull'])",
+    "to": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'pull'])",
+    "why": "a signed git am is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am', 'pull'])",
+    "to": "const SIGNS = new Set(['commit', 'merge', 'rebase', 'cherry-pick', 'revert', 'am'])",
+    "why": "a signed git pull is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "new Set(['-C', '--git-dir', '--work-tree', '--namespace', '--super-prefix', '--attr-source'])",
+    "to": "new Set(['--git-dir', '--work-tree', '--namespace', '--super-prefix', '--attr-source'])",
+    "why": "git -C takes a folder before the subcommand"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "new Set(['-C', '--git-dir', '--work-tree', '--namespace', '--super-prefix', '--attr-source'])",
+    "to": "new Set(['-C', '--work-tree', '--namespace', '--super-prefix', '--attr-source'])",
+    "why": "git --git-dir takes a folder before the subcommand"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "new Set(['-C', '--git-dir', '--work-tree', '--namespace', '--super-prefix', '--attr-source'])",
+    "to": "new Set(['-C', '--git-dir', '--namespace', '--super-prefix', '--attr-source'])",
+    "why": "git --work-tree takes a folder before the subcommand"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "new Set(['-C', '--git-dir', '--work-tree', '--namespace', '--super-prefix', '--attr-source'])",
+    "to": "new Set(['-C', '--git-dir', '--work-tree', '--super-prefix', '--attr-source'])",
+    "why": "git --namespace takes a name before the subcommand"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "new Set(['-C', '--git-dir', '--work-tree', '--namespace', '--super-prefix', '--attr-source'])",
+    "to": "new Set(['-C', '--git-dir', '--work-tree', '--namespace', '--attr-source'])",
+    "why": "git --super-prefix takes a prefix before the subcommand"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "new Set(['-C', '--git-dir', '--work-tree', '--namespace', '--super-prefix', '--attr-source'])",
+    "to": "new Set(['-C', '--git-dir', '--work-tree', '--namespace', '--super-prefix'])",
+    "why": "git --attr-source takes a tree before the subcommand"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "/^(?:(?:commit|tag|push)\\.gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|(?:gpg\\.format|user\\.signingkey)=.+)$/i",
+    "to": "/^(?:(?:tag|push)\\.gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|(?:gpg\\.format|user\\.signingkey)=.+)$/i",
+    "why": "-c commit.gpgsign turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "/^(?:(?:commit|tag|push)\\.gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|(?:gpg\\.format|user\\.signingkey)=.+)$/i",
+    "to": "/^(?:(?:commit|push)\\.gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|(?:gpg\\.format|user\\.signingkey)=.+)$/i",
+    "why": "-c tag.gpgsign turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "/^(?:(?:commit|tag|push)\\.gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|(?:gpg\\.format|user\\.signingkey)=.+)$/i",
+    "to": "/^(?:(?:commit|tag)\\.gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|(?:gpg\\.format|user\\.signingkey)=.+)$/i",
+    "why": "-c push.gpgsign turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|",
+    "to": "gpgsign(?:=(?:yes|on|[1-9]\\d*))?|",
+    "why": "-c gpgsign=true turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|",
+    "to": "gpgsign(?:=(?:true|on|[1-9]\\d*))?|",
+    "why": "-c gpgsign=yes turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|",
+    "to": "gpgsign(?:=(?:true|yes|[1-9]\\d*))?|",
+    "why": "-c gpgsign=on turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|",
+    "to": "gpgsign(?:=(?:true|yes|on))?|",
+    "why": "-c gpgsign=1 turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "gpgsign(?:=(?:true|yes|on|[1-9]\\d*))?|",
+    "to": "gpgsign(?:=(?:true|yes|on|[1-9]\\d*))|",
+    "why": "-c gpgsign with no value turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "|(?:gpg\\.format|user\\.signingkey)=.+)$/i",
+    "to": "|(?:user\\.signingkey)=.+)$/i",
+    "why": "-c gpg.format given a value signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "|(?:gpg\\.format|user\\.signingkey)=.+)$/i",
+    "to": "|(?:gpg\\.format)=.+)$/i",
+    "why": "-c user.signingkey given a value signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "user\\.signingkey)=.+)$/i",
+    "to": "user\\.signingkey)=.+)$/",
+    "why": "a signing setting is found whatever its case"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const SIGNING_KEY = /^(?:commit|tag|push)\\.gpgsign$/i",
+    "to": "const SIGNING_KEY = /^(?:commit|tag)\\.gpgsign$/i",
+    "why": "git config push.gpgsign true turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const SIGNING_KEY = /^(?:commit|tag|push)\\.gpgsign$/i",
+    "to": "const SIGNING_KEY = /^(?:commit|tag|push)\\.gpgsign$/",
+    "why": "git config finds a signing key whatever its case"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const TRUE = /^(?:true|yes|on|[1-9]\\d*)$/i",
+    "to": "const TRUE = /^(?:yes|on|[1-9]\\d*)$/i",
+    "why": "git config gpgsign true turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const TRUE = /^(?:true|yes|on|[1-9]\\d*)$/i",
+    "to": "const TRUE = /^(?:true|on|[1-9]\\d*)$/i",
+    "why": "git config gpgsign yes turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const TRUE = /^(?:true|yes|on|[1-9]\\d*)$/i",
+    "to": "const TRUE = /^(?:true|yes|[1-9]\\d*)$/i",
+    "why": "git config gpgsign on turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const TRUE = /^(?:true|yes|on|[1-9]\\d*)$/i",
+    "to": "const TRUE = /^(?:true|yes|on)$/i",
+    "why": "git config gpgsign 1 turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const TRUE = /^(?:true|yes|on|[1-9]\\d*)$/i",
+    "to": "const TRUE = /^(?:true|yes|on|[1-9]\\d*)$/",
+    "why": "git config gpgsign TRUE turns signing on"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const SETTING_KEY = /^(?:gpg\\.format|user\\.signingkey)$/i",
+    "to": "const SETTING_KEY = /^(?:user\\.signingkey)$/i",
+    "why": "git config gpg.format given a value signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const SETTING_KEY = /^(?:gpg\\.format|user\\.signingkey)$/i",
+    "to": "const SETTING_KEY = /^(?:gpg\\.format)$/i",
+    "why": "git config user.signingkey given a value signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "(SETTING_KEY.test(arg) && value !== undefined && !value.startsWith('-'))",
+    "to": "(SETTING_KEY.test(arg) && value !== undefined)",
+    "why": "reading a signing key with an option after it signs nothing"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "(SIGNING_KEY.test(arg) && value !== undefined && TRUE.test(value)) ||",
+    "to": "(SIGNING_KEY.test(arg) && value !== undefined) ||",
+    "why": "git config gpgsign false signs nothing"
+  },
+  {
+    "file": "hooks/scan.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|da|k|a)?sh$/",
+    "why": "the script of zsh -c is read"
+  },
+  {
+    "file": "hooks/scan.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|z|k|a)?sh$/",
+    "why": "the script of dash -c is read"
+  },
+  {
+    "file": "hooks/scan.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|z|da|a)?sh$/",
+    "why": "the script of ksh -c is read"
+  },
+  {
+    "file": "hooks/scan.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|z|da|k)?sh$/",
+    "why": "the script of ash -c is read"
+  },
+  {
+    "file": "hooks/scan.ts",
+    "from": "const SHELL = /^(?:ba|z|da|k|a)?sh$/",
+    "to": "const SHELL = /^(?:ba|z|da|k|a)sh$/",
+    "why": "the script of sh -c is read"
+  },
+  {
+    "file": "hooks/scan.ts",
+    "from": "const flag = words.findIndex((other, i) => i > at && /^-[A-Za-z]*c[A-Za-z]*$/.test(other))",
+    "to": "const flag = words.findIndex((other, i) => i > at && /^-c$/.test(other))",
+    "why": "bash -c is found among combined flags"
+  },
+  {
+    "file": "hooks/scan.ts",
+    "from": "      for (const inner of substitutions(word)) {",
+    "to": "      for (const inner of []) {",
+    "why": "a substitution in double quotes is scanned"
+  },
+  {
+    "file": "hooks/scan.ts",
+    "from": "      } else if (name === 'eval') {",
+    "to": "      } else if (name === 'evalx') {",
+    "why": "what eval runs is scanned"
+  },
+  {
+    "file": "hooks/scan.ts",
+    "from": "const name = word.split('/').pop() ?? ''",
+    "to": "const name = word",
+    "why": "a git given by its path is scanned"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const n = /^GIT_CONFIG_KEY_(\\d+)$/.exec(name)?.[1]",
+    "to": "const n = /^GIT_CONFIG_KEY_(0)$/.exec(name)?.[1]",
+    "why": "a signing setting given by GIT_CONFIG_KEY_n signs, whatever its n"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "return n !== undefined && SIGNING_SETTING.test(`${key}=${env.get(`GIT_CONFIG_VALUE_${n}`) ?? ''}`)",
+    "to": "return n !== undefined && SIGNING_SETTING.test(`${key}=${env.get(`GIT_CONFIG_VALUE_0`) ?? ''}`)",
+    "why": "a GIT_CONFIG_KEY_n is paired with its own GIT_CONFIG_VALUE_n"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "  if (found.signs || isEnvSigning) {",
+    "to": "  if (found.signs) {",
+    "why": "a signing setting in the environment is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "  if (found.signs || isEnvSigning) {",
+    "to": "  if (isEnvSigning) {",
+    "why": "a signing flag is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "if ((found.writes || GH_WRITES.test(command)) && ATTRIBUTION.test(command)) {",
+    "to": "if ((found.writes || GH_WRITES.test(command)) || ATTRIBUTION.test(command)) {",
+    "why": "a command that writes nothing, naming a trailer, runs"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "if ((found.writes || GH_WRITES.test(command)) && ATTRIBUTION.test(command)) {",
+    "to": "if (GH_WRITES.test(command) && ATTRIBUTION.test(command)) {",
+    "why": "a git command that writes history with an attribution is denied"
+  },
+  {
+    "file": "hooks/refusal.ts",
+    "from": "if ((found.writes || GH_WRITES.test(command)) && ATTRIBUTION.test(command)) {",
+    "to": "if (found.writes && ATTRIBUTION.test(command)) {",
+    "why": "a gh command that writes a PR with an attribution is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "sub === 'tag' ? rest.some(word => /^-[a-zA-Z]*[mF]|^--(?:message|file)\\b/.test(word)) : WRITES.has(sub)",
+    "to": "sub === 'tag' ? rest.some(word => /^-[a-zA-Z]*[F]|^--(?:message|file)\\b/.test(word)) : WRITES.has(sub)",
+    "why": "a tag given a message with -m can carry a trailer"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "sub === 'tag' ? rest.some(word => /^-[a-zA-Z]*[mF]|^--(?:message|file)\\b/.test(word)) : WRITES.has(sub)",
+    "to": "sub === 'tag' ? rest.some(word => /^-[a-zA-Z]*[m]|^--(?:message|file)\\b/.test(word)) : WRITES.has(sub)",
+    "why": "a tag given a message file with -F can carry a trailer"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "sub === 'tag' ? rest.some(word => /^-[a-zA-Z]*[mF]|^--(?:message|file)\\b/.test(word)) : WRITES.has(sub)",
+    "to": "sub === 'tag' ? rest.some(word => /^-[a-zA-Z]*[mF]|^--(?:file)\\b/.test(word)) : WRITES.has(sub)",
+    "why": "a tag given a message with --message can carry a trailer"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "sub === 'tag' ? rest.some(word => /^-[a-zA-Z]*[mF]|^--(?:message|file)\\b/.test(word)) : WRITES.has(sub)",
+    "to": "sub === 'tag' ? rest.some(word => /^-[a-zA-Z]*[mF]|^--(?:message)\\b/.test(word)) : WRITES.has(sub)",
+    "why": "a tag given a message file with --file can carry a trailer"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "sub === 'tag' ? rest.some(word => /^-[a-zA-Z]*[mF]|^--(?:message|file)\\b/.test(word)) : WRITES.has(sub)",
+    "to": "sub === 'tag' ? true : WRITES.has(sub)",
+    "why": "a tag that lists tags writes no history"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "(sub === 'tag' && rest.some(signsTag)) ||",
+    "to": "(sub === 'tag' && false) ||",
+    "why": "a signed git tag is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "(sub === 'config' && configSigns(rest))",
+    "to": "(sub === 'config' && false)",
+    "why": "git config turning signing on is denied"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "(SIGNS.has(sub) && rest.some(signsCommit)) ||",
+    "to": "(SIGNS.has(sub) && false) ||",
+    "why": "a signing flag on a git subcommand is denied"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const signsCommit = (word: string) => /^-[a-zA-Z]*S\\S*$/.test(word) || isLong(word, '--gpg-sign', 3)",
+    "to": "const signsCommit = (word: string) => /^-[a-zA-Z]*S$/.test(word) || isLong(word, '--gpg-sign', 3)",
+    "why": "-S with a key attached signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const signsCommit = (word: string) => /^-[a-zA-Z]*S\\S*$/.test(word) || isLong(word, '--gpg-sign', 3)",
+    "to": "const signsCommit = (word: string) => /^-S\\S*$/.test(word) || isLong(word, '--gpg-sign', 3)",
+    "why": "-S inside a cluster of short flags signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const signsCommit = (word: string) => /^-[a-zA-Z]*S\\S*$/.test(word) || isLong(word, '--gpg-sign', 3)",
+    "to": "const signsCommit = (word: string) => /^-[a-zA-Z]*S\\S*$/.test(word)",
+    "why": "--gpg-sign signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "/^-[adefilnvE]*[su]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "to": "/^-[adefilnvE]*[su]\\S*$/.test(word) || isLong(word, '--local-user', 4)",
+    "why": "git tag --sign signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "/^-[adefilnvE]*[su]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "to": "/^-[adefilnvE]*[su]\\S*$/.test(word) || isLong(word, '--sign', 4)",
+    "why": "git tag --local-user signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "/^-[adefilnvE]*[su]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "to": "/^-[adefilnvE]*[s]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "why": "git tag -u signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "/^-[adefilnvE]*[su]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "to": "/^-[adefilnvE]*[u]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "why": "git tag -s signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "/^-[adefilnvE]*[su]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "to": "/^-[su]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "why": "git tag -s behind other flags signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "/^-[adefilnvE]*[su]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "to": "/^-[a-zA-Z]*[su]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "why": "git tag -ms is a message, not a signature"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "/^-[adefilnvE]*[su]\\S*$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "to": "/^-[adefilnvE]*[su]$/.test(word) || isLong(word, '--sign', 4) || isLong(word, '--local-user', 4)",
+    "why": "git tag -u with a key attached signs"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "return flag.length >= min && name.startsWith(flag)",
+    "to": "return name.startsWith(flag)",
+    "why": "a bare -- is no signing option"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "return flag.length >= min && name.startsWith(flag)",
+    "to": "return flag.length >= min",
+    "why": "a long option that only starts alike is no signing option"
+  },
+  {
+    "file": "hooks/signing.ts",
+    "from": "const [flag = ''] = word.split('=')",
+    "to": "const flag = word",
+    "why": "a long option's value is not part of its name"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "    if (option === '-c' || option === '--config-env') {",
+    "to": "    if (option === '-c') {",
+    "why": "--config-env with its value apart sets a setting"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "found.signs ||= SIGNING_SETTING.test(option === '-c' ? setting : `${setting.split('=')[0]}=1`)\n      at += 2",
+    "to": "found.signs ||= SIGNING_SETTING.test(setting)\n      at += 2",
+    "why": "a --config-env value is read from the environment, so it counts as set"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "found.signs ||= SIGNING_SETTING.test(option.startsWith('-c') ? setting : `${setting.split('=')[0]}=1`)\n      at++",
+    "to": "found.signs ||= SIGNING_SETTING.test(setting)\n      at++",
+    "why": "an attached --config-env value counts as set"
+  },
+  {
+    "file": "hooks/git.ts",
+    "from": "      at += GIT_OPTION_ARGS.has(option) ? 2 : 1",
+    "to": "      at += 1",
+    "why": "an option's value is skipped with it"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "if (/^[;&|(){}`\\n]$/.test(token)) {",
+    "to": "if (/^[;&|(){}`]$/.test(token)) {",
+    "why": "a newline ends a command"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "      isTarget = !token.includes('&')",
+    "to": "      isTarget = true",
+    "why": "a descriptor duplication names no file"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "} else if (/^\\d*[<>]/.test(token)) {",
+    "to": "} else if (/^\\d*[<]/.test(token)) {",
+    "why": "a redirection's file is not an argument"
+  },
+  {
+    "file": "hooks/shell.ts",
+    "from": "script.replace(/\\\\\\n/g, '')",
+    "to": "script",
+    "why": "a backslash before a newline joins the lines"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "  on('tool.call', { tool: 'Monitor' }, ($, e, next) => {\n    const why = refusal(e.command ?? '')\n\n    return why === undefined ? next(e) : { deny: `${$.plugin.name}: ${why}` }\n  }).catch(($, e, next) => (next.called ? next(e) : { deny: `${$.plugin.name}: its guard failed.` }))",
+    "to": "  on('tool.call', { tool: 'Monitor' }, ($, e, next) => next(e))",
+    "why": "a Monitor's command is checked"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "  on('tool.call', { tool: 'Monitor' }, ($, e, next) => {\n    const why = refusal(e.command ?? '')\n\n    return why === undefined ? next(e) : { deny: `${$.plugin.name}: ${why}` }\n  }).catch(($, e, next) => (next.called ? next(e) : { deny: `${$.plugin.name}: its guard failed.` }))",
+    "to": "  on('tool.call', { tool: 'Monitor' }, ($, e, next) => {\n    const why = refusal(e.command ?? '')\n\n    return why === undefined ? next(e) : { deny: `${$.plugin.name}: ${why}` }\n  }).catch(($, e, next) => next(e))",
+    "why": "a Monitor command its own check fails on is denied"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "const why = refusal(e.command ?? '')",
+    "to": "const why = refusal(e.command as string)",
+    "why": "a Monitor with no command runs"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "  on('tool.call', { tool: 'Bash' }, ($, e, next) => {\n    const why = refusal(e.command)\n\n    return why === undefined ? next(e) : { deny: `${$.plugin.name}: ${why}` }\n  }).catch(($, e, next) => (next.called ? next(e) : { deny: `${$.plugin.name}: its guard failed.` }))",
+    "to": "  on('tool.call', { tool: 'Bash' }, ($, e, next) => {\n    const why = refusal(e.command)\n\n    return why === undefined ? next(e) : { deny: `${$.plugin.name}: ${why}` }\n  }).catch(($, e, next) => next(e))",
+    "why": "a Bash command its own check fails on is denied"
+  }
+]

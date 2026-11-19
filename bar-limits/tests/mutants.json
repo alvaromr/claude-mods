@@ -1,0 +1,914 @@
+[
+  {
+    "file": "hooks/timing.ts",
+    "from": "const FETCH_EVERY_MS = 60_000",
+    "to": "const FETCH_EVERY_MS = 1_000",
+    "why": "the usage endpoint is read at most once a minute"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const REDRAW_EVERY_MS = 60_000",
+    "to": "const REDRAW_EVERY_MS = 3_600_000",
+    "why": "the times to reset count down, drawn again each minute"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const CELLS = 10",
+    "to": "const CELLS = 8",
+    "why": "the bar has ten cells"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const PACE_MIN_ELAPSED = 2",
+    "to": "const PACE_MIN_ELAPSED = 1",
+    "why": "a pace is judged only once a few percent of the window has run"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "five_hour: 18_000",
+    "to": "five_hour: 36_000",
+    "why": "the session's window is five hours"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "seven_day: 604_800, model",
+    "to": "seven_day: 18_000, model",
+    "why": "the week's window is seven days"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "model: 604_800 }",
+    "to": "model: 18_000 }",
+    "why": "a model's limit is weekly"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showSession: true,",
+    "to": "showSession: false,",
+    "why": "the session's window shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showWeek: true,",
+    "to": "showWeek: false,",
+    "why": "the week's window shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showModels: true,",
+    "to": "showModels: false,",
+    "why": "each model's weekly limit shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showBar: true,",
+    "to": "showBar: false,",
+    "why": "the bar shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showCursor: true,",
+    "to": "showCursor: false,",
+    "why": "the elapsed-time cursor shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showPercent: true,",
+    "to": "showPercent: false,",
+    "why": "the share used shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showPace: true,",
+    "to": "showPace: false,",
+    "why": "the pace shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showReset: true,",
+    "to": "showReset: false,",
+    "why": "the time to reset shows by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "sessionLabel: 'Session',",
+    "to": "sessionLabel: 'Sesión',",
+    "why": "the session's label is Session by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "weekLabel: 'Week',",
+    "to": "weekLabel: 'Semana',",
+    "why": "the week's label is Week by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "cycle: false,",
+    "to": "cycle: true,",
+    "why": "all the windows are drawn in a line by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "cycleSeconds: 8,",
+    "to": "cycleSeconds: 3,",
+    "why": "a cycled window stays eight seconds by default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "lowColor: '#8a8a8a',",
+    "to": "lowColor: 'cyan',",
+    "why": "a low use is gray"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "midColor: '#d78700',",
+    "to": "midColor: 'cyan',",
+    "why": "a medium use is orange"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "highColor: 'red',",
+    "to": "highColor: 'cyan',",
+    "why": "a high use is red"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "emptyColor: '#5f5f5f',",
+    "to": "emptyColor: 'cyan',",
+    "why": "the empty part of the bar is dark gray"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "paceColor: 'red',",
+    "to": "paceColor: 'cyan',",
+    "why": "the pace arrows are red"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "mutedColor: '#8a8a8a',",
+    "to": "mutedColor: 'cyan',",
+    "why": "the secondary text is gray"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "midFrom: 50,",
+    "to": "midFrom: 60,",
+    "why": "a use is medium from 50%"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "highFrom: 71,",
+    "to": "highFrom: 81,",
+    "why": "a use is high from 71%"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "paceFast: 125,",
+    "to": "paceFast: 150,",
+    "why": "a pace is fast from 125% of the fair one"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "paceSlack: 50,",
+    "to": "paceSlack: 40,",
+    "why": "a pace is slack up to 50% of the fair one"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const COLOR = /^(?:#(?:[0-9a-f]{3}){1,2}|[a-z][a-z0-9]*)$/i",
+    "to": "const COLOR = /^.*$/",
+    "why": "a text that is no color is refused"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(?:[0-9a-f]{3}){1,2}",
+    "to": "(?:[0-9a-f]{3}){1,3}",
+    "why": "a hex color has three or six digits"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "text.length === 0 || ",
+    "to": "",
+    "why": "an empty label is refused"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "text.length > 24",
+    "to": "text.length >= 24",
+    "why": "a label of 24 characters is accepted"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "typeof given[key] === typeof value ? given[key] : value",
+    "to": "given[key]",
+    "why": "a saved field missing or of another type takes its default"
+  },
+  {
+    "file": "hooks/limits.ts",
+    "from": "(['five_hour', 'seven_day'] as const)",
+    "to": "(['five_hour'] as const)",
+    "why": "the week's window is taken from what the engine measured"
+  },
+  {
+    "file": "hooks/limits.ts",
+    "from": "(['five_hour', 'seven_day'] as const)",
+    "to": "(['seven_day'] as const)",
+    "why": "the session's window is taken from what the engine measured"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  if (found.length > 0) {",
+    "to": "  if (true) {",
+    "why": "a measure with no windows keeps the last reading"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await $.store.set('limits', found).catch(orElse($, 'keeping the last reading', undefined))",
+    "to": "void found",
+    "why": "the last reading is kept for the next session"
+  },
+  {
+    "file": "hooks/limits.ts",
+    "from": "limit.kind === 'weekly_scoped' && ",
+    "to": "",
+    "why": "only a model's weekly limit is a model"
+  },
+  {
+    "file": "hooks/limits.ts",
+    "from": "typeof name === 'string' && ",
+    "to": "",
+    "why": "a weekly limit with no model name is left out"
+  },
+  {
+    "file": "hooks/limits.ts",
+    "from": "typeof limit.percent === 'number'\n",
+    "to": "true\n",
+    "why": "a weekly limit with no percent is left out"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (wait > 0) {",
+    "to": "if (false) {",
+    "why": "a read asked for too soon waits"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "trailing ??= $.clock.after(",
+    "to": "trailing = $.clock.after(",
+    "why": "the changes within the wait are read once"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "$.clock.after(wait, () => {",
+    "to": "$.clock.after(60_000, () => {",
+    "why": "a wait lasts until the minute is over"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (auth === undefined) {",
+    "to": "    if (false) {",
+    "why": "no credential, no read of the endpoint"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const USAGE_URL = 'https://api.anthropic.com/api/oauth/usage'",
+    "to": "const USAGE_URL = 'https://api.anthropic.com/api/oauth/other'",
+    "why": "the usage endpoint is the one /usage reads"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      auth,\n",
+    "to": "",
+    "why": "the endpoint is read with the session's credential"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "headers: { 'anthropic-beta': 'oauth-2025-04-20' },",
+    "to": "headers: {},",
+    "why": "the endpoint is read with its beta header"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (!ok) {",
+    "to": "    if (false) {",
+    "why": "an endpoint that refuses leaves the models out"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await $.store.set('models', found)",
+    "to": "    void found",
+    "why": "the last models are kept for the next session"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  ticker?.cancel()\n",
+    "to": "",
+    "why": "a new cycle replaces the old one"
+  },
+  {
+    "file": "hooks/timing.ts",
+    "from": "cycle && cycleSeconds > 0 ?",
+    "to": "cycle ?",
+    "why": "with 0 seconds the windows pass on only by click"
+  },
+  {
+    "file": "hooks/timing.ts",
+    "from": "cycle && cycleSeconds > 0 ?",
+    "to": "cycleSeconds > 0 ?",
+    "why": "with all windows in a line nothing cycles"
+  },
+  {
+    "file": "hooks/timing.ts",
+    "from": "cycleSeconds * 1000",
+    "to": "cycleSeconds * 100",
+    "why": "a window stays as many seconds as set"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "root === null ? undefined : `settings:${root}`",
+    "to": "`settings:${root}`",
+    "why": "where the session tells no root, nothing is saved for a project"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "loaded(project ?? global)",
+    "to": "loaded(global)",
+    "why": "a session starts with its project's saved settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "loaded(project ?? global)",
+    "to": "loaded(project)",
+    "why": "a project without its own settings starts with the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: project !== undefined ? 'project' : 'defaults',",
+    "why": "the pane says the settings are the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: global !== undefined ? 'global' : 'defaults',",
+    "why": "the pane says the settings are the project's"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject: project !== undefined,",
+    "to": "hasProject: false,",
+    "why": "a project with saved settings can forget them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = source === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = 'settings'",
+    "why": "settings from a project are unsaved against the project's save"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "source === 'defaults' || key === undefined\n      ? DEFAULTS",
+    "to": "key === undefined\n      ? DEFAULTS",
+    "why": "settings from the defaults are unsaved against the defaults"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "some(field => now[field] !== saved[field])",
+    "to": "some(field => false)",
+    "why": "a change is marked unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "current => ({ ...current, ...patch })",
+    "to": "() => ({ ...DEFAULTS, ...patch })",
+    "why": "a change keeps the settings it did not touch"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = where === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = 'settings'",
+    "why": "saving for the project keeps them under the project"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = where === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = await projectKey($)",
+    "why": "saving globally keeps them for every project"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  if (key === undefined) {\n    $.ui.toast(TEXT.noProject)",
+    "to": "  if (false) {\n    $.ui.toast(TEXT.noProject)",
+    "why": "saving for a session with no project says so"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "  source: where,\n  isChanged: false,\n",
+    "to": "  source: 'global',\n  isChanged: false,\n",
+    "why": "a saved change is the project's"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject: now.hasProject || where === 'project',",
+    "to": "hasProject: now.hasProject,",
+    "why": "a project that just saved can forget its settings"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "  source: where,\n  isChanged: false,",
+    "to": "  source: where,\n  isChanged: true,",
+    "why": "a saved change is no longer unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      await $.store.delete(key)",
+    "to": "      void key",
+    "why": "forgetting drops the project's saved settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  await loadSettings($)\n}\n\n// The settings and the last readings",
+    "to": "}\n\n// The settings and the last readings",
+    "why": "after forgetting, the session takes the global settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (Array.isArray(savedLimits))",
+    "to": "if (true)",
+    "why": "a last reading that is no list is ignored"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (Array.isArray(savedModels))",
+    "to": "if (true)",
+    "why": "last models that are no list are ignored"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    hasStarted = false\n",
+    "to": "",
+    "why": "a start that fails is tried again at the next drawing"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    redraw?.cancel()\n",
+    "to": "",
+    "why": "a new start replaces the old redraw"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    void fetchModels($)\n    redraw",
+    "to": "    redraw",
+    "why": "a session reads the models as it starts"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await remember($, windowsOf(usage?.rateLimits ?? []))",
+    "to": "void usage",
+    "why": "a session starts with the windows the engine has measured"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "  if (seconds <= 0) {",
+    "to": "  if (seconds < 0) {",
+    "why": "no time left reads now"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": ": `${minutes}m`",
+    "to": ": `${hours}h`",
+    "why": "under an hour reads in minutes"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": ": hours > 0 ? `${hours}h${minutes}m`",
+    "to": ": hours > 0 ? `${hours}h`",
+    "why": "under a day reads in hours and minutes"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "days > 0 ? `${days}d${hours}h`",
+    "to": "days > 0 ? `${days}d`",
+    "why": "days read with their hours"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "Number.isNaN(parsed) || parsed <= now ? undefined : Math.floor(parsed / 1000)",
+    "to": "Number.isNaN(parsed) ? undefined : Math.floor(parsed / 1000)",
+    "why": "a window past its reset has no time to reset"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "Number.isNaN(parsed) || parsed > now ? Math.floor(limit.percentUsed) : 0",
+    "to": "Math.floor(limit.percentUsed)",
+    "why": "a window past its reset counts as unused"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "pct >= s.highFrom ? s.highColor : pct >= s.midFrom ? s.midColor : s.lowColor",
+    "to": "pct > s.highFrom ? s.highColor : pct >= s.midFrom ? s.midColor : s.lowColor",
+    "why": "a use is high from its threshold"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "pct >= s.highFrom ? s.highColor : pct >= s.midFrom ? s.midColor : s.lowColor",
+    "to": "pct >= s.highFrom ? s.highColor : pct > s.midFrom ? s.midColor : s.lowColor",
+    "why": "a use is medium from its threshold"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "isBold: pct >= s.highFrom }",
+    "to": "isBold: false }",
+    "why": "a high use is bold"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "(limit.name ?? '')",
+    "to": "''",
+    "why": "a model's limit is labelled with its name"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "limit.kind === 'five_hour' ? s.sessionLabel : limit.kind === 'seven_day' ? s.weekLabel",
+    "to": "limit.kind === 'five_hour' ? s.weekLabel : limit.kind === 'seven_day' ? s.sessionLabel",
+    "why": "each window has its own label"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "Math.max(seconds - (resetsAt - window), 0)",
+    "to": "(seconds - (resetsAt - window))",
+    "why": "a window whose reset is further than its length has run nothing"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "timePct >= PACE_MIN_ELAPSED && pct > 0",
+    "to": "pct > 0",
+    "why": "a pace is judged only once a few percent of the window has run"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "ratio >= s.paceFast",
+    "to": "ratio > s.paceFast",
+    "why": "a pace is fast from its threshold"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "s.showCursor && timePct !== undefined ?",
+    "to": "timePct !== undefined ?",
+    "why": "the cursor hides when the setting says so"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "text: isFast ? '◆' : '◇'",
+    "to": "text: isFast ? '◇' : '◆'",
+    "why": "the cursor is solid while the pace is fast"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const filled = Math.min(Math.floor(pct / 10), CELLS)",
+    "to": "const filled = Math.min(Math.ceil(pct / 10), CELLS)",
+    "why": "the bar fills a cell per ten percent"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (s.showBar) {",
+    "to": "if (true) {",
+    "why": "the bar hides when the setting says so"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (s.showPercent) {",
+    "to": "if (true) {",
+    "why": "the share hides when the setting says so"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (s.showPace && elapsed !== undefined && ratio !== undefined) {",
+    "to": "if (elapsed !== undefined && ratio !== undefined) {",
+    "why": "the pace hides when the setting says so"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "{ color: s.paceColor, text: ' ↑' },",
+    "to": "{ color: s.mutedColor, text: ' ↑' },",
+    "why": "the pace arrow takes its own color"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "TEXT.runsOut(until((elapsed * 100) / pct - elapsed))",
+    "to": "TEXT.runsOut(until((elapsed * 100) / pct))",
+    "why": "a fast pace says in how long the limit runs out"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "ratio <= s.paceSlack",
+    "to": "ratio < s.paceSlack",
+    "why": "a pace is slack up to its threshold"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "TEXT.slack(100 - ratio)",
+    "to": "TEXT.slack(ratio)",
+    "why": "a slack pace says how much is left over"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (s.showReset && resetsAt !== undefined) {",
+    "to": "if (resetsAt !== undefined) {",
+    "why": "the time to reset hides when the setting says so"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "last.color === run.color && last.isBold === run.isBold",
+    "to": "last.color === run.color",
+    "why": "a bold run is not merged into a plain one"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "limit.kind === 'five_hour' ? s.showSession : s.showWeek",
+    "to": "limit.kind === 'five_hour' ? s.showWeek : s.showSession",
+    "why": "each window shows by its own setting"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "...(s.showModels ? perModel : [])",
+    "to": "...perModel",
+    "why": "the models hide when the setting says so"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": ".some(pane => pane.id === PANE)",
+    "to": ".length > 0",
+    "why": "the button opens the pane while another pane is open"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "s.cycle && shown.length > 0 ? shown[at % shown.length] : undefined",
+    "to": "s.cycle && shown.length > 0 ? shown[0] : undefined",
+    "why": "a cycle shows the window its turn has come to"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "        shown.length > 0 && (",
+    "to": "        (",
+    "why": "with no window shown only the ⚙ is drawn"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "...(at > 0",
+    "to": "...(at > 5",
+    "why": "windows in a line are told apart by a separator"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void update($, view, n => n + 1)}",
+    "to": "onPress={() => void update($, view, n => n)}",
+    "why": "a click passes on to the next window"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "weight={run.isBold ? 'semibold' : undefined}",
+    "to": "weight={undefined}",
+    "why": "a bold run is drawn bold"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text wrap=\"truncate-end\">",
+    "to": "<Text wrap=\"wrap\">",
+    "why": "a long line is cut at its end"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface === 'desktop' ? beneath : slotted(",
+    "to": "return slotted(",
+    "why": "the desktop's footer has no row of its own"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface !== 'desktop' || e.props.hasSurvey ? beneath :",
+    "to": "return e.props.hasSurvey ? beneath :",
+    "why": "outside the desktop app the band above the prompt has no row"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface !== 'desktop' || e.props.hasSurvey ? beneath :",
+    "to": "return e.surface !== 'desktop' ? beneath :",
+    "why": "a survey above the prompt keeps the row away"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "place === undefined ? Infinity : Number(place)",
+    "to": "place === undefined ? 0 : Number(place)",
+    "why": "a slot with no place goes last in its row"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": ".sort(([a], [b]) => a - b)",
+    "to": ".sort(([a], [b]) => b - a)",
+    "why": "the footer's rows come in their numbers' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "items.sort((a, b) => a.place - b.place)",
+    "to": "items.sort((a, b) => b.place - a.place)",
+    "why": "a row's slots come in their places' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "children: [...(rest === undefined ? [] : [rest]), ...laid],",
+    "to": "children: laid,",
+    "why": "what the footer drew beneath stays"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "if (typeof props?.key === 'string' && SLOT.test(props.key)) {",
+    "to": "if (false) {",
+    "why": "another mod's slot is laid with this one's"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "rest: kept.length === 0 ? undefined : (",
+    "to": "rest: false ? undefined : (",
+    "why": "a Box a slot leaves empty is taken out too"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "const SLOT = /^slot:(\\d+)(?:\\.(\\d+))?:/",
+    "to": "const SLOT = /slot:(\\d+)(?:\\.(\\d+))?:/",
+    "why": "only a key that starts with slot is a slot"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Box key=\"slot:0.1:bar-limits\"",
+    "to": "<Box key=\"slot:20.1:bar-limits\"",
+    "why": "the limits are the first of the slot rows"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isChecked ? '■' : '□'} {label}",
+    "to": "{isChecked ? '□' : '■'} {label}",
+    "why": "a switch on is a full square"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "dimColor={!isChecked}",
+    "to": "dimColor={isChecked}",
+    "why": "a switch off is dim"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "isCycle === s.cycle",
+    "to": "isCycle !== s.cycle",
+    "why": "the mode in use is the one picked"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "to": "{o.hasProject && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "why": "the project's settings are said to be unused only when they are"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "to": "{o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "why": "a project with no settings of its own says nothing of them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.isChanged && <Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "to": "{!o.isChanged && <Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "why": "the pane says the changes are unsaved"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const text = value.trim()",
+    "to": "const text = value",
+    "why": "a text typed with spaces around is trimmed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (refused !== undefined) {",
+    "to": "if (false) {",
+    "why": "a label or color that will not do is refused with a toast"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "/^\\d+$/.test(value.trim()) ? Number(value) : NaN",
+    "to": "/^\\d+$/.test(value) ? Number(value) : NaN",
+    "why": "a number typed with spaces around is accepted"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "n >= min && n <= max",
+    "to": "n > min && n <= max",
+    "why": "a number may be the least allowed"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "n >= min && n <= max",
+    "to": "n >= min && n < max",
+    "why": "a number may be the most allowed"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['highFrom', TEXT.highFrom, 0, 100],",
+    "to": "['highFrom', TEXT.highFrom, 0, 1000],",
+    "why": "a threshold is at most 100%"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['paceFast', TEXT.paceFast, 100, 1000],",
+    "to": "['paceFast', TEXT.paceFast, 0, 1000],",
+    "why": "a fast pace starts at 100% of the fair one"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "backgroundColor={e.surface === 'terminal' ? 'subtle' : undefined}",
+    "to": "backgroundColor=\"subtle\"",
+    "why": "only the terminal marks a field with a ground"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "backgroundColor={e.surface === 'terminal' ? 'subtle' : undefined}",
+    "to": "backgroundColor={undefined}",
+    "why": "the terminal marks a field with a ground"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "variant={o.isChanged ? 'primary' : 'secondary'}",
+    "to": "variant=\"secondary\"",
+    "why": "saving is the main button while changes are unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s[key]}>■</Text>",
+    "to": "<Text>■</Text>",
+    "why": "each color field shows its swatch"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a failure that is an Error says its message"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "failure instanceof Error ? failure.message : ''",
+    "why": "a failure that is not an Error says what it is"
+  },
+  {
+    "file": "hooks/timing.ts",
+    "from": "Math.max(0, fetchedAt + FETCH_EVERY_MS - now)",
+    "to": "fetchedAt + FETCH_EVERY_MS - now",
+    "why": "a read whose wait is over waits no time"
+  },
+  {
+    "file": "hooks/timing.ts",
+    "from": "fetchedAt + FETCH_EVERY_MS - now",
+    "to": "fetchedAt - now",
+    "why": "a wait lasts until the minute is over"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "refused: refusal(text)",
+    "to": "refused: refusal(value)",
+    "why": "what is wrong with a text typed is told of the text trimmed"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "shown[at % shown.length]",
+    "to": "shown[at]",
+    "why": "a cycle comes back to the first window after the last"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "s.cycle && shown.length > 0 ?",
+    "to": "shown.length > 0 ?",
+    "why": "a line that is not cycling shows no window by itself"
+  },
+  {
+    "file": "hooks/limits.ts",
+    "from": "resetsAt: found.resetsAt",
+    "to": "resetsAt: undefined",
+    "why": "a window keeps the time it resets"
+  },
+  {
+    "file": "hooks/limits.ts",
+    "from": "percentUsed: found.percentUsed",
+    "to": "percentUsed: 0",
+    "why": "a window keeps its share used"
+  },
+  {
+    "file": "hooks/limits.ts",
+    "from": " && limit.resets_at !== ''",
+    "to": "",
+    "why": "a model reset that is empty is none"
+  },
+  {
+    "file": "hooks/limits.ts",
+    "from": "typeof limit.resets_at === 'string' && ",
+    "to": "",
+    "why": "a model reset that is no text is none"
+  }
+]

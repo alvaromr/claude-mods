@@ -1,0 +1,45 @@
+// Every text the mod shows the person, in Spanish, kept together for the
+// planned translation.
+export const TEXT = {
+  title: 'Limpieza',
+  levels: { hidden: 'Ocultar', summary: 'Agrupar', full: 'Normal' },
+  needsJq: 'declutter necesita jq: hasta instalarlo, Claude Code dibuja las herramientas como siempre',
+  cannotCheckJq: (why: string) =>
+    `declutter no pudo comprobar si hay jq (${why}): Claude Code dibuja las herramientas como siempre`,
+  reasons: {
+    rejected: 'rechazado',
+    denied: 'denegado',
+    notRead: 'no leído antes',
+    notFound: 'texto no encontrado',
+    changedSinceRead: 'cambió desde que lo leyó',
+    missing: 'no existe',
+    noChanges: 'sin cambios',
+    severalMatches: 'varias coincidencias',
+    unknown: 'falló',
+  },
+  changes: (n: number) => `${n} ${n === 1 ? 'cambio' : 'cambios'}`,
+  files: (n: number) => `${n} ficheros`,
+  failed: (n: number) => `${n} ${n === 1 ? 'fallido' : 'fallidos'}`,
+  fold: 'plegar',
+  // In English, as Claude Code's own summary of a read beside them («Read 1 line»).
+  readImage: 'Read image',
+  readPdf: 'Read PDF',
+  sources: { project: 'Ajustes de este proyecto', global: 'Ajustes globales', defaults: 'Ajustes por defecto' },
+  unsaved: ' · cambios sin guardar',
+  projectHasOwn: 'Este proyecto tiene los suyos, que mandan al arrancar.',
+  scope:
+    'Cada cambio vale para esta sesión; abajo se guarda para el proyecto o para todos. Solo dibuja en la terminal.',
+  noProject: 'Esta sesión no dice cuál es su proyecto',
+  active: 'Activo',
+  activeNote: 'Desmarcado, todo se ve como lo dibuja Claude Code.',
+  diffs: 'Diffs',
+  commands: 'Comandos',
+  skills: 'Skills',
+  levelsNote: 'Ocultar: no se ven. Agrupar: en una línea que un clic despliega. Normal: como los dibuja Claude Code.',
+  startsOpen: 'Agrupados, desplegados de entrada',
+  startsOpenNote: 'Marcado, cada grupo empieza desplegado y un clic en su línea lo pliega.',
+  saveProject: 'Guardar para este proyecto',
+  saveGlobal: 'Guardar como globales',
+  forgetProject: 'Olvidar los del proyecto',
+  reset: 'Restablecer',
+}

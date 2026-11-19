@@ -1,0 +1,1514 @@
+[
+  {
+    "file": "hooks/lex.ts",
+    "from": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "to": "new Set(['then', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "why": "a command after if is found"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "to": "new Set(['if', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "why": "a command after then is found"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "to": "new Set(['if', 'then', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "why": "a command after else is found"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "to": "new Set(['if', 'then', 'else', 'while', 'until', 'do', '!', '{', '}'])",
+    "why": "a command after elif is found"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "to": "new Set(['if', 'then', 'else', 'elif', 'until', 'do', '!', '{', '}'])",
+    "why": "a command after while is found"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "to": "new Set(['if', 'then', 'else', 'elif', 'while', 'do', '!', '{', '}'])",
+    "why": "a command after until is found"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "to": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', '!', '{', '}'])",
+    "why": "a command after do is found"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "to": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '{', '}'])",
+    "why": "a command after ! is found"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '!', '{', '}'])",
+    "to": "new Set(['if', 'then', 'else', 'elif', 'while', 'until', 'do', '!', '}'])",
+    "why": "a command after { is found"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "if ((!first.isQuoted && KEYWORDS.has(first.text)) || /^\\w+=/.test(first.text)) {",
+    "to": "if (KEYWORDS.has(first.text) || /^\\w+=/.test(first.text)) {",
+    "why": "a quoted keyword is a command, not a keyword"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "if ((!first.isQuoted && KEYWORDS.has(first.text)) || /^\\w+=/.test(first.text)) {",
+    "to": "if (!first.isQuoted && KEYWORDS.has(first.text)) {",
+    "why": "a variable assignment before the command is skipped"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    command: { takes: [] },",
+    "to": "    commandx: { takes: [] },",
+    "why": "command runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    builtin: { takes: [] },",
+    "to": "    builtinx: { takes: [] },",
+    "why": "builtin runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    exec: { takes: ['-a'] },",
+    "to": "    execx: { takes: ['-a'] },",
+    "why": "exec runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    exec: { takes: ['-a'] },",
+    "to": "    exec: { takes: [] },",
+    "why": "exec -a takes a name before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    nohup: { takes: [] },",
+    "to": "    nohupx: { takes: [] },",
+    "why": "nohup runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    setsid: { takes: [] },",
+    "to": "    setsidx: { takes: [] },",
+    "why": "setsid runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    time: { takes: ['-f', '-o', '--format', '--output'] },",
+    "to": "    timex: { takes: ['-f', '-o', '--format', '--output'] },",
+    "why": "time runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    time: { takes: ['-f', '-o', '--format', '--output'] },",
+    "to": "    time: { takes: ['-o', '--format', '--output'] },",
+    "why": "time -f takes a format before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    time: { takes: ['-f', '-o', '--format', '--output'] },",
+    "to": "    time: { takes: ['-f', '--format', '--output'] },",
+    "why": "time -o takes a file before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    time: { takes: ['-f', '-o', '--format', '--output'] },",
+    "to": "    time: { takes: ['-f', '-o', '--output'] },",
+    "why": "time --format takes a format before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    time: { takes: ['-f', '-o', '--format', '--output'] },",
+    "to": "    time: { takes: ['-f', '-o', '--format'] },",
+    "why": "time --output takes a file before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    env: { takes: ['-u', '-C', '-S', '--unset', '--chdir', '--split-string'] },",
+    "to": "    envx: { takes: ['-u', '-C', '-S', '--unset', '--chdir', '--split-string'] },",
+    "why": "env runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    env: { takes: ['-u', '-C', '-S', '--unset', '--chdir', '--split-string'] },",
+    "to": "    env: { takes: ['-C', '-S', '--unset', '--chdir', '--split-string'] },",
+    "why": "env -u takes a name before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    env: { takes: ['-u', '-C', '-S', '--unset', '--chdir', '--split-string'] },",
+    "to": "    env: { takes: ['-u', '-S', '--unset', '--chdir', '--split-string'] },",
+    "why": "env -C takes a folder before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    env: { takes: ['-u', '-C', '-S', '--unset', '--chdir', '--split-string'] },",
+    "to": "    env: { takes: ['-u', '-C', '--unset', '--chdir', '--split-string'] },",
+    "why": "env -S takes a string before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    env: { takes: ['-u', '-C', '-S', '--unset', '--chdir', '--split-string'] },",
+    "to": "    env: { takes: ['-u', '-C', '-S', '--chdir', '--split-string'] },",
+    "why": "env --unset takes a name before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    env: { takes: ['-u', '-C', '-S', '--unset', '--chdir', '--split-string'] },",
+    "to": "    env: { takes: ['-u', '-C', '-S', '--unset', '--split-string'] },",
+    "why": "env --chdir takes a folder before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    env: { takes: ['-u', '-C', '-S', '--unset', '--chdir', '--split-string'] },",
+    "to": "    env: { takes: ['-u', '-C', '-S', '--unset', '--chdir'] },",
+    "why": "env --split-string takes a string before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    sudo: {\n      takes: ['-u',",
+    "to": "    sudox: {\n      takes: ['-u',",
+    "why": "sudo runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "takes: ['-u', '-g', '-h', '-p', '-C', '-D', '-R', '-r', '-t', '-T', '-U', '--user', '--group', '--host'],",
+    "to": "takes: ['-g', '-h', '-p', '-C', '-D', '-R', '-r', '-t', '-T', '-U', '--user', '--group', '--host'],",
+    "why": "sudo -u takes a user before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "takes: ['-u', '-g', '-h', '-p', '-C', '-D', '-R', '-r', '-t', '-T', '-U', '--user', '--group', '--host'],",
+    "to": "takes: ['-u', '-g', '-h', '-p', '-C', '-D', '-R', '-r', '-t', '-T', '-U', '--group', '--host'],",
+    "why": "sudo --user takes a user before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "takes: ['-u', '-g', '-h', '-p', '-C', '-D', '-R', '-r', '-t', '-T', '-U', '--user', '--group', '--host'],",
+    "to": "takes: ['-u', '-g', '-h', '-p', '-C', '-R', '-r', '-t', '-T', '-U', '--user', '--group', '--host'],",
+    "why": "sudo -D takes a folder before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    doas: { takes: ['-u', '-C'] },",
+    "to": "    doasx: { takes: ['-u', '-C'] },",
+    "why": "doas runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    doas: { takes: ['-u', '-C'] },",
+    "to": "    doas: { takes: ['-C'] },",
+    "why": "doas -u takes a user before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    nice: { takes: ['-n', '--adjustment'] },",
+    "to": "    nicex: { takes: ['-n', '--adjustment'] },",
+    "why": "nice runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    nice: { takes: ['-n', '--adjustment'] },",
+    "to": "    nice: { takes: ['--adjustment'] },",
+    "why": "nice -n takes a priority before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    nice: { takes: ['-n', '--adjustment'] },",
+    "to": "    nice: { takes: ['-n'] },",
+    "why": "nice --adjustment takes a priority before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    ionice: { takes: ['-c', '-n', '-p', '-P', '-u', '--class', '--classdata'] },",
+    "to": "    ionicex: { takes: ['-c', '-n', '-p', '-P', '-u', '--class', '--classdata'] },",
+    "why": "ionice runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    ionice: { takes: ['-c', '-n', '-p', '-P', '-u', '--class', '--classdata'] },",
+    "to": "    ionice: { takes: ['-n', '-p', '-P', '-u', '--class', '--classdata'] },",
+    "why": "ionice -c takes a class before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    ionice: { takes: ['-c', '-n', '-p', '-P', '-u', '--class', '--classdata'] },",
+    "to": "    ionice: { takes: ['-c', '-p', '-P', '-u', '--class', '--classdata'] },",
+    "why": "ionice -n takes a level before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    ionice: { takes: ['-c', '-n', '-p', '-P', '-u', '--class', '--classdata'] },",
+    "to": "    ionice: { takes: ['-c', '-n', '-p', '-P', '-u', '--classdata'] },",
+    "why": "ionice --class takes a class before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    ionice: { takes: ['-c', '-n', '-p', '-P', '-u', '--class', '--classdata'] },",
+    "to": "    ionice: { takes: ['-c', '-n', '-p', '-P', '-u', '--class'] },",
+    "why": "ionice --classdata takes a level before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    timeout: { takes: ['-k', '-s', '--kill-after', '--signal'], operands: 1 },",
+    "to": "    timeoutx: { takes: ['-k', '-s', '--kill-after', '--signal'], operands: 1 },",
+    "why": "timeout runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    timeout: { takes: ['-k', '-s', '--kill-after', '--signal'], operands: 1 },",
+    "to": "    timeout: { takes: ['-k', '-s', '--kill-after', '--signal'] },",
+    "why": "timeout takes its duration before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    timeout: { takes: ['-k', '-s', '--kill-after', '--signal'], operands: 1 },",
+    "to": "    timeout: { takes: ['-s', '--kill-after', '--signal'], operands: 1 },",
+    "why": "timeout -k takes a duration before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    timeout: { takes: ['-k', '-s', '--kill-after', '--signal'], operands: 1 },",
+    "to": "    timeout: { takes: ['-k', '--kill-after', '--signal'], operands: 1 },",
+    "why": "timeout -s takes a signal before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    timeout: { takes: ['-k', '-s', '--kill-after', '--signal'], operands: 1 },",
+    "to": "    timeout: { takes: ['-k', '-s', '--signal'], operands: 1 },",
+    "why": "timeout --kill-after takes a duration before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    timeout: { takes: ['-k', '-s', '--kill-after', '--signal'], operands: 1 },",
+    "to": "    timeout: { takes: ['-k', '-s', '--kill-after'], operands: 1 },",
+    "why": "timeout --signal takes a signal before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    stdbuf: { takes: ['-i', '-o', '-e', '--input', '--output', '--error'] },",
+    "to": "    stdbufx: { takes: ['-i', '-o', '-e', '--input', '--output', '--error'] },",
+    "why": "stdbuf runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    stdbuf: { takes: ['-i', '-o', '-e', '--input', '--output', '--error'] },",
+    "to": "    stdbuf: { takes: ['-o', '-e', '--input', '--output', '--error'] },",
+    "why": "stdbuf -i takes a mode before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    stdbuf: { takes: ['-i', '-o', '-e', '--input', '--output', '--error'] },",
+    "to": "    stdbuf: { takes: ['-i', '-e', '--input', '--output', '--error'] },",
+    "why": "stdbuf -o takes a mode before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    stdbuf: { takes: ['-i', '-o', '-e', '--input', '--output', '--error'] },",
+    "to": "    stdbuf: { takes: ['-i', '-o', '--input', '--output', '--error'] },",
+    "why": "stdbuf -e takes a mode before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    stdbuf: { takes: ['-i', '-o', '-e', '--input', '--output', '--error'] },",
+    "to": "    stdbuf: { takes: ['-i', '-o', '-e', '--output', '--error'] },",
+    "why": "stdbuf --input takes a mode before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    stdbuf: { takes: ['-i', '-o', '-e', '--input', '--output', '--error'] },",
+    "to": "    stdbuf: { takes: ['-i', '-o', '-e', '--input', '--error'] },",
+    "why": "stdbuf --output takes a mode before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    stdbuf: { takes: ['-i', '-o', '-e', '--input', '--output', '--error'] },",
+    "to": "    stdbuf: { takes: ['-i', '-o', '-e', '--input', '--output'] },",
+    "why": "stdbuf --error takes a mode before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "    xargs: {\n      takes: [",
+    "to": "    xargsx: {\n      takes: [",
+    "why": "xargs runs the command after it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-I',\n",
+    "to": "",
+    "why": "xargs -I takes a replacement before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-J',\n",
+    "to": "",
+    "why": "xargs -J takes a replacement before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-n',\n",
+    "to": "",
+    "why": "xargs -n takes a count before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-P',\n",
+    "to": "",
+    "why": "xargs -P takes a count before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-L',\n",
+    "to": "",
+    "why": "xargs -L takes a count before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-s',\n",
+    "to": "",
+    "why": "xargs -s takes a size before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-d',\n",
+    "to": "",
+    "why": "xargs -d takes a delimiter before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-E',\n",
+    "to": "",
+    "why": "xargs -E takes a string before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-a',\n",
+    "to": "",
+    "why": "xargs -a takes a file before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-R',\n",
+    "to": "",
+    "why": "xargs -R takes a count before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '-S',\n",
+    "to": "",
+    "why": "xargs -S takes a size before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '--max-args',\n",
+    "to": "",
+    "why": "xargs --max-args takes a count before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '--max-procs',\n",
+    "to": "",
+    "why": "xargs --max-procs takes a count before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "        '--delimiter',\n",
+    "to": "",
+    "why": "xargs --delimiter takes a delimiter before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "placeholder ??= name === 'xargs' ? replacement(text, rest[at + 1]) : undefined",
+    "to": "placeholder ??= undefined",
+    "why": "xargs puts the file where its replacement string stands"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "/^-[IJ]$/.test(option)\n    ? next?.text",
+    "to": "/^-[I]$/.test(option)\n    ? next?.text",
+    "why": "xargs -J names a replacement string"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "(/^-[IJ](.+)$|^-i(.+)$|^--replace=(.*)$/.exec(option)",
+    "to": "(/^-[IJ](.+)$|^--replace=(.*)$/.exec(option)",
+    "why": "xargs -iSTR names a replacement string"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "(/^-[IJ](.+)$|^-i(.+)$|^--replace=(.*)$/.exec(option)",
+    "to": "(/^-[IJ](.+)$|^-i(.+)$/.exec(option)",
+    "why": "xargs --replace=STR names a replacement string"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "(/^-[IJ](.+)$|^-i(.+)$|^--replace=(.*)$/.exec(option)",
+    "to": "(/^-i(.+)$|^--replace=(.*)$/.exec(option)",
+    "why": "xargs -ISTR names a replacement string"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "(option === '-i' || option === '--replace' ? '{}' : undefined)",
+    "to": "(option === '--replace' ? '{}' : undefined)",
+    "why": "xargs -i names {} as its replacement string"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "(option === '-i' || option === '--replace' ? '{}' : undefined)",
+    "to": "(option === '-i' ? '{}' : undefined)",
+    "why": "xargs --replace names {} as its replacement string"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "placeholder !== undefined && words.some(word => word.text === placeholder)",
+    "to": "false",
+    "why": "the files go where the placeholder stands"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "? words.flatMap(word => (word.text === placeholder ? files : [word]))",
+    "to": "? words.flatMap(word => [word])",
+    "why": "the placeholder is replaced by the files"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "rest = name === 'xargs' ? feed(rest, [FED], placeholder) : rest",
+    "to": "rest = rest",
+    "why": "xargs gives its command the folder it runs in"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "rest = rest.slice(at + (wrapper.operands ?? 0))",
+    "to": "rest = rest.slice(at)",
+    "why": "a wrapper's operands are skipped before the command"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "at += wrapper.takes.includes(text) ? 2 : 1",
+    "to": "at += 1",
+    "why": "a wrapper option's value is skipped with it"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "arg !== undefined && isOption(arg); arg = rest[at]) {",
+    "to": "arg !== undefined && false; arg = rest[at]) {",
+    "why": "a wrapper's options are skipped"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "const name = first.text.split('/').pop() ?? ''",
+    "to": "const name = first.text",
+    "why": "a command given by its path is found"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "const isOption = (word: Word) => word.isBare && word.text.startsWith('-') && word.text !== '-'",
+    "to": "const isOption = (word: Word) => word.text.startsWith('-') && word.text !== '-'",
+    "why": "a quoted word is no option"
+  },
+  {
+    "file": "hooks/invocation.ts",
+    "from": "const isOption = (word: Word) => word.isBare && word.text.startsWith('-') && word.text !== '-'",
+    "to": "const isOption = (word: Word) => word.isBare && word.text.startsWith('-')",
+    "why": "a lone - is no option"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "const isBare = command.charAt(i) !== \"'\" && command.charAt(i) !== '\"'",
+    "to": "const isBare = command.charAt(i) !== \"'\"",
+    "why": "a word that starts in double quotes is no option"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "const isBare = command.charAt(i) !== \"'\" && command.charAt(i) !== '\"'",
+    "to": "const isBare = command.charAt(i) !== '\"'",
+    "why": "a word that starts in single quotes is no option"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const first = args.findIndex(arg => (isOption(arg) && !/^-[HLP]$/.test(arg.text)) || /^[!(]$/.test(arg.text))",
+    "to": "const first = args.findIndex(arg => isOption(arg) || /^[!(]$/.test(arg.text))",
+    "why": "find's -H, -L and -P options come before the folders it searches"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const first = args.findIndex(arg => (isOption(arg) && !/^-[HLP]$/.test(arg.text)) || /^[!(]$/.test(arg.text))",
+    "to": "const first = args.findIndex(arg => isOption(arg) && !/^-[HLP]$/.test(arg.text))",
+    "why": "find's expression may start with ! or ("
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "if (open !== undefined && (arg.text === ';' || arg.text === '+')) {",
+    "to": "if (open !== undefined && arg.text === '+') {",
+    "why": "a ; ends a find clause"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "if (open !== undefined && (arg.text === ';' || arg.text === '+')) {",
+    "to": "if (open !== undefined && arg.text === ';') {",
+    "why": "a + ends a find clause"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^-(?:exec|execdir|ok|okdir)$/.test(arg.text)",
+    "to": "/^-(?:execdir|ok|okdir)$/.test(arg.text)",
+    "why": "find -exec runs a command"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^-(?:exec|execdir|ok|okdir)$/.test(arg.text)",
+    "to": "/^-(?:exec|ok|okdir)$/.test(arg.text)",
+    "why": "find -execdir runs a command"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^-(?:exec|execdir|ok|okdir)$/.test(arg.text)",
+    "to": "/^-(?:exec|execdir|okdir)$/.test(arg.text)",
+    "why": "find -ok runs a command"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^-(?:exec|execdir|ok|okdir)$/.test(arg.text)",
+    "to": "/^-(?:exec|execdir|ok)$/.test(arg.text)",
+    "why": "find -okdir runs a command"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "feed(clause, starts.length > 0 ? starts : [FED], '{}')",
+    "to": "feed(clause, [FED], '{}')",
+    "why": "find -exec runs on the folders searched"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "feed(clause, starts.length > 0 ? starts : [FED], '{}')",
+    "to": "feed(clause, starts, '{}')",
+    "why": "find with no folder searches the one it runs in"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "feed(clause, starts.length > 0 ? starts : [FED], '{}')",
+    "to": "feed(clause, starts.length > 0 ? starts : [FED])",
+    "why": "find puts the files where {} stands"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "  if (name === 'tee') {",
+    "to": "  if (name === 'teex') {",
+    "why": "tee writes the files it names"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "(name === 'sed' || name === 'gsed') && options.some(option => /^-[a-zA-Z]*i|^--in-place/.test(option))",
+    "to": "name === 'sed' && options.some(option => /^-[a-zA-Z]*i|^--in-place/.test(option))",
+    "why": "gsed -i writes the files it names"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "(name === 'sed' || name === 'gsed') && options.some(option => /^-[a-zA-Z]*i|^--in-place/.test(option))",
+    "to": "name === 'gsed' && options.some(option => /^-[a-zA-Z]*i|^--in-place/.test(option))",
+    "why": "sed -i writes the files it names"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^-[a-zA-Z]*i|^--in-place/.test(option)",
+    "to": "/^-[a-zA-Z]*i/.test(option)",
+    "why": "sed --in-place writes the files it names"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^-[a-zA-Z]*i|^--in-place/.test(option)",
+    "to": "/^-i|^--in-place/.test(option)",
+    "why": "sed -ni writes the files it names"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "      args.filter(arg => arg.text !== ''),",
+    "to": "      args,",
+    "why": "sed -i with an empty suffix names no file"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "option => /^-[a-zA-Z]*[ef]$|^--(?:expression|file)$/.test(option),",
+    "to": "option => /^-[a-zA-Z]*[f]$|^--(?:expression|file)$/.test(option),",
+    "why": "sed -e takes the script, not a file"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "option => /^-[a-zA-Z]*[ef]$|^--(?:expression|file)$/.test(option),",
+    "to": "option => /^-[a-zA-Z]*[e]$|^--(?:expression|file)$/.test(option),",
+    "why": "sed -f takes the script file, not a file to edit"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "option => /^-[a-zA-Z]*[ef]$|^--(?:expression|file)$/.test(option),",
+    "to": "option => /^-[a-zA-Z]*[ef]$|^--(?:file)$/.test(option),",
+    "why": "sed --expression takes the script, not a file"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "option => /^-[a-zA-Z]*[ef]$|^--(?:expression|file)$/.test(option),",
+    "to": "option => /^-[a-zA-Z]*[ef]$|^--(?:expression)$/.test(option),",
+    "why": "sed --file takes the script file, not a file to edit"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "(name === 'perl' || name === 'ruby') && options.some(option => /^-[a-zA-Z0-9]*i/.test(option))",
+    "to": "name === 'perl' && options.some(option => /^-[a-zA-Z0-9]*i/.test(option))",
+    "why": "ruby -i writes the files it names"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "(name === 'perl' || name === 'ruby') && options.some(option => /^-[a-zA-Z0-9]*i/.test(option))",
+    "to": "name === 'ruby' && options.some(option => /^-[a-zA-Z0-9]*i/.test(option))",
+    "why": "perl -i writes the files it names"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const files = editedFiles(args, option => /^-[a-zA-Z0-9]*e$/.test(option))",
+    "to": "const files = editedFiles(args, () => false)",
+    "why": "perl -e takes the script, not a file"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "(name === 'awk' || name === 'gawk') &&",
+    "to": "name === 'awk' &&",
+    "why": "gawk -i inplace writes the files it names"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "(name === 'awk' || name === 'gawk') &&",
+    "to": "name === 'gawk' &&",
+    "why": "awk -i inplace writes the files it names"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "args.some((arg, at) => arg.text === '-i' && args[at + 1]?.text === 'inplace')",
+    "to": "args.some((arg, at) => arg.text === '-i')",
+    "why": "awk -i with another library writes no file"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "args.filter((arg, at) => arg.text !== 'inplace' || args[at - 1]?.text !== '-i'),",
+    "to": "args,",
+    "why": "awk -i inplace names no file called inplace"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "      option => option === '-f',\n",
+    "to": "      () => false,\n",
+    "why": "awk -f takes the program file, not a file to edit"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "  if (name === 'cp' || name === 'mv') {",
+    "to": "  if (name === 'cp') {",
+    "why": "mv over a file writes it"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "  if (name === 'cp' || name === 'mv') {",
+    "to": "  if (name === 'mv') {",
+    "why": "cp over a file writes it"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^-[a-zA-Z]*t$|^--target-directory$/.test(arg.text)",
+    "to": "/^-t$|^--target-directory$/.test(arg.text)",
+    "why": "cp -rt names the folder it copies into"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^-[a-zA-Z]*t$|^--target-directory$/.test(arg.text)",
+    "to": "/^-[a-zA-Z]*t$/.test(arg.text)",
+    "why": "cp --target-directory DIR names the folder it copies into"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^(?:-t|--target-directory=)./.test(arg.text)",
+    "to": "/^(?:--target-directory=)./.test(arg.text)",
+    "why": "cp -tDIR names the folder it copies into"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^(?:-t|--target-directory=)./.test(arg.text)",
+    "to": "/^(?:-t)./.test(arg.text)",
+    "why": "cp --target-directory=DIR names the folder it copies into"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "attached?.text.replace(/^(?:-t|--target-directory=)/, '')",
+    "to": "attached?.text",
+    "why": "an attached folder is taken without its option"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const operands = positional.filter(arg => arg !== directory.word)",
+    "to": "const operands = positional",
+    "why": "the folder -t names is no source"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "writes.push(...operands.map(arg => ({ path: `${folder}/${named(arg)}`, how: name, ifExists: true })))",
+    "to": "writes.push(...operands.map(arg => ({ path: `${folder}/${named(arg)}`, how: name })))",
+    "why": "a copy into the folder -t names writes only a file that is there"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "} else if (last !== undefined && operands.length >= 2) {",
+    "to": "} else if (last !== undefined && operands.length >= 1) {",
+    "why": "a cp with one operand writes nothing"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const paths = target.endsWith('/') || sources.length > 1 ? into : [target, ...into]",
+    "to": "const paths = sources.length > 1 ? into : [target, ...into]",
+    "why": "a target with a slash is a folder"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const paths = target.endsWith('/') || sources.length > 1 ? into : [target, ...into]",
+    "to": "const paths = target.endsWith('/') ? into : [target, ...into]",
+    "why": "several sources go into a folder"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const paths = target.endsWith('/') || sources.length > 1 ? into : [target, ...into]",
+    "to": "const paths = into",
+    "why": "a target with no slash may be the file itself"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "writes.push(...paths.map(path => ({ path, how: name, ifExists: true })))",
+    "to": "writes.push(...paths.map(path => ({ path, how: name })))",
+    "why": "a copy writes a file of the project only by replacing one"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const GIT_OPTION_ARGS = new Set(['-C', '-c', '--git-dir', '--work-tree', '--namespace', '--super-prefix'])",
+    "to": "const GIT_OPTION_ARGS = new Set(['-c', '--git-dir', '--work-tree', '--namespace', '--super-prefix'])",
+    "why": "git -C takes a folder before the subcommand"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const GIT_OPTION_ARGS = new Set(['-C', '-c', '--git-dir', '--work-tree', '--namespace', '--super-prefix'])",
+    "to": "const GIT_OPTION_ARGS = new Set(['-C', '--git-dir', '--work-tree', '--namespace', '--super-prefix'])",
+    "why": "git -c takes a setting before the subcommand"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const GIT_OPTION_ARGS = new Set(['-C', '-c', '--git-dir', '--work-tree', '--namespace', '--super-prefix'])",
+    "to": "const GIT_OPTION_ARGS = new Set(['-C', '-c', '--work-tree', '--namespace', '--super-prefix'])",
+    "why": "git --git-dir takes a folder before the subcommand"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const GIT_OPTION_ARGS = new Set(['-C', '-c', '--git-dir', '--work-tree', '--namespace', '--super-prefix'])",
+    "to": "const GIT_OPTION_ARGS = new Set(['-C', '-c', '--git-dir', '--namespace', '--super-prefix'])",
+    "why": "git --work-tree takes a folder before the subcommand"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const GIT_OPTION_ARGS = new Set(['-C', '-c', '--git-dir', '--work-tree', '--namespace', '--super-prefix'])",
+    "to": "const GIT_OPTION_ARGS = new Set(['-C', '-c', '--git-dir', '--work-tree', '--super-prefix'])",
+    "why": "git --namespace takes a name before the subcommand"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const GIT_OPTION_ARGS = new Set(['-C', '-c', '--git-dir', '--work-tree', '--namespace', '--super-prefix'])",
+    "to": "const GIT_OPTION_ARGS = new Set(['-C', '-c', '--git-dir', '--work-tree', '--namespace'])",
+    "why": "git --super-prefix takes a prefix before the subcommand"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^--(?:check|stat|numstat|summary|dry-run)$/.test(option)",
+    "to": "/^--(?:stat|numstat|summary|dry-run)$/.test(option)",
+    "why": "git apply --check writes nothing"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^--(?:check|stat|numstat|summary|dry-run)$/.test(option)",
+    "to": "/^--(?:check|numstat|summary|dry-run)$/.test(option)",
+    "why": "git apply --stat writes nothing"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^--(?:check|stat|numstat|summary|dry-run)$/.test(option)",
+    "to": "/^--(?:check|stat|summary|dry-run)$/.test(option)",
+    "why": "git apply --numstat writes nothing"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^--(?:check|stat|numstat|summary|dry-run)$/.test(option)",
+    "to": "/^--(?:check|stat|numstat|dry-run)$/.test(option)",
+    "why": "git apply --summary writes nothing"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "/^--(?:check|stat|numstat|summary|dry-run)$/.test(option)",
+    "to": "/^--(?:check|stat|numstat|summary)$/.test(option)",
+    "why": "patch --dry-run writes nothing"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "(name === 'patch' || (name === 'git' && args[sub]?.text === 'apply'))",
+    "to": "(name === 'git' && args[sub]?.text === 'apply')",
+    "why": "patch writes the files it patches"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "(name === 'patch' || (name === 'git' && args[sub]?.text === 'apply'))",
+    "to": "(name === 'patch')",
+    "why": "git apply writes the files it patches"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "how: name === 'git' ? 'git apply' : 'patch'",
+    "to": "how: 'patch'",
+    "why": "git apply is named as itself"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const SCRIPTS = new Set(['python', 'python3', 'node', 'bun', 'deno', 'ruby', 'perl'])",
+    "to": "const SCRIPTS = new Set(['python3', 'node', 'bun', 'deno', 'ruby', 'perl'])",
+    "why": "a python script that writes a file is a write"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const SCRIPTS = new Set(['python', 'python3', 'node', 'bun', 'deno', 'ruby', 'perl'])",
+    "to": "const SCRIPTS = new Set(['python', 'node', 'bun', 'deno', 'ruby', 'perl'])",
+    "why": "a python3 script that writes a file is a write"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const SCRIPTS = new Set(['python', 'python3', 'node', 'bun', 'deno', 'ruby', 'perl'])",
+    "to": "const SCRIPTS = new Set(['python', 'python3', 'bun', 'deno', 'ruby', 'perl'])",
+    "why": "a node script that writes a file is a write"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const SCRIPTS = new Set(['python', 'python3', 'node', 'bun', 'deno', 'ruby', 'perl'])",
+    "to": "const SCRIPTS = new Set(['python', 'python3', 'node', 'deno', 'ruby', 'perl'])",
+    "why": "a bun script that writes a file is a write"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const SCRIPTS = new Set(['python', 'python3', 'node', 'bun', 'deno', 'ruby', 'perl'])",
+    "to": "const SCRIPTS = new Set(['python', 'python3', 'node', 'bun', 'ruby', 'perl'])",
+    "why": "a deno script that writes a file is a write"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const SCRIPTS = new Set(['python', 'python3', 'node', 'bun', 'deno', 'ruby', 'perl'])",
+    "to": "const SCRIPTS = new Set(['python', 'python3', 'node', 'bun', 'deno', 'perl'])",
+    "why": "a ruby script that writes a file is a write"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const SCRIPTS = new Set(['python', 'python3', 'node', 'bun', 'deno', 'ruby', 'perl'])",
+    "to": "const SCRIPTS = new Set(['python', 'python3', 'node', 'bun', 'deno', 'ruby'])",
+    "why": "a perl script that writes a file is a write"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "  /\\bopen\\(\\s*(['\"])(.+?)\\1\\s*,\\s*['\"][^'\"]*[wax]/g,\n",
+    "to": "",
+    "why": "a script's open for writing names its file"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "  /\\bPath\\(\\s*(['\"])(.+?)\\1\\s*\\)\\s*\\.\\s*write_(?:text|bytes)\\(/g,\n",
+    "to": "",
+    "why": "a script's Path write names its file"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "  /\\b(?:writeFileSync|writeFile|appendFileSync|appendFile)\\(\\s*(['\"`])(.+?)\\1/g,\n",
+    "to": "",
+    "why": "a script's writeFile names its file"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "  /\\bFile\\.write\\(\\s*(['\"])(.+?)\\1/g,\n",
+    "to": "",
+    "why": "a script's File.write names its file"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const paths = literal.length > 0 ? literal : [...script.matchAll(PATH_LITERAL)].map(pathIn)",
+    "to": "const paths = literal",
+    "why": "a script that writes with no literal path is read for any path in it"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const paths = literal.length > 0 ? literal : [...script.matchAll(PATH_LITERAL)].map(pathIn)",
+    "to": "const paths = [...script.matchAll(PATH_LITERAL)].map(pathIn)",
+    "why": "a script that names its file is read for that file alone"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "|\\bFile\\.write\\(|\\bshutil\\.(?:copy|move)/",
+    "to": "|\\bFile\\.write\\(/",
+    "why": "a shutil copy or move is a write"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "|\\bshutil\\.(?:copy|move)/",
+    "to": "|\\bshutil\\.(?:move)/",
+    "why": "a shutil copy is a write"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "|\\bshutil\\.(?:copy|move)/",
+    "to": "|\\bshutil\\.(?:copy)/",
+    "why": "a shutil move is a write"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const PATH_LITERAL = /(['\"`])((?:~|\\.{0,2})\\/[^'\"`\\n]*|[\\w.-]+\\/[^'\"`\\n]*|[\\w-]+\\.\\w{1,8})\\1/g",
+    "to": "const PATH_LITERAL = /(['\"`])([\\w.-]+\\/[^'\"`\\n]*|[\\w-]+\\.\\w{1,8})\\1/g",
+    "why": "an absolute path in a script is a path"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const PATH_LITERAL = /(['\"`])((?:~|\\.{0,2})\\/[^'\"`\\n]*|[\\w.-]+\\/[^'\"`\\n]*|[\\w-]+\\.\\w{1,8})\\1/g",
+    "to": "const PATH_LITERAL = /(['\"`])((?:\\.{0,2})\\/[^'\"`\\n]*|[\\w.-]+\\/[^'\"`\\n]*|[\\w-]+\\.\\w{1,8})\\1/g",
+    "why": "a path under ~ in a script is a path"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const PATH_LITERAL = /(['\"`])((?:~|\\.{0,2})\\/[^'\"`\\n]*|[\\w.-]+\\/[^'\"`\\n]*|[\\w-]+\\.\\w{1,8})\\1/g",
+    "to": "const PATH_LITERAL = /(['\"`])((?:~|\\.{0,2})\\/[^'\"`\\n]*|[\\w-]+\\.\\w{1,8})\\1/g",
+    "why": "a relative path with a folder in a script is a path"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "const PATH_LITERAL = /(['\"`])((?:~|\\.{0,2})\\/[^'\"`\\n]*|[\\w.-]+\\/[^'\"`\\n]*|[\\w-]+\\.\\w{1,8})\\1/g",
+    "to": "const PATH_LITERAL = /(['\"`])((?:~|\\.{0,2})\\/[^'\"`\\n]*|[\\w.-]+\\/[^'\"`\\n]*)\\1/g",
+    "why": "a file name with an extension in a script is a path"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": ".filter((arg, at) => /^-[a-zA-Z]*[ce]$|^--eval$/.test(args[at - 1]?.text ?? ''))",
+    "to": ".filter((arg, at) => /^-[a-zA-Z]*[ce]$/.test(args[at - 1]?.text ?? ''))",
+    "why": "a script given to --eval is read"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": ".filter((arg, at) => /^-[a-zA-Z]*[ce]$|^--eval$/.test(args[at - 1]?.text ?? ''))",
+    "to": ".filter((arg, at) => /^-[a-zA-Z]*[e]$|^--eval$/.test(args[at - 1]?.text ?? ''))",
+    "why": "a script given to -c is read"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": ".filter((arg, at) => /^-[a-zA-Z]*[ce]$|^--eval$/.test(args[at - 1]?.text ?? ''))",
+    "to": ".filter((arg, at) => /^-[a-zA-Z]*[c]$|^--eval$/.test(args[at - 1]?.text ?? ''))",
+    "why": "a script given to -e is read"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "    if (WRITES_FILE.test(script)) {",
+    "to": "    if (true) {",
+    "why": "a script that writes no file writes none"
+  },
+  {
+    "file": "hooks/written.ts",
+    "from": "      ...input,\n",
+    "to": "",
+    "why": "a script on the input is read"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const SCRATCH = /^(?:\\/dev\\/|\\/tmp\\/|\\/private\\/tmp\\/|\\/var\\/folders\\/|\\/private\\/var\\/folders\\/)|\\/\\.git\\//",
+    "to": "const SCRATCH = /^(?:\\/tmp\\/|\\/private\\/tmp\\/|\\/var\\/folders\\/|\\/private\\/var\\/folders\\/)|\\/\\.git\\//",
+    "why": "writing to /dev is never an edit of a project"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const SCRATCH = /^(?:\\/dev\\/|\\/tmp\\/|\\/private\\/tmp\\/|\\/var\\/folders\\/|\\/private\\/var\\/folders\\/)|\\/\\.git\\//",
+    "to": "const SCRATCH = /^(?:\\/dev\\/|\\/private\\/tmp\\/|\\/var\\/folders\\/|\\/private\\/var\\/folders\\/)|\\/\\.git\\//",
+    "why": "writing to /tmp is never an edit of a project"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const SCRATCH = /^(?:\\/dev\\/|\\/tmp\\/|\\/private\\/tmp\\/|\\/var\\/folders\\/|\\/private\\/var\\/folders\\/)|\\/\\.git\\//",
+    "to": "const SCRATCH = /^(?:\\/dev\\/|\\/tmp\\/|\\/var\\/folders\\/|\\/private\\/var\\/folders\\/)|\\/\\.git\\//",
+    "why": "writing to /private/tmp is never an edit of a project"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const SCRATCH = /^(?:\\/dev\\/|\\/tmp\\/|\\/private\\/tmp\\/|\\/var\\/folders\\/|\\/private\\/var\\/folders\\/)|\\/\\.git\\//",
+    "to": "const SCRATCH = /^(?:\\/dev\\/|\\/tmp\\/|\\/private\\/tmp\\/|\\/private\\/var\\/folders\\/)|\\/\\.git\\//",
+    "why": "writing to /var/folders is never an edit of a project"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const SCRATCH = /^(?:\\/dev\\/|\\/tmp\\/|\\/private\\/tmp\\/|\\/var\\/folders\\/|\\/private\\/var\\/folders\\/)|\\/\\.git\\//",
+    "to": "const SCRATCH = /^(?:\\/dev\\/|\\/tmp\\/|\\/private\\/tmp\\/|\\/var\\/folders\\/)|\\/\\.git\\//",
+    "why": "writing to /private/var/folders is never an edit of a project"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const SCRATCH = /^(?:\\/dev\\/|\\/tmp\\/|\\/private\\/tmp\\/|\\/var\\/folders\\/|\\/private\\/var\\/folders\\/)|\\/\\.git\\//",
+    "to": "const SCRATCH = /^(?:\\/dev\\/|\\/tmp\\/|\\/private\\/tmp\\/|\\/var\\/folders\\/|\\/private\\/var\\/folders\\/)/",
+    "why": "writing inside .git is never an edit of a project"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "    .replace(/^~(?=\\/|$)/, home)\n",
+    "to": "",
+    "why": "~ is the home folder"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "    .replace(/^\\$\\{?HOME\\}?(?=\\/|$)/, home)\n",
+    "to": "",
+    "why": "$HOME is the home folder"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "    .replace(/^\\$\\{?PWD\\}?(?=\\/|$)/, cwd)",
+    "to": "",
+    "why": "$PWD is the folder the command runs in"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "if (/[$`]/.test(path) || path === '') {",
+    "to": "if (path === '') {",
+    "why": "a path only the shell knows is not asked of git"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "if (/[$`]/.test(path) || path === '') {",
+    "to": "if (/[$`]/.test(path)) {",
+    "why": "an empty path names no file"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const fixed = glob < 0 ? path : path.slice(0, path.lastIndexOf('/', glob) + 1) || '.'",
+    "to": "const fixed = path.slice(0, path.lastIndexOf('/', glob) + 1) || '.'",
+    "why": "a path with no glob stays as written"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const fixed = glob < 0 ? path : path.slice(0, path.lastIndexOf('/', glob) + 1) || '.'",
+    "to": "const fixed = path",
+    "why": "a glob stands for its folder"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const absolute = fixed.startsWith('/') ? fixed : `${cwd}/${fixed}`",
+    "to": "const absolute = fixed",
+    "why": "a relative path is taken from where the command runs"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "    if (part === '..') {\n      kept.pop()",
+    "to": "    if (part === '...') {\n      kept.pop()",
+    "why": "a .. goes up a folder"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "} else if (part !== '.' && part !== '') {",
+    "to": "} else if (part !== '') {",
+    "why": "a . stays in its folder"
+  },
+  {
+    "file": "hooks/project.ts",
+    "from": "writes.filter(write => !SCRATCH.test(write.path))",
+    "to": "writes",
+    "why": "a write to a scratch folder is not asked of git"
+  },
+  {
+    "file": "hooks/project.ts",
+    "from": "asked.map(write => (write.ifExists ? `?${write.path}` : write.path))",
+    "to": "asked.map(write => write.path)",
+    "why": "a copy or move is asked of git only where it replaces a file"
+  },
+  {
+    "file": "hooks/project.ts",
+    "from": "  return asked.filter(write => found.has(write.path))",
+    "to": "  return asked",
+    "why": "a write is denied only where git says it is a project file"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "const caught = writes.length > 0 ? await inProject($, writes) : []",
+    "to": "const caught = writes",
+    "why": "a write is denied only where git says it is a project file"
+  },
+  {
+    "file": "hooks/project.ts",
+    "from": "const files = [...new Set(caught.map(write => write.path))].join(', ')",
+    "to": "const files = caught.map(write => write.path).join(', ')",
+    "why": "a file written twice is named once"
+  },
+  {
+    "file": "hooks/project.ts",
+    "from": "const hows = [...new Set(caught.map(write => write.how))].join(', ')",
+    "to": "const hows = caught.map(write => write.how).join(', ')",
+    "why": "a way of writing used twice is named once"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "    const why = await refusal($, e.command ?? '')\n\n    return why === undefined ? next(e) : { deny: why }\n  }).catch(($, e, next) => (next.called ? next(e) : failed($)))",
+    "to": "    return next(e)\n  }).catch(($, e, next) => (next.called ? next(e) : failed($)))",
+    "why": "the command a Monitor runs is checked"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "    const why = await refusal($, e.command ?? '')\n\n    return why === undefined ? next(e) : { deny: why }\n  }).catch(($, e, next) => (next.called ? next(e) : failed($)))",
+    "to": "    const why = await refusal($, e.command ?? '')\n\n    return why === undefined ? next(e) : { deny: why }\n  }).catch(($, e, next) => next(e))",
+    "why": "a Monitor command its own check fails on is denied"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "    const why = await refusal($, e.command)\n\n    return why === undefined ? next(e) : { deny: why }\n  }).catch(($, e, next) => (next.called ? next(e) : failed($)))",
+    "to": "    const why = await refusal($, e.command)\n\n    return why === undefined ? next(e) : { deny: why }\n  }).catch(($, e, next) => next(e))",
+    "why": "a Bash command its own check fails on is denied"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "const why = await refusal($, e.command ?? '')",
+    "to": "const why = await refusal($, e.command as string)",
+    "why": "a Monitor with no command runs"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "if (c !== '\\n' && /\\s/.test(c)) {",
+    "to": "if (/\\s/.test(c)) {",
+    "why": "a newline ends a command"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "(isIndented ? line.replace(/^\\t+/, '') : line) === delimiter",
+    "to": "line === delimiter",
+    "why": "a <<- heredoc ends at a tab-indented delimiter"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "isIndented: op.endsWith('<<-'), owner: segment",
+    "to": "isIndented: false, owner: segment",
+    "why": "a <<- heredoc ends at a tab-indented delimiter"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "} else if (c === '#' && (i === 0 || /\\s/.test(command.charAt(i - 1)))) {",
+    "to": "} else if (c === '#' && /\\s/.test(command.charAt(i - 1))) {",
+    "why": "a comment at the start of the line writes nothing"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "end(op === '|' || op === '|&')",
+    "to": "end(op === '|')",
+    "why": "|& pipes the command's output into the next"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "end(op === '|' || op === '|&')",
+    "to": "end(op === '|&')",
+    "why": "| pipes the command's output into the next"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "const redirection = /^(?:\\d*|&)(?:>>|>\\||>&|>|<<<|<<-|<<|<>|<&|<)/.exec(rest)",
+    "to": "const redirection = /^(?:\\d*|&)(?:>>|>&|>|<<<|<<-|<<|<>|<&|<)/.exec(rest)",
+    "why": ">| writes a file"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "const redirection = /^(?:\\d*|&)(?:>>|>\\||>&|>|<<<|<<-|<<|<>|<&|<)/.exec(rest)",
+    "to": "const redirection = /^(?:\\d*|&)(?:>>|>\\||>|<<<|<<-|<<|<>|<&|<)/.exec(rest)",
+    "why": ">& with a file writes it"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "const redirection = /^(?:\\d*|&)(?:>>|>\\||>&|>|<<<|<<-|<<|<>|<&|<)/.exec(rest)",
+    "to": "const redirection = /^(?:>>|>\\||>&|>|<<<|<<-|<<|<>|<&|<)/.exec(rest)",
+    "why": "2> writes a file"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "const isWrite = /^(?:\\d*|&)(?:>>|>\\||>|<>)$/.test(op) || (op.endsWith('>&') && !/^\\d+$|^-$/.test(target))",
+    "to": "const isWrite = /^(?:\\d*|&)(?:>>|>\\||>|<>)$/.test(op) || op.endsWith('>&')",
+    "why": "2>&1 writes no file"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "const isWrite = /^(?:\\d*|&)(?:>>|>\\||>|<>)$/.test(op) || (op.endsWith('>&') && !/^\\d+$|^-$/.test(target))",
+    "to": "const isWrite = /^(?:\\d*|&)(?:>>|>\\||>|<>)$/.test(op) || (op.endsWith('>&') && !/^\\d+$/.test(target))",
+    "why": ">&- closes a descriptor, writing no file"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "const isWrite = /^(?:\\d*|&)(?:>>|>\\||>|<>)$/.test(op) || (op.endsWith('>&') && !/^\\d+$|^-$/.test(target))",
+    "to": "const isWrite = /^(?:\\d*|&)(?:>>|>\\||>|<>)$/.test(op)",
+    "why": ">& with a file writes it"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "const isWrite = /^(?:\\d*|&)(?:>>|>\\||>|<>)$/.test(op) ||",
+    "to": "const isWrite = /^(?:\\d*|&)(?:>>|>\\||>)$/.test(op) ||",
+    "why": "<> writes a file"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "        segment.bodies.push(word().text)",
+    "to": "        word()",
+    "why": "a here-string is what a shell that reads it runs"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "if (next.text === '[[' && !next.isQuoted && segment.words.every(({ text }) => KEYWORDS.has(text))) {",
+    "to": "if (next.text === '[[' && !next.isQuoted) {",
+    "why": "[[ inside a command's arguments opens no test"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "if (next.text === '[[' && !next.isQuoted && segment.words.every(({ text }) => KEYWORDS.has(text))) {",
+    "to": "if (next.text === '[[' && segment.words.every(({ text }) => KEYWORDS.has(text))) {",
+    "why": "a quoted [[ opens no test"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "      } else if (next.text === ']]') {\n        isTest = false",
+    "to": "      } else if (next.text === ']]') {\n        isTest = true",
+    "why": "]] ends a test"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "const TEST_OPERATOR = /^(?:&&|\\|\\||[<>()|&])/",
+    "to": "const TEST_OPERATOR = /^(?:&&|\\|\\||[()|&])/",
+    "why": "> and < inside [[ ]] compare"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "      pending = []\n      isTest = false\n      end()",
+    "to": "      pending = []\n      end()",
+    "why": "a newline ends a [[ ]] test left open"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "      i += op.length\n      isTest = false\n      end(op === '|' || op === '|&')",
+    "to": "      i += op.length\n      end(op === '|' || op === '|&')",
+    "why": "a separator ends a [[ ]] test left open"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "if (op === '(' || op === ')') {\n        segments.push({ ...fresh(), scope: op === '(' ? 'open' : 'close' })",
+    "to": "if (false) {\n        segments.push({ ...fresh(), scope: op === '(' ? 'open' : 'close' })",
+    "why": "a subshell's cds end with it"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "if (isBacktick || command[from + 2] !== '(') {",
+    "to": "if (true) {",
+    "why": "an arithmetic $(( )) holds no command"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "          } else if (command[j] === '`' || (command[j] === '$' && command[j + 1] === '(')) {",
+    "to": "          } else if (false) {",
+    "why": "a substitution inside double quotes is a command"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "        text += command.slice(i + 1, j).replace(/\\\\([\"\\\\$`])/g, '$1')",
+    "to": "        text += command.slice(i + 1, j)",
+    "why": "an escape inside double quotes is taken off"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "      } else if (c === '\\\\') {\n        text += command[i + 1] ?? ''",
+    "to": "      } else if (c === '\\\\') {\n        text += c",
+    "why": "a backslash escapes the next character of a word"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "      } else if ((c === '$' && command[i + 1] === '(') || c === '`') {",
+    "to": "      } else if (false) {",
+    "why": "a substitution outside quotes is a command"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "      if (command[j] === '\\\\') {\n        j++\n      } else if (command[j] === open",
+    "to": "      if (false) {\n        j++\n      } else if (command[j] === open",
+    "why": "an escaped mark does not close a substitution"
+  },
+  {
+    "file": "hooks/lex.ts",
+    "from": "} else if (command[j] === open && open !== close) {\n        depth++",
+    "to": "} else if (false) {\n        depth++",
+    "why": "a nested substitution is closed by its own mark"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "  if (name === 'eval') {\n    return args.map(arg => arg.text).join(' ')",
+    "to": "  if (name === 'evalx') {\n    return args.map(arg => arg.text).join(' ')",
+    "why": "what eval runs is a command line"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const SHELLS = new Set(['sh', 'bash', 'zsh', 'dash', 'ksh'])",
+    "to": "const SHELLS = new Set(['bash', 'zsh', 'dash', 'ksh'])",
+    "why": "what sh runs is a command line"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const SHELLS = new Set(['sh', 'bash', 'zsh', 'dash', 'ksh'])",
+    "to": "const SHELLS = new Set(['sh', 'zsh', 'dash', 'ksh'])",
+    "why": "what bash runs is a command line"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const SHELLS = new Set(['sh', 'bash', 'zsh', 'dash', 'ksh'])",
+    "to": "const SHELLS = new Set(['sh', 'bash', 'dash', 'ksh'])",
+    "why": "what zsh runs is a command line"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const SHELLS = new Set(['sh', 'bash', 'zsh', 'dash', 'ksh'])",
+    "to": "const SHELLS = new Set(['sh', 'bash', 'zsh', 'ksh'])",
+    "why": "what dash runs is a command line"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const SHELLS = new Set(['sh', 'bash', 'zsh', 'dash', 'ksh'])",
+    "to": "const SHELLS = new Set(['sh', 'bash', 'zsh', 'dash'])",
+    "why": "what ksh runs is a command line"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const at = args.findIndex(arg => isOption(arg) && /^-[a-zA-Z]*c[a-zA-Z]*$/.test(arg.text))",
+    "to": "const at = args.findIndex(arg => isOption(arg) && /^-c$/.test(arg.text))",
+    "why": "bash -c is found among combined flags"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const isFile = args.some(arg => !isOption(arg) && arg.text !== '-') && !args.some(arg => arg.text === '-s')",
+    "to": "const isFile = args.some(arg => !isOption(arg) && arg.text !== '-')",
+    "why": "bash -s reads its script from the input"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const isFile = args.some(arg => !isOption(arg) && arg.text !== '-') && !args.some(arg => arg.text === '-s')",
+    "to": "const isFile = args.some(arg => !isOption(arg))  && !args.some(arg => arg.text === '-s')",
+    "why": "bash - reads its script from the input"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "return at >= 0 ? args[at + 1]?.text : isFile || input.length === 0 ? undefined : input.join('\\n')",
+    "to": "return at >= 0 ? args[at + 1]?.text : input.length === 0 ? undefined : input.join('\\n')",
+    "why": "a shell given a script file runs that file, not its input"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "  if (segment.bodies.length > 0 || piper === undefined) {\n    return segment.bodies\n  }",
+    "to": "  if (piper === undefined) {\n    return segment.bodies\n  }",
+    "why": "a command with its own heredoc reads that, not what is piped"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const echoed = name === 'echo' || name === 'printf' ? args.filter(arg => !isOption(arg)).map(arg => arg.text) : []",
+    "to": "const echoed = name === 'echo' ? args.filter(arg => !isOption(arg)).map(arg => arg.text) : []",
+    "why": "what printf pipes in is the input"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const echoed = name === 'echo' || name === 'printf' ? args.filter(arg => !isOption(arg)).map(arg => arg.text) : []",
+    "to": "const echoed = name === 'printf' ? args.filter(arg => !isOption(arg)).map(arg => arg.text) : []",
+    "why": "what echo pipes in is the input"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "  return [...echoed, ...piper.bodies]",
+    "to": "  return [...echoed]",
+    "why": "the heredoc of a piping command is the input"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const input = inputOf(segment, segment.isPiped ? segments[at - 1] : undefined)",
+    "to": "const input = inputOf(segment, undefined)",
+    "why": "what a pipe feeds a command is its input"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const target = args.find(arg => !isOption(arg))?.text ?? '~'",
+    "to": "const target = args.find(arg => !isOption(arg))?.text ?? '.'",
+    "why": "a bare cd goes home"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "target === '-' ? dir.before : (resolve(target, dir.here, home) ?? (SCRATCH_DIR.test(target) ? '/tmp' : cwd))",
+    "to": "target === '-' ? dir.before : (resolve(target, dir.here, home) ?? cwd)",
+    "why": "a cd into a new temporary folder leaves the project"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "target === '-' ? dir.before : (resolve(target, dir.here, home) ?? (SCRATCH_DIR.test(target) ? '/tmp' : cwd))",
+    "to": "target === '-' ? dir.before : (resolve(target, dir.here, home) ?? '/tmp')",
+    "why": "a cd to a folder only the shell knows may stay in the project"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "target === '-' ? dir.before : (resolve(target, dir.here, home)",
+    "to": "target === '-' ? dir.here : (resolve(target, dir.here, home)",
+    "why": "cd - goes back to the folder before"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "      dir.before = dir.here\n      dir.here = next",
+    "to": "      dir.here = next",
+    "why": "cd - goes back to the folder before"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const SCRATCH_DIR = /^(?:\\$\\(\\s*mktemp\\b|`\\s*mktemp\\b|\\$\\{?TMPDIR\\}?(?=\\/|$))/",
+    "to": "const SCRATCH_DIR = /^(?:`\\s*mktemp\\b|\\$\\{?TMPDIR\\}?(?=\\/|$))/",
+    "why": "a cd into $(mktemp) leaves the project"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const SCRATCH_DIR = /^(?:\\$\\(\\s*mktemp\\b|`\\s*mktemp\\b|\\$\\{?TMPDIR\\}?(?=\\/|$))/",
+    "to": "const SCRATCH_DIR = /^(?:\\$\\(\\s*mktemp\\b|\\$\\{?TMPDIR\\}?(?=\\/|$))/",
+    "why": "a cd into a backtick mktemp leaves the project"
+  },
+  {
+    "file": "hooks/paths.ts",
+    "from": "const SCRATCH_DIR = /^(?:\\$\\(\\s*mktemp\\b|`\\s*mktemp\\b|\\$\\{?TMPDIR\\}?(?=\\/|$))/",
+    "to": "const SCRATCH_DIR = /^(?:\\$\\(\\s*mktemp\\b|`\\s*mktemp\\b)/",
+    "why": "a cd into $TMPDIR leaves the project"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "      if (segment.scope === 'open') {\n        outside.push({ ...dir })\n      } else {\n        Object.assign(dir, outside.pop())\n      }",
+    "to": "      if (segment.scope === 'open') {\n        outside.push({ ...dir })\n      }",
+    "why": "a subshell's cds end with it"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "...nested.flatMap(inner => writesIn(inner, dir.here, home)),",
+    "to": "...nested.flatMap(inner => writesIn(inner, cwd, home)),",
+    "why": "a substitution runs in the folder the cds left"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const nested = [...segment.nested, ...(script === undefined ? [] : [script])]",
+    "to": "const nested = [...segment.nested]",
+    "why": "a script handed to a shell is a command line of its own"
+  },
+  {
+    "file": "hooks/writes-in.ts",
+    "from": "const nested = [...segment.nested, ...(script === undefined ? [] : [script])]",
+    "to": "const nested = script === undefined ? [] : [script]",
+    "why": "a substitution is a command line of its own"
+  }
+]

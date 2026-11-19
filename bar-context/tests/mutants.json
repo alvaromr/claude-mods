@@ -1,0 +1,1436 @@
+[
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showTokens: false,",
+    "to": "showTokens: true,",
+    "why": "the window's tokens are hidden until asked for"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "midFrom: 50,",
+    "to": "midFrom: 40,",
+    "why": "the window turns amber from 50%"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "highFrom: 71,",
+    "to": "highFrom: 80,",
+    "why": "the window turns red from 71%"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "cacheSoonMinutes: 5,",
+    "to": "cacheSoonMinutes: 1,",
+    "why": "the cache warns in its last 5 minutes"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "compactFrom: 65,",
+    "to": "compactFrom: 90,",
+    "why": "the compact button is offered from 65%"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "missShownMinutes: 10,",
+    "to": "missShownMinutes: 1,",
+    "why": "a miss is shown for 10 minutes"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "cacheTtl: 'auto',",
+    "to": "cacheTtl: '5m',",
+    "why": "the cache's lifetime is worked out unless the pane picks one"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "contextLabel: 'Context',",
+    "to": "contextLabel: 'Ctx',",
+    "why": "the window's label is Context"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['missShownMinutes', TEXT.missShownMinutes, 0, 1440],",
+    "to": "['missShownMinutes', TEXT.missShownMinutes, 0, 144],",
+    "why": "a miss may be shown up to a day"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['cacheSoonMinutes', TEXT.cacheSoonMinutes, 0, 60],",
+    "to": "['cacheSoonMinutes', TEXT.cacheSoonMinutes, 1, 60],",
+    "why": "the cache warning may be set to 0 minutes"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "['compactFrom', TEXT.compactFrom, 0, 100],",
+    "to": "['compactFrom', TEXT.compactFrom, 0, 99],",
+    "why": "the compact threshold may be 100%"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(text.length === 0 || text.length > 24 ? TEXT.badLength : undefined)",
+    "to": "(text.length > 24 ? TEXT.badLength : undefined)",
+    "why": "a label cannot be empty"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(text.length === 0 || text.length > 24 ? TEXT.badLength : undefined)",
+    "to": "(text.length === 0 || text.length > 25 ? TEXT.badLength : undefined)",
+    "why": "a label holds at most 24 characters"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(?:#(?:[0-9a-f]{3}){1,2}|[a-z][a-z0-9]*)$/i",
+    "to": "(?:#(?:[0-9a-f]{3}){1,3}|[a-z][a-z0-9]*)$/i",
+    "why": "a hex color has three or six digits"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(?:#(?:[0-9a-f]{3}){1,2}|[a-z][a-z0-9]*)$/i",
+    "to": "(?:#(?:[0-9a-f]{3}){1,2}|[a-z0-9]*)$/i",
+    "why": "a color's name starts with a letter"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(?:#(?:[0-9a-f]{3}){1,2}|[a-z][a-z0-9]*)$/i",
+    "to": "(?:#(?:[0-9a-f]{3}){1,2}|[a-z][a-z0-9]*)$/",
+    "why": "a color may be typed in capitals"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const COLOR = /^(?:#(?:[0-9a-f]{3}){1,2}|[a-z][a-z0-9]*)$/i",
+    "to": "const COLOR = /(?:#(?:[0-9a-f]{3}){1,2}|[a-z][a-z0-9]*)$/i",
+    "why": "a color is the whole text"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "/^\\d+$/.test(text.trim()) ? Number(text) : NaN",
+    "to": "/^\\d+$/.test(text) ? Number(text) : NaN",
+    "why": "a count typed with spaces around is read"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "/^\\d+$/.test(text.trim()) ? Number(text) : NaN",
+    "to": "/^\\d*$/.test(text.trim()) ? Number(text) : NaN",
+    "why": "an empty count is no count"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "return n >= min && n <= max ? n : undefined",
+    "to": "return n > min && n <= max ? n : undefined",
+    "why": "a count may be its minimum"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "return n >= min && n <= max ? n : undefined",
+    "to": "return n >= min && n < max ? n : undefined",
+    "why": "a count may be its maximum"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "[key, typeof given[key] === typeof value ? given[key] : value]",
+    "to": "[key, given[key] ?? value]",
+    "why": "a saved field of another type takes its default"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "(typeof saved === 'object' && saved !== null ? saved : {})",
+    "to": "(saved ?? {})",
+    "why": "a save that is no object leaves the defaults"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: global !== undefined ? 'global' : project !== undefined ? 'project' : 'defaults',",
+    "why": "the project's settings come before the global ones"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "source: project !== undefined ? 'project' : global !== undefined ? 'global' : 'defaults',",
+    "to": "source: project !== undefined ? 'project' : 'global',",
+    "why": "with nothing saved the settings are the defaults"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "hasProject: project !== undefined,",
+    "to": "hasProject: false,",
+    "why": "a project's own settings are known"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": ".some(field => now[field] !== saved[field])",
+    "to": ".some(field => field !== 'cacheTtl' && now[field] !== saved[field])",
+    "why": "any field that differs from the save is unsaved"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "'5m': 300_000,",
+    "to": "'5m': 600_000,",
+    "why": "a 5 minute cache lives 5 minutes"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "'1h': 3_600_000",
+    "to": "'1h': 7_200_000",
+    "why": "a 1 hour cache lives an hour"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "return entry.type === 'assistant' && entry.isSidechain !== true ? entry.message?.usage?.cache_creation : undefined",
+    "to": "return entry.isSidechain !== true ? entry.message?.usage?.cache_creation : undefined",
+    "why": "only a response of the transcript reports a cache write"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "return entry.type === 'assistant' && entry.isSidechain !== true ? entry.message?.usage?.cache_creation : undefined",
+    "to": "return entry.type === 'assistant' ? entry.message?.usage?.cache_creation : undefined",
+    "why": "a subagent's cache write is not the conversation's"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "  } catch {\n    return undefined\n  }",
+    "to": "  } catch (failure) {\n    throw failure\n  }",
+    "why": "a line still being written is skipped"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "const isOn = (value: string | undefined) => /^(?:1|true|yes|on)$/i.test(value ?? '')",
+    "to": "const isOn = (value: string | undefined) => /^(?:1|true|yes|on)$/.test(value ?? '')",
+    "why": "a switch variable in capitals is on"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "const isOn = (value: string | undefined) => /^(?:1|true|yes|on)$/i.test(value ?? '')",
+    "to": "const isOn = (value: string | undefined) => /(?:1|true|yes|on)/i.test(value ?? '')",
+    "why": "a switch variable is on only for its whole value"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "const isOn = (value: string | undefined) => /^(?:1|true|yes|on)$/i.test(value ?? '')",
+    "to": "const isOn = (value: string | undefined) => /^(?:1|true|on)$/i.test(value ?? '')",
+    "why": "yes turns a switch variable on"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "export const isTtl = (value: unknown): value is Ttl => value === '5m' || value === '1h'",
+    "to": "export const isTtl = (value: unknown): value is Ttl => value === '5m'",
+    "why": "an hour is a lifetime"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "export const isTtl = (value: unknown): value is Ttl => value === '5m' || value === '1h'",
+    "to": "export const isTtl = (value: unknown): value is Ttl => value === '1h'",
+    "why": "5 minutes is a lifetime"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "for (const line of transcript.split('\\n').reverse()) {",
+    "to": "for (const line of transcript.split('\\n')) {",
+    "why": "the last cache write is the one that counts"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "if ((wrote?.ephemeral_1h_input_tokens ?? 0) > 0) {",
+    "to": "if ((wrote?.ephemeral_1h_input_tokens ?? 0) >= 0) {",
+    "why": "a write of no hour tokens is not an hour's"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "if ((wrote?.ephemeral_5m_input_tokens ?? 0) > 0) {",
+    "to": "if ((wrote?.ephemeral_5m_input_tokens ?? 0) >= 0) {",
+    "why": "a write of no 5 minute tokens is not a 5 minute one"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "[isOn(said.force5m) && '5m', said.ttlVariable, said.setting, isOn(said.force1h) && '1h'].find(isTtl)",
+    "to": "[said.ttlVariable, said.setting, isOn(said.force1h) && '1h', isOn(said.force5m) && '5m'].find(isTtl)",
+    "why": "forcing 5 minutes comes before the rest"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "[isOn(said.force5m) && '5m', said.ttlVariable, said.setting, isOn(said.force1h) && '1h'].find(isTtl)",
+    "to": "[isOn(said.force5m) && '5m', said.setting, said.ttlVariable, isOn(said.force1h) && '1h'].find(isTtl)",
+    "why": "the lifetime variable comes before the setting"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "[isOn(said.force5m) && '5m', said.ttlVariable, said.setting, isOn(said.force1h) && '1h'].find(isTtl)",
+    "to": "[isOn(said.force5m) && '5m', said.ttlVariable, isOn(said.force1h) && '1h', said.setting].find(isTtl)",
+    "why": "the setting comes before forcing an hour"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "[isOn(said.force5m) && '5m', said.ttlVariable, said.setting, isOn(said.force1h) && '1h'].find(isTtl)",
+    "to": "[isOn(said.force5m) && '5m', said.ttlVariable, said.setting].find(isTtl)",
+    "why": "forcing an hour gives an hour"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "const plan = limits.filter(({ kind }) => kind === 'five_hour' || kind === 'seven_day')",
+    "to": "const plan = limits.filter(({ kind }) => kind === 'five_hour')",
+    "why": "the weekly window is a plan window"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "const plan = limits.filter(({ kind }) => kind === 'five_hour' || kind === 'seven_day')",
+    "to": "const plan = limits.filter(({ kind }) => kind === 'seven_day')",
+    "why": "the five hour window is a plan window"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "const plan = limits.filter(({ kind }) => kind === 'five_hour' || kind === 'seven_day')",
+    "to": "const plan = limits",
+    "why": "a limit that is no plan window does not count"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "return plan.length > 0 && plan.every(({ percentUsed }) => percentUsed < 100) ? '1h' : '5m'",
+    "to": "return plan.every(({ percentUsed }) => percentUsed < 100) ? '1h' : '5m'",
+    "why": "an account with no plan windows gets 5 minutes"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "return plan.length > 0 && plan.every(({ percentUsed }) => percentUsed < 100) ? '1h' : '5m'",
+    "to": "return plan.length > 0 && plan.some(({ percentUsed }) => percentUsed < 100) ? '1h' : '5m'",
+    "why": "a plan window that is full gives 5 minutes"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "return plan.length > 0 && plan.every(({ percentUsed }) => percentUsed < 100) ? '1h' : '5m'",
+    "to": "return plan.length > 0 && plan.every(({ percentUsed }) => percentUsed <= 100) ? '1h' : '5m'",
+    "why": "a plan window at 100% gives 5 minutes"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "isExpired ? now - TTL_MS['1h'] : now - (secondsAgo ?? 0) * 1000",
+    "to": "isExpired ? now : now - (secondsAgo ?? 0) * 1000",
+    "why": "a cache Claude Code says has lapsed is past any lifetime"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "isExpired ? now - TTL_MS['1h'] : now - (secondsAgo ?? 0) * 1000",
+    "to": "now - (secondsAgo ?? 0) * 1000",
+    "why": "a cache Claude Code says has lapsed counts before the sum"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "isExpired ? now - TTL_MS['1h'] : now - (secondsAgo ?? 0) * 1000",
+    "to": "isExpired ? now - TTL_MS['1h'] : now - (secondsAgo ?? 0)",
+    "why": "the seconds since the response are seconds"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "Math.floor((warm.at + TTL_MS[warm.ttl] - now) / 1000)",
+    "to": "Math.ceil((warm.at + TTL_MS[warm.ttl] - now) / 1000)",
+    "why": "the seconds left are whole seconds, rounded down"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "const isLapsed = (warm: Warm, now: number) => warm.at + TTL_MS[warm.ttl] <= now",
+    "to": "const isLapsed = (warm: Warm, now: number) => warm.at + TTL_MS[warm.ttl] < now",
+    "why": "a cache is lapsed at the very end of its lifetime"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "warm !== null && isLapsed(warm, now) ? { tokens: warm.tokens } : null",
+    "to": "warm !== null && !isLapsed(warm, now) ? { tokens: warm.tokens } : null",
+    "why": "the warning shows once the cache has lapsed, not while it lives"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "warm !== null && isLapsed(warm, now) ? { tokens: warm.tokens } : null",
+    "to": "isLapsed(warm as Warm, now) ? { tokens: (warm as Warm).tokens } : null",
+    "why": "no warning before a cache has been met"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "      ? `ttl_expired_${before.ttl}`",
+    "to": "      ? 'ttl_expired'",
+    "why": "a miss after a lapse names the lifetime that lapsed"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "before.model !== undefined && before.model !== model",
+    "to": "before.model !== model",
+    "why": "a cache with no model told is not a model change"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "before.model !== undefined && before.model !== model",
+    "to": "before.model !== undefined",
+    "why": "the same model is not a model change"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "    : isLapsed(before, sentAt)\n      ? `ttl_expired_${before.ttl}`",
+    "to": "    : false\n      ? `ttl_expired_${before.ttl}`",
+    "why": "a lapse is a cause of a miss"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "cache_read_input_tokens + cache_creation_input_tokens > 0\n    ? input_tokens + cache_read_input_tokens + cache_creation_input_tokens",
+    "to": "cache_read_input_tokens + cache_creation_input_tokens > 0\n    ? cache_read_input_tokens + cache_creation_input_tokens",
+    "why": "the cached tokens hold all the response's input"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "cache_read_input_tokens + cache_creation_input_tokens > 0\n    ?",
+    "to": "cache_read_input_tokens + cache_creation_input_tokens >= 0\n    ?",
+    "why": "a response that read or wrote no cache leaves none"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "before?.tokens != null && cache_creation_input_tokens > 0 && cache_read_input_tokens < before.tokens / 2",
+    "to": "before?.tokens != null && cache_read_input_tokens < before.tokens / 2",
+    "why": "a request that wrote nothing is no miss"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "before?.tokens != null && cache_creation_input_tokens > 0 && cache_read_input_tokens < before.tokens / 2",
+    "to": "before?.tokens != null && cache_creation_input_tokens > 0 && cache_read_input_tokens < before.tokens",
+    "why": "a request that reads back half of the cache is no miss"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "tokens >= 1_000_000\n    ?",
+    "to": "tokens > 1_000_000\n    ?",
+    "why": "a million tokens is written in millions"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": ": tokens >= 1000\n      ?",
+    "to": ": tokens > 1000\n      ?",
+    "why": "a thousand tokens is written in thousands"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "`${(Math.floor(tokens / 100_000) / 10).toFixed(1)}M`",
+    "to": "`${(Math.round(tokens / 100_000) / 10).toFixed(1)}M`",
+    "why": "millions are rounded down"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "`${Math.floor(tokens / 1000)}k`",
+    "to": "`${Math.round(tokens / 1000)}k`",
+    "why": "thousands are rounded down"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "return days > 0 ? `${days}d${hours}h` : hours > 0 ? `${hours}h${minutes}m` : `${minutes}m`",
+    "to": "return hours > 0 ? `${hours}h${minutes}m` : `${minutes}m`",
+    "why": "a time left of days reads in days and hours"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "return days > 0 ? `${days}d${hours}h` : hours > 0 ? `${hours}h${minutes}m` : `${minutes}m`",
+    "to": "return days > 0 ? `${days}d${hours}h` : `${minutes}m`",
+    "why": "a time left of hours reads in hours and minutes"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const days = Math.floor(seconds / 86_400)",
+    "to": "const days = Math.floor(seconds / 86_000)",
+    "why": "a day is 86400 seconds"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const hours = Math.floor((seconds % 86_400) / 3600)",
+    "to": "const hours = Math.floor(seconds / 3600)",
+    "why": "the hours of a time left are those past its days"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (s.showContext && window?.percent !== undefined) {",
+    "to": "if (window?.percent !== undefined) {",
+    "why": "a hidden window leaves its part out"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "color: pct >= s.highFrom ? s.highColor : pct >= s.midFrom ? s.midColor : s.lowColor,",
+    "to": "color: pct >= s.highFrom ? s.highColor : pct > s.midFrom ? s.midColor : s.lowColor,",
+    "why": "the amber starts at the mid share"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "isBold: pct >= s.highFrom,",
+    "to": "isBold: pct >= s.midFrom,",
+    "why": "only the high tier is bold"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const filled = Math.min(Math.floor(pct / 10), CELLS)",
+    "to": "const filled = Math.min(Math.round(pct / 10), CELLS)",
+    "why": "the bar fills a cell per whole ten percent"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const filled = Math.min(Math.floor(pct / 10), CELLS)",
+    "to": "const filled = Math.floor(pct / 10)",
+    "why": "the bar never overflows its ten cells"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "    if (s.showBar) {",
+    "to": "    if (true) {",
+    "why": "the bar can be hidden"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "    if (s.showPercent) {",
+    "to": "    if (true) {",
+    "why": "the percent can be hidden"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (s.showTokens && window.tokens !== undefined) {",
+    "to": "if (s.showTokens) {",
+    "why": "a window with no tokens told shows none"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (s.showTokens && window.tokens !== undefined) {",
+    "to": "if (window.tokens !== undefined) {",
+    "why": "the window's tokens show only when asked for"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const isMissShown = s.showMiss && missed !== null && now - missed.at < s.missShownMinutes * 60_000",
+    "to": "const isMissShown = missed !== null && now - missed.at < s.missShownMinutes * 60_000",
+    "why": "the miss can be hidden"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const isMissShown = s.showMiss && missed !== null && now - missed.at < s.missShownMinutes * 60_000",
+    "to": "const isMissShown = s.showMiss && missed !== null",
+    "why": "a miss is shown only for the minutes set"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (left !== null && (s.showCache || isMissShown)) {",
+    "to": "if (left !== null && s.showCache) {",
+    "why": "a miss shows with the cache part hidden"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (left !== null && (s.showCache || isMissShown)) {",
+    "to": "if (s.showCache || isMissShown) {",
+    "why": "nothing about the cache shows before a request has met it"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "color: remaining <= s.cacheSoonMinutes * 60 ? s.cacheWarnColor : s.cacheColor,",
+    "to": "color: remaining < s.cacheSoonMinutes * 60 ? s.cacheWarnColor : s.cacheColor,",
+    "why": "the warning color starts at the minutes set"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "remaining > 0\n          ?",
+    "to": "remaining >= 0\n          ?",
+    "why": "a cache with no time left shows cold"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (s.showCacheTokens && left.tokens !== null) {",
+    "to": "if (left.tokens !== null) {",
+    "why": "the cache's tokens can be hidden"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "text: `${runs.length > 0 ? ' ' : ''}⚠ miss` },",
+    "to": "text: ` ⚠ miss` },",
+    "why": "a miss alone has no leading space"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "...(missed.cause === null ? [] : [{ color: s.mutedColor, text: ` ${missed.cause}` }]),",
+    "to": "",
+    "why": "a miss tells its cause"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (s.showSpeed && rate.last !== null) {",
+    "to": "if (rate.last !== null) {",
+    "why": "the speed can be hidden"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "...(s.showAverage && rate.ms > 0",
+    "to": "...(rate.ms > 0",
+    "why": "the average speed can be hidden"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "...(s.showAverage && rate.ms > 0",
+    "to": "...(s.showAverage",
+    "why": "no average without time counted"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "Math.floor((rate.tokens * 1000) / rate.ms)",
+    "to": "Math.round((rate.tokens * 1000) / rate.ms)",
+    "why": "the average speed is rounded down"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "return last !== undefined && last.color === run.color && last.isBold === run.isBold",
+    "to": "return last !== undefined && last.color === run.color",
+    "why": "neighbours differing in weight are drawn apart"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "return last !== undefined && last.color === run.color && last.isBold === run.isBold",
+    "to": "return last !== undefined && last.isBold === run.isBold",
+    "why": "neighbours differing in color are drawn apart"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "s.showCompact && window?.percent !== undefined && window.percent >= s.compactFrom ? window.percent : null",
+    "to": "window?.percent !== undefined && window.percent >= s.compactFrom ? window.percent : null",
+    "why": "the compact button can be hidden"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "s.showCompact && window?.percent !== undefined && window.percent >= s.compactFrom ? window.percent : null",
+    "to": "s.showCompact && window?.percent !== undefined && window.percent > s.compactFrom ? window.percent : null",
+    "why": "the compact button is offered from the share set"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "/^claude-([a-z]+)-(\\d+)(?:-(\\d{1,2}))?(?:[-[]|$)/",
+    "to": "/^claude-([a-z]+)-(\\d+)(?:-(\\d{1,2}))?/",
+    "why": "a model id's date is no minor version"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "/^claude-([a-z]+)-(\\d+)(?:-(\\d{1,2}))?(?:[-[]|$)/",
+    "to": "/^claude-([a-z]+)-(\\d+)(?:-(\\d+))?(?:[-[]|$)/",
+    "why": "an 8 digit date after the major version is not the minor"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "/^claude-([a-z]+)-(\\d+)(?:-(\\d{1,2}))?(?:[-[]|$)/",
+    "to": "/claude-([a-z]+)-(\\d+)(?:-(\\d{1,2}))?(?:[-[]|$)/",
+    "why": "an id that merely contains claude- is not a model id"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "id.replace(/\\[1m\\]$| \\d+[KkMm] [Cc]ontext$/, '')",
+    "to": "id",
+    "why": "a readable name keeps no window"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "id.replace(/\\[1m\\]$| \\d+[KkMm] [Cc]ontext$/, '')",
+    "to": "id.replace(/\\[1m\\]$/, '')",
+    "why": "a name with its window spelled out loses it"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "id.replace(/\\[1m\\]$| \\d+[KkMm] [Cc]ontext$/, '')",
+    "to": "id.replace(/ \\d+[KkMm] [Cc]ontext$/, '')",
+    "why": "an alias with its window loses it"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "`${family.charAt(0).toUpperCase()}${family.slice(1)} ${major}${minor === undefined ? '' : `.${minor}`}`",
+    "to": "`${family} ${major}${minor === undefined ? '' : `.${minor}`}`",
+    "why": "the family is capitalized"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "`${family.charAt(0).toUpperCase()}${family.slice(1)} ${major}${minor === undefined ? '' : `.${minor}`}`",
+    "to": "`${family.charAt(0).toUpperCase()}${family.slice(1)} ${major}.${minor}`",
+    "why": "a model with no minor version has none"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "export const isTimed = (outputTokens: number, ms: number) => outputTokens > 0 && ms > 0",
+    "to": "export const isTimed = (outputTokens: number, ms: number) => ms > 0",
+    "why": "a response with no output says no speed"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "export const isTimed = (outputTokens: number, ms: number) => outputTokens > 0 && ms > 0",
+    "to": "export const isTimed = (outputTokens: number, ms: number) => outputTokens > 0",
+    "why": "a response with no time says no speed"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "last: Math.floor((outputTokens * 1000) / ms),",
+    "to": "last: Math.round((outputTokens * 1000) / ms),",
+    "why": "the last speed is rounded down"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "tokens: sum.tokens + outputTokens,",
+    "to": "tokens: outputTokens,",
+    "why": "the average counts every response's tokens"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "ms: sum.ms + ms,",
+    "to": "ms: ms,",
+    "why": "the average counts every response's time"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "isKept && measured.percent === undefined && current?.percent !== undefined",
+    "to": "measured.percent === undefined && current?.percent !== undefined",
+    "why": "a compaction drops the fill told before"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "isKept && measured.percent === undefined && current?.percent !== undefined",
+    "to": "isKept && current?.percent !== undefined",
+    "why": "a measurement with a fill replaces the one told before"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "isKept && measured.percent === undefined && current?.percent !== undefined",
+    "to": "isKept && measured.percent === undefined",
+    "why": "with no fill told before there is nothing to keep"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "percent: Math.min(100, Math.round((tokens * 100) / window))",
+    "to": "percent: Math.round((tokens * 100) / window)",
+    "why": "a resumed fill never passes 100%"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "percent: Math.min(100, Math.round((tokens * 100) / window))",
+    "to": "percent: Math.min(100, Math.floor((tokens * 100) / window))",
+    "why": "a resumed fill is rounded to the nearest percent"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "    : current === null\n      ? null\n      : { window: current.window }",
+    "to": "    : current",
+    "why": "a conversation that starts over keeps only the window's size"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "tokens !== undefined && window !== undefined",
+    "to": "tokens !== undefined",
+    "why": "a fill needs the window's size"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "if (typeof props?.key === 'string' && SLOT.test(props.key)) {",
+    "to": "if (false) {",
+    "why": "other mods' slot elements are laid in the shared rows"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "if (typeof props?.key === 'string' && SLOT.test(props.key)) {",
+    "to": "if (typeof props?.key === 'string') {",
+    "why": "only an element keyed as a slot is taken"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "return { rest: kept.length === 0 ? undefined : ({ ...(node as Tree), children: kept } as RenderNode), taken }",
+    "to": "return { rest: { ...(node as Tree), children: kept } as RenderNode, taken }",
+    "why": "a Box a slot element leaves empty is taken out"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "    .sort(([a], [b]) => a - b)",
+    "to": "    .sort(() => 0)",
+    "why": "the slot rows go in their numbers' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "children: items.sort((a, b) => a.place - b.place).map(({ item }) => item),",
+    "to": "children: items.map(({ item }) => item),",
+    "why": "the items of a row go in their places' order"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "place: place === undefined ? Infinity : Number(place)",
+    "to": "place: place === undefined ? 0 : Number(place)",
+    "why": "an item with no place goes after those that have one"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "children: [...(rest === undefined ? [] : [rest]), own, ...laid],",
+    "to": "children: [...(rest === undefined ? [] : [rest]), ...laid, own],",
+    "why": "the row goes ahead of every slot row"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "children: [...(rest === undefined ? [] : [rest]), own, ...laid],",
+    "to": "children: [own, ...(rest === undefined ? [] : [rest]), ...laid],",
+    "why": "the row goes after what the engine draws"
+  },
+  {
+    "file": "hooks/slots.ts",
+    "from": "props: { width: '100%', gap: 2 },",
+    "to": "props: { width: '100%', gap: 1 },",
+    "why": "slot items are two columns apart"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const EVERY_MS = 15_000",
+    "to": "const EVERY_MS = 150_000",
+    "why": "the cache's time left is drawn again every 15 seconds"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "root === null ? undefined : `settings:${root}`",
+    "to": "`settings:${root}`",
+    "why": "a session with no root has no project settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, settings, () => loaded(project ?? global))",
+    "to": "await update($, settings, () => loaded(global ?? project))",
+    "why": "a session starts with its project's settings before the global ones"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const key = source === 'project' ? await projectKey($) : 'settings'",
+    "to": "const key = 'settings'",
+    "why": "settings from a project are unsaved against the project's save"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "source === 'defaults' || key === undefined\n      ? DEFAULTS",
+    "to": "key === undefined\n      ? DEFAULTS",
+    "why": "settings from the defaults are unsaved against the defaults"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, origin, now => ({ ...now, isChanged: unsaved }))",
+    "to": "await update($, origin, now => ({ ...now, isChanged: false }))",
+    "why": "a change not saved is marked as unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const changed = await update($, settings, current => ({ ...current, ...patch }))",
+    "to": "const changed = await update($, settings, () => ({ ...DEFAULTS, ...patch }))",
+    "why": "quick changes keep each other's"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    $.ui.toast(TEXT.noProject)\n\n    return",
+    "to": "    return",
+    "why": "a save with no project says there is none"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    $.ui.toast(TEXT.cannotSave(reasonOf(failure)))\n\n    return",
+    "to": "    return",
+    "why": "a save the store refuses says so"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "  source: where,\n  isChanged: false,\n  hasProject: now.hasProject || where === 'project',",
+    "to": "  source: where,\n  isChanged: false,\n  hasProject: now.hasProject,",
+    "why": "a project save makes the project hold its own settings"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "  source: where,\n  isChanged: false,",
+    "to": "  source: where,\n  isChanged: true,",
+    "why": "a save marks the settings saved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    try {\n      await $.store.delete(key)\n    } catch (failure) {",
+    "to": "    try {\n    } catch (failure) {",
+    "why": "forgetting the project drops its saved settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      $.ui.toast(TEXT.cannotForget(reasonOf(failure)))\n\n      return",
+    "to": "      return",
+    "why": "a forget the store refuses says so"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "      return\n    }\n  }\n\n  await loadSettings($)",
+    "to": "    }\n  }\n\n  await loadSettings($)",
+    "why": "a forget the store refuses leaves the session's own settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  if (isTtl(cacheTtl)) {\n    return cacheTtl\n  }",
+    "to": "",
+    "why": "the pane's lifetime counts before the transcript"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return (transcript === undefined ? undefined : await written($, transcript)) ?? ruled($)",
+    "to": "return ruled($)",
+    "why": "the lifetime the API said it wrote counts before the rules"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    force5m: await $.env.get('FORCE_PROMPT_CACHING_5M'),",
+    "to": "    force5m: undefined,",
+    "why": "FORCE_PROMPT_CACHING_5M forces 5 minutes"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    ttlVariable: await $.env.get('CLAUDE_CODE_PROMPT_CACHE_TTL'),",
+    "to": "    ttlVariable: undefined,",
+    "why": "CLAUDE_CODE_PROMPT_CACHE_TTL names the lifetime"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    setting: claudeSettings.promptCacheTtl,",
+    "to": "    setting: undefined,",
+    "why": "Claude Code's promptCacheTtl setting names the lifetime"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    force1h: await $.env.get('ENABLE_PROMPT_CACHING_1H'),",
+    "to": "    force1h: undefined,",
+    "why": "ENABLE_PROMPT_CACHING_1H forces an hour"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return ttlOfPlan(usage?.rateLimits ?? [])",
+    "to": "return '5m'",
+    "why": "a subscription within its plan gets an hour"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const known = id ?? (await $.session.model().catch(orElse($, \"reading the session's model\", null)))",
+    "to": "const known = await $.session.model().catch(orElse($, \"reading the session's model\", null))",
+    "why": "the model switched to is the one shown"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "name: id === null ? null : nameOf(id),",
+    "to": "name: id === null ? null : id,",
+    "why": "the model is shown by its readable name"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, fill, current => fillAfter(current, usage.context, moment === 'start'))",
+    "to": "await update($, fill, current => fillAfter(current, usage.context, true))",
+    "why": "a compaction drops the window's fill"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "effort: current.effort ?? (typeof saved === 'string' ? saved : null),",
+    "to": "effort: current.effort ?? null,",
+    "why": "the effort at start is the one Claude Code's settings hold"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "effort: current.effort ?? (typeof saved === 'string' ? saved : null),",
+    "to": "effort: typeof saved === 'string' ? saved : null,",
+    "why": "a start does not forget the effort already known"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    ticker?.cancel()\n",
+    "to": "",
+    "why": "a new start stops the old drawing timer"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "$.ui.invalidate('ui.render')\n    })",
+    "to": "})",
+    "why": "the cache's time left is drawn again on a timer"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    hasStarted = false\n    orElse($, 'starting', undefined)(failure)",
+    "to": "    orElse($, 'starting', undefined)(failure)",
+    "why": "a start that fails is tried again by the next drawing"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await $.ui.close({ id: PANE })\n\n    return\n  }\n\n  await $.ui.open({ id: PANE, title: TEXT.title })",
+    "to": "    return\n  }\n\n  await $.ui.open({ id: PANE, title: TEXT.title })",
+    "why": "the ⚙ closes the pane when it is up"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    $.ui.toast(TEXT.cannotCompact)\n\n    return",
+    "to": "    return",
+    "why": "a compact that cannot run says so"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  if (done.skip !== undefined) {\n    $.ui.toast(TEXT.compactVetoed(done.skip))\n\n    return\n  }",
+    "to": "  if (done.skip !== undefined) {\n    $.ui.toast(TEXT.compactVetoed(done.skip))\n  }",
+    "why": "a compaction a hook vetoed leaves the window as it was"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "const MODELS = ['default', 'opus', 'sonnet', 'haiku', 'fable']",
+    "to": "const MODELS = ['default', 'opus', 'sonnet', 'haiku']",
+    "why": "the click on the model offers every alias"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max']",
+    "to": "const EFFORTS = ['low', 'medium', 'high', 'max']",
+    "why": "the click on the effort offers every level"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  await update($, picker, () => null)\n\n  try {\n    await $.command.run({ command: what, args: value })",
+    "to": "  try {\n    await $.command.run({ command: what, args: value })",
+    "why": "the options close at once when one is picked"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (what === 'effort') {\n      await update($, model, current => ({ ...current, effort: value }))\n    }",
+    "to": "",
+    "why": "the effort shown is the one asked for"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (what === 'effort') {",
+    "to": "    if (what === 'model') {",
+    "why": "the model shown waits for the engine, not for the click"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    $.ui.toast(TEXT.cannotSwitch(`/${what} ${value}`, reasonOf(failure)))",
+    "to": "    void failure",
+    "why": "a switch Claude Code refuses says so"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "  if (!hasStarted) {\n    hasStarted = true\n    $.clock.after(0, () => void start($))\n  }",
+    "to": "",
+    "why": "the first drawing starts a session that missed session.start"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "value === current ? (",
+    "to": "false ? (",
+    "why": "the option in use is a pill, the others buttons"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void update($, picker, current => toggled(current, what))}",
+    "to": "onPress={() => void update($, picker, () => what)}",
+    "why": "a second click on the model or effort closes the options"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "aliasOf(text)",
+    "to": "undefined",
+    "why": "the model in use is told among the options"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "MODELS.find(alias => name.toLowerCase().startsWith(alias))",
+    "to": "undefined",
+    "why": "the alias of the model in use is found"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "MODELS.find(alias => name.toLowerCase().startsWith(alias))",
+    "to": "MODELS.find(alias => name.startsWith(alias))",
+    "why": "a model's name is matched to its alias whatever its capitals"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "(open === what ? null : what)",
+    "to": "what",
+    "why": "a second click on the model or effort closes the options"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "s.showModel && shown.name !== null",
+    "to": "shown.name !== null",
+    "why": "the model can be hidden"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "s.showModel && shown.name !== null",
+    "to": "s.showModel",
+    "why": "a model not known yet is not offered"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "s.showEffort && shown.effort !== null",
+    "to": "shown.effort !== null",
+    "why": "the effort can be hidden"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "s.showEffort && shown.effort !== null",
+    "to": "s.showEffort",
+    "why": "an effort not known yet is not offered"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "{ what: 'model' as const, text: shown.name, color: s.modelColor }",
+    "to": "{ what: 'model' as const, text: shown.name, color: s.effortColor }",
+    "why": "the model is drawn in its own color"
+  },
+  {
+    "file": "hooks/picker.ts",
+    "from": "{ what: 'effort' as const, text: shown.effort, color: s.effortColor }",
+    "to": "{ what: 'effort' as const, text: shown.effort, color: s.modelColor }",
+    "why": "the effort is drawn in its own color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "...(at > 0 || named.length > 0",
+    "to": "...(at > 0",
+    "why": "the parts are joined to the model by a dot"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "weight={run.isBold ? 'semibold' : undefined}",
+    "to": "weight={undefined}",
+    "why": "the high tier is bold"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{full !== null && (",
+    "to": "{false && (",
+    "why": "the compact button shows once the window is filling up"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void compact($)}",
+    "to": "onPress={() => undefined}",
+    "why": "the compact button compacts"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "label={`${s.compactLabel} ${full}%`}",
+    "to": "label={s.compactLabel}",
+    "why": "the compact button names the window's share"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Box flexShrink={0} backgroundColor={s.compactColor}>",
+    "to": "<Box flexShrink={0}>",
+    "why": "the compact button is on a block of its color"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Button key=\"bar-context-settings\" plain dimColor label=\"⚙\" onPress={() => void togglePane($)} />",
+    "to": "<Button key=\"bar-context-settings\" plain dimColor label=\"⚙\" onPress={() => undefined} />",
+    "why": "the ⚙ opens the pane"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{(named.length > 0 || parts.length > 0) && (",
+    "to": "{named.length > 0 && (",
+    "why": "with the model and effort hidden the parts still show"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await start($)\n\n    return next(e)",
+    "to": "    return next(e)",
+    "why": "the session start loads the settings and reads the model"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, fill, current => fillAfter(current, e.context, true))",
+    "to": "await update($, fill, current => fillAfter(current, e.context, false))",
+    "why": "a measurement with no fill keeps the one a resume told"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    const done = await next(e)\n    await nameModel($, e.to_model)",
+    "to": "    const done = await next(e)\n    await nameModel($)",
+    "why": "the model switched to is shown as the switch tells it"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "source === 'resume' || source === 'fork'",
+    "to": "source === 'resume'",
+    "why": "a forked conversation has the cache its last response left"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "source === 'resume' || source === 'fork'",
+    "to": "true",
+    "why": "a conversation that starts has no cache to lose yet"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "e.prompt_cache_likely_expired === true",
+    "to": "false",
+    "why": "a resumed cache Claude Code says has lapsed shows cold"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "ago === undefined ? null : { at, tokens: e.context_tokens ?? null, ttl: await lifetime($, e.transcript_path) }",
+    "to": "{ at, tokens: e.context_tokens ?? null, ttl: await lifetime($, e.transcript_path) }",
+    "why": "a conversation with no response has no cache"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    await update($, miss, () => null)\n\n    // The window's fill",
+    "to": "    // The window's fill",
+    "why": "a miss of the conversation before is no news of this one"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "(await read($, fill))?.window ??",
+    "to": "",
+    "why": "the window's size known is not asked for again"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const tokens = isResumed ? e.context_tokens : undefined",
+    "to": "const tokens = e.context_tokens",
+    "why": "only a resumed conversation brings its fill"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (e.agentId !== undefined) {\n      return yield* next(e)\n    }",
+    "to": "",
+    "why": "a subagent's request is not the conversation's cache"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "effort: effort === undefined ? null : String(effort),",
+    "to": "effort: null,",
+    "why": "the effort shown is the one each request runs on"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "effort: effort === undefined ? null : String(effort),",
+    "to": "effort: effort === undefined ? null : (effort as string),",
+    "why": "the effort shown is a text whatever the request carries"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "name: nameOf(id),",
+    "to": "name: current.name,",
+    "why": "the model shown is the one each request runs on"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, warm, left => rewarmed(left, { at: sentAt }))",
+    "to": "",
+    "why": "a request sent starts the cache's lifetime over"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "left === null ? null : { ...left, ...patch }",
+    "to": "{ ...(left as Warm), ...patch }",
+    "why": "a request sent with no cache to read starts none"
+  },
+  {
+    "file": "hooks/prompt-cache.ts",
+    "from": "left === null ? null : { ...left, ...patch }",
+    "to": "left === null ? null : { ...patch } as Warm",
+    "why": "a cache told of a change keeps the rest of what it was"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const output_tokens = response.usage?.output_tokens ?? 0",
+    "to": "const output_tokens = 0",
+    "why": "the output over the time a response took is the speed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const ms = answeredAt - sentAt",
+    "to": "const ms = 1",
+    "why": "the speed counts the time between the request and its response"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (isTimed(output_tokens, ms)) {\n      await update($, speed, sum => speedAfter(sum, output_tokens, ms))\n    }",
+    "to": "    await update($, speed, sum => speedAfter(sum, output_tokens, ms))",
+    "why": "a response with no output says no speed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const ttl = (await read($, warm))?.ttl ?? (await lifetime($))",
+    "to": "const ttl = await lifetime($)",
+    "why": "a request keeps the lifetime the cache already has"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, warm, () => ({ at: answeredAt, tokens, ttl, model: e.model }))",
+    "to": "await update($, warm, () => ({ at: answeredAt, tokens, ttl }))",
+    "why": "a cache written for a model remembers which"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, warm, () => ({ at: answeredAt, tokens, ttl, model: e.model }))",
+    "to": "await update($, warm, () => ({ at: sentAt, tokens, ttl, model: e.model }))",
+    "why": "a response ending starts the cache's lifetime over"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if (isMiss(before, usage)) {\n      await update($, miss, () => ({ at: answeredAt, cause }))\n    }",
+    "to": "    await update($, miss, () => ({ at: answeredAt, cause }))",
+    "why": "only a request that missed the cache is a miss"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "    if ((await read($, warm)) !== null) {\n      const ttl = await lifetime($, e.transcript_path)",
+    "to": "    if (true) {\n      const ttl = await lifetime($, e.transcript_path)",
+    "why": "a turn that met no cache leaves none"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, warm, left => rewarmed(left, { ttl }))",
+    "to": "await update($, warm, left => left)",
+    "why": "the turn's end sets the lifetime the transcript names"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface === 'desktop' ? beneath : placed(beneath, await drawn($, $.ui.resolve(e)))",
+    "to": "return placed(beneath, await drawn($, $.ui.resolve(e)))",
+    "why": "in the desktop app the footer has no row, the band has"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface === 'desktop' ? beneath : placed(beneath, await drawn($, $.ui.resolve(e)))",
+    "to": "return beneath",
+    "why": "in the terminal the footer has the row"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "hasSurvey || isWorking || !s.showCacheWarning ? null : found",
+    "to": "isWorking || !s.showCacheWarning ? null : found",
+    "why": "a survey up keeps the cache warning quiet"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "hasSurvey || isWorking || !s.showCacheWarning ? null : found",
+    "to": "hasSurvey || !s.showCacheWarning ? null : found",
+    "why": "a turn running keeps the cache warning quiet"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "hasSurvey || isWorking || !s.showCacheWarning ? null : found",
+    "to": "hasSurvey || isWorking ? null : found",
+    "why": "the cache warning can be hidden"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "String(failure)",
+    "why": "a failure that is an Error says its message"
+  },
+  {
+    "file": "hooks/failure.ts",
+    "from": "failure instanceof Error ? failure.message : String(failure)",
+    "to": "failure instanceof Error ? failure.message : ''",
+    "why": "a failure that is not an Error says what it is"
+  },
+  {
+    "file": "hooks/usage.ts",
+    "from": "name: id === null ? null : nameOf(id),",
+    "to": "name: nameOf(id as string),",
+    "why": "a session that tells no model shows none"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const text = value.trim()\n\n  return { text, refused: refusal(text) }",
+    "to": "const text = value.trim()\n\n  return { text, refused: refusal(value) }",
+    "why": "what is wrong with a text typed is told of the text trimmed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{found.tokens !== null && TEXT.cacheRefill(short(found.tokens))}",
+    "to": "{TEXT.cacheRefill(short(found.tokens ?? 0))}",
+    "why": "the warning says the tokens only when it knows them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s.warningColor}>",
+    "to": "<Text color=\"error\">",
+    "why": "the warning is in the color set"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface !== 'desktop' || e.props.hasSurvey ? warned : placed(warned, await drawn($, $.ui.resolve(e)))",
+    "to": "return e.props.hasSurvey ? warned : placed(warned, await drawn($, $.ui.resolve(e)))",
+    "why": "in the terminal the band has no row"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "return e.surface !== 'desktop' || e.props.hasSurvey ? warned : placed(warned, await drawn($, $.ui.resolve(e)))",
+    "to": "return e.surface !== 'desktop' ? warned : placed(warned, await drawn($, $.ui.resolve(e)))",
+    "why": "a survey up keeps the band free of the row"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Box backgroundColor={e.surface === 'terminal' ? 'subtle' : undefined}>{input}</Box>",
+    "to": "<Box>{input}</Box>",
+    "why": "the terminal marks a field with a ground of its own"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (refused !== undefined) {\n              $.ui.toast(refused)",
+    "to": "if (refused !== undefined) {\n              void refused",
+    "why": "a label or color the pane refuses says why"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "const text = value.trim()",
+    "to": "const text = value",
+    "why": "a label typed with spaces around is trimmed"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "if (n === undefined) {\n              $.ui.toast(TEXT.badCount(min, max))",
+    "to": "if (n === undefined) {\n              void min",
+    "why": "a count the pane refuses says why"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.hasProject && o.source !== 'project' && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "to": "{o.hasProject && <Text dimColor>{TEXT.projectHasOwn}</Text>}",
+    "why": "the pane says a project has its own settings only when the session is not on them"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{o.isChanged && <Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "to": "{<Text color=\"warning\">{TEXT.unsaved}</Text>}",
+    "why": "the pane marks changes as unsaved"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "variant={o.isChanged ? 'primary' : 'secondary'}",
+    "to": "variant=\"secondary\"",
+    "why": "the project save stands out while there are changes"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "          {o.hasProject && (\n            <Button\n              key=\"forget-project\"",
+    "to": "          {(\n            <Button\n              key=\"forget-project\"",
+    "why": "forgetting the project is offered only when it has settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void save($, 'global')}",
+    "to": "onPress={() => void save($, 'project')}",
+    "why": "the global save saves the global settings"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "onPress={() => void change($, DEFAULTS)}",
+    "to": "onPress={() => undefined}",
+    "why": "the reset button puts the defaults back"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "{isChecked ? '■' : '□'} {label}",
+    "to": "{isChecked ? '□' : '■'} {label}",
+    "why": "a switch on is a full square"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "<Text color={s[key]}>■</Text>",
+    "to": "<Text>■</Text>",
+    "why": "each color shows a swatch"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "pill(`cacheTtl-${value}`, label, value === s.cacheTtl, () => void change($, { cacheTtl: value })),",
+    "to": "pill(`cacheTtl-${value}`, label, value === s.cacheTtl, () => undefined),",
+    "why": "the lifetime options pick the cache's lifetime"
+  }
+]

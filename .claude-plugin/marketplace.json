@@ -1,0 +1,22 @@
+{
+  "name": "claude-mods",
+  "description": "Claude Code mods: footer rows, panes, guards on tool calls and a desktop pet.",
+  "owner": { "name": "alvaro.martin" },
+  "plugins": [
+    { "name": "guard-pnpm", "source": "./guard-pnpm" },
+    { "name": "guard-commit", "source": "./guard-commit" },
+    { "name": "ui-linkify", "source": "./ui-linkify" },
+    { "name": "bar-git", "source": "./bar-git" },
+    { "name": "session-title", "source": "./session-title" },
+    { "name": "ui-companion", "source": "./ui-companion" },
+    { "name": "pet", "source": "./pet" },
+    { "name": "ui-declutter", "source": "./ui-declutter" },
+    { "name": "guard-edit", "source": "./guard-edit" },
+    { "name": "guard-outward", "source": "./guard-outward" },
+    { "name": "ui-mods", "source": "./ui-mods" },
+    { "name": "bar-limits", "source": "./bar-limits" },
+    { "name": "bar-context", "source": "./bar-context" },
+    { "name": "bar-path", "source": "./bar-path" },
+    { "name": "ui-colorify", "source": "./ui-colorify" }
+  ]
+}
