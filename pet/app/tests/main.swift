@@ -21,6 +21,7 @@ backgroundTests()
 growthTests()
 failureTests()
 orcaTests()
+botTests()
 sparkTests()
 windowTests()
 

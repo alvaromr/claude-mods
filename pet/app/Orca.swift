@@ -13,6 +13,21 @@ func orcaHandle(in environment: String) -> String? {
     return String(environment[match].split(separator: "=")[1])
 }
 
+/// The Orca bot whose own folder this is, as the bot.json Orca keeps there says: its id, which
+/// Orca's `orca://bot/<id>` links take, and its name. None for a folder that is no bot's, nor for
+/// a bot.json with no name or with an id no link can take.
+func orcaBot(in folder: String) -> (id: String, name: String)? {
+    let file = URL(fileURLWithPath: folder).appendingPathComponent("bot.json")
+    guard !folder.isEmpty, FileManager.default.fileExists(atPath: file.path),
+          let fields = orNil("reading \(file.path)", {
+              try JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any]
+          }) ?? nil,
+          let id = fields["id"] as? String,
+          id.range(of: #"^[A-Za-z0-9_-]{1,128}$"#, options: .regularExpression) != nil,
+          let name = fields["name"] as? String, !name.isEmpty else { return nil }
+    return (id, name)
+}
+
 /// The Orca terminals the person has in front of them: in the workspace Orca shows, the pane picked
 /// in the tab picked of each group. Orca does not say which group of a split has the keyboard, so
 /// each of them counts.

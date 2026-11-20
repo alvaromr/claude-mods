@@ -18,10 +18,9 @@ extension Controller {
                     NSWorkspace.shared.openApplication(at: orca, configuration: NSWorkspace.OpenConfiguration())
                 }
             }
-        case .desktop(let id):
-            var link = URLComponents(string: "claude://code/continue")
-            link?.queryItems = [URLQueryItem(name: "session", value: id)]
-            guard let url = link?.url, NSWorkspace.shared.open(url) else { return refuse(session) }
+        case .bot, .desktop:
+            let place = places[session.pid]?.place ?? .nowhere
+            guard let url = place.link, NSWorkspace.shared.open(url) else { return refuse(session) }
         case .app(let pid):
             guard NSRunningApplication(processIdentifier: pid)?.activate() == true else { return refuse(session) }
         case .nowhere:

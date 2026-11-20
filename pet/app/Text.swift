@@ -123,6 +123,7 @@ enum Text {
     static let markFailedHelp = "Su último turno acabó con un error de la API (un límite, la conexión perdida); "
         + "se quita al volver a escribirle."
     static let placeOrcaHelp = "Te lleva a su pestaña de Orca."
+    static let placeBotHelp = "Es el chat de un bot de Orca: te lleva a ese bot en Orca."
     static let placeDesktopHelp = "Te lleva a la sesión en la app de Claude."
     static let placeAppHelp = "Trae al frente la app donde corre, como su terminal; no sabe llegar a la pestaña."
     static let placeNowhereHelp = "Sin icono: no hay ventana a la que llevarte."

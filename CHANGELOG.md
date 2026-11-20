@@ -8,6 +8,8 @@ entry names its mod.
 
 ### Added
 
+- `pet`: an Orca bot's chat goes by the bot's name, with the chat's title beside it, and pressing its row opens that
+  bot in Orca.
 - `ui-colorify`: first release: in the terminal, the GitHub alerts of an assistant reply (`> [!NOTE]`, `[!TIP]`,
   `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`) and a quote without a marker drawn in a box, between two lines or under
   a title of their colour, without the marker, each with a ⧉ that copies its text; the headings bold in a colour; your

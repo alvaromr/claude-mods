@@ -50,6 +50,9 @@ struct Session: Equatable {
     /// The id the Claude desktop app knows the session by; empty for one it does not host.
     let desktopID: String
     let updated: Date
+    /// The id of the Orca bot whose chat it is; empty for one that is no bot's. Its project is then
+    /// the bot's name, and its name the chat's title.
+    var botID = ""
     /// The person said they have seen what it ended on: it waits for them no more, until it ends again.
     var isSeen = false
     /// It has a task of its own still to run (a /loop, a reminder), so it goes on by itself.
@@ -217,7 +220,9 @@ private func readSession(at file: URL) -> Session? {
           // an id that is no process's (zero or less, or beyond what a pid can be) is no session's
           let number = fields["pid"] as? Int, let pid = Int32(exactly: number), pid > 0 else { return nil }
     let cwd = fields["cwd"] as? String ?? ""
-    let project = URL(fileURLWithPath: cwd).lastPathComponent
+    // Orca starts a bot's chats in the bot's own folder, which its bot.json names
+    let bot = fields["entrypoint"] as? String == "orca" ? orcaBot(in: cwd) : nil
+    let project = bot?.name ?? URL(fileURLWithPath: cwd).lastPathComponent
     let ms = (fields["statusUpdatedAt"] ?? fields["updatedAt"]) as? Double ?? 0
     let status = fields["status"] as? String
     let phase: Phase = status == "busy" ? .busy : status == "waiting" ? .blocked : .idle
@@ -225,7 +230,8 @@ private func readSession(at file: URL) -> Session? {
                    project: project, cwd: cwd, phase: phase,
                    reason: phase == .blocked ? reason((fields["waitingFor"] ?? fields["needs"]) as? String ?? "") : "",
                    desktopID: fields["hostSessionId"] as? String ?? "",
-                   updated: Date(timeIntervalSince1970: ms / 1000), started: fields["procStart"] as? String ?? "",
+                   updated: Date(timeIntervalSince1970: ms / 1000), botID: bot?.id ?? "",
+                   started: fields["procStart"] as? String ?? "",
                    startedAt: Date(timeIntervalSince1970: (fields["startedAt"] as? Double ?? 0) / 1000))
 }
 

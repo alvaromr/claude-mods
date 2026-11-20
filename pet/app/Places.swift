@@ -1,4 +1,4 @@
-// Where a session lives: the Orca tab, desktop app session or window that clicking its row takes the person to.
+// Where a session lives: the Orca tab or bot, desktop app session or window that clicking its row takes the person to.
 
 import AppKit
 
@@ -6,6 +6,8 @@ import AppKit
 enum Place: Equatable {
     /// A terminal tab of Orca, by its handle.
     case orca(String)
+    /// An Orca bot, whose chats Orca shows apart from its terminals, by the bot's id.
+    case bot(String)
     /// A session of the Claude desktop app, by the id the app gives it.
     case desktop(String)
     /// A window of some other app, as a terminal's: the app is all that can be brought forward.
@@ -13,22 +15,36 @@ enum Place: Equatable {
     case nowhere
 
     /// One of each kind, as the Ayuda window shows them.
-    static let kinds: [Place] = [.orca(""), .desktop(""), .app(0), .nowhere]
+    static let kinds: [Place] = [.orca(""), .bot(""), .desktop(""), .app(0), .nowhere]
 
     /// What clicking the row does, as the Ayuda window says it.
     var meaning: String {
         switch self {
         case .orca: return Text.placeOrcaHelp
+        case .bot: return Text.placeBotHelp
         case .desktop: return Text.placeDesktopHelp
         case .app: return Text.placeAppHelp
         case .nowhere: return Text.placeNowhereHelp
         }
     }
 
+    /// The link that opens it, for a place its app opens by one: Orca a bot (it has no command
+    /// for a chat), and the Claude app its session.
+    var link: URL? {
+        switch self {
+        case .bot(let id): return URL(string: "orca://bot/\(id)")
+        case .desktop(let id):
+            var link = URLComponents(string: "claude://code/continue")
+            link?.queryItems = [URLQueryItem(name: "session", value: id)]
+            return link?.url
+        case .orca, .app, .nowhere: return nil
+        }
+    }
+
     /// The name of the app clicking the row brings forward.
     var appName: String? {
         switch self {
-        case .orca: return "Orca"
+        case .orca, .bot: return "Orca"
         case .desktop: return Text.claudeApp
         case .app(let pid): return NSRunningApplication(processIdentifier: pid)?.localizedName
         case .nowhere: return nil
@@ -39,7 +55,7 @@ enum Place: Equatable {
     var icon: NSImage? {
         let workspace = NSWorkspace.shared
         switch self {
-        case .orca:
+        case .orca, .bot:
             return workspace.urlForApplication(withBundleIdentifier: orcaBundleID)
                 .map { workspace.icon(forFile: $0.path) }
         case .desktop:
@@ -58,6 +74,7 @@ func place(of session: Session) -> Place? {
     if session.desktopID.range(of: #"^local_[A-Za-z0-9-]{1,64}$"#, options: .regularExpression) != nil {
         return .desktop(session.desktopID)
     }
+    if !session.botID.isEmpty { return .bot(session.botID) }
     guard let environment = run("/bin/ps", ["eww", "-p", String(session.pid)]) else { return nil }
     if let handle = orcaHandle(in: environment) { return .orca(handle) }
     // otherwise the first of its ancestors that is an app with windows of its own: its terminal

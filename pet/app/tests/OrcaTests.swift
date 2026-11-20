@@ -50,6 +50,40 @@ func serverTests() {
     }
 }
 
+func botTests() {
+    test("an Orca bot's chat goes by the bot's name, and is opened in Orca, by the bot's id") {
+        let pid = Int(getpid()), folder = home.appendingPathComponent("bots/new-bot").path
+        write(["id": "aef56e62-1634", "name": "Casper", "agent": "claude"], to: "bots/new-bot/bot.json")
+        write(["id": "../../x", "name": "Bad"], to: "bots/bad/bot.json")
+        write([
+            "pid": pid, "sessionId": "bot", "name": "Home", "cwd": folder, "entrypoint": "orca", "status": "idle",
+        ], to: ".claude/sessions/20.json")
+        // a folder that holds a bot.json, worked in from a terminal, and a bot whose id no link can take
+        write(["pid": pid, "sessionId": "term", "cwd": folder, "entrypoint": "cli", "status": "idle"],
+              to: ".claude/sessions/21.json")
+        write([
+            "pid": pid, "sessionId": "bad", "cwd": home.appendingPathComponent("bots/bad").path,
+            "entrypoint": "orca", "status": "idle",
+        ], to: ".claude/sessions/22.json")
+        let sessions = Dictionary(liveSessions().map { ($0.id, $0) }) { first, _ in first }
+        expect(sessions["bot"]?.project, "Casper")
+        expect(sessions["bot"]?.name, "Home")
+        expect(sessions["bot"]?.botID, "aef56e62-1634")
+        expect(sessions["term"]?.project, "new-bot")
+        expect(sessions["term"]?.botID, "")
+        expect(sessions["bad"]?.project, "bad")
+        expect(sessions["bad"]?.botID, "")
+        expect(sessions["bot"].flatMap(place(of:)), .bot("aef56e62-1634"))
+        expect(Place.bot("aef56e62-1634").appName, "Orca")
+        expect(Place.bot("aef56e62-1634").link?.absoluteString, "orca://bot/aef56e62-1634")
+        expect(Place.desktop("local_f6").link?.absoluteString, "claude://code/continue?session=local_f6")
+        expect(Place.orca("term_1").link, nil)
+        for file in ["20", "21", "22"] {
+            try? FileManager.default.removeItem(at: home.appendingPathComponent(".claude/sessions/\(file).json"))
+        }
+    }
+}
+
 func orcaTests() {
     test("the Orca terminals in front are the picked pane of the picked tab, in the workspace shown") {
         func pane(_ handle: String, _ leaf: String) -> [String: Any] {
