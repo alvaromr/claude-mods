@@ -35,6 +35,11 @@ entry names its mod.
 - `pet`: renamed from `mascota`, so every mod has an English name. The command is now `/pet`, and `/pet salir`
   closes it; installed as `mascota`, it is installed again as `pet`, and its settings start afresh.
 
+### Fixed
+
+- `pet`: a session whose background command listens only on ports the system picks (a test or mutation run, a
+  debugger) is in «Trabajando» until it ends, no longer in «Esperan» as if it had left a server running.
+
 ## [guard-outward 0.1.0] - 2026-11-17
 
 ### Added

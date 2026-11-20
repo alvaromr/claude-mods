@@ -85,14 +85,35 @@ func servers(of sessions: [Int32]) -> [Int32: Servers] {
           // lsof ends with 1 when it finds nothing
           let open = run("/usr/sbin/lsof", ["-nP", "-iTCP", "-sTCP:LISTEN", "-Fpn"], allowing: [0, 1])
     else { return [:] }
-    return servers(of: Set(sessions), in: table, listening: open)
+    return servers(of: Set(sessions), in: table, listening: open, handedOut: handedOutPorts)
 }
+
+private struct Unreadable: LocalizedError {
+    let name: String
+    var errorDescription: String? { "\(name) cannot be read" }
+}
+
+/// The ports the system hands out to a process that listens on any (port 0), as
+/// `sysctl net.inet.ip.portrange` says; when it does not say, its default, the cause reported.
+private let handedOutPorts: ClosedRange<Int> = orNil("reading the ports the system hands out") {
+    func value(_ name: String) throws -> Int {
+        var value: Int32 = 0, size = MemoryLayout<Int32>.size
+        guard sysctlbyname(name, &value, &size, nil, 0) == 0 else { throw Unreadable(name: name) }
+        return Int(value)
+    }
+    let first = try value("net.inet.ip.portrange.first"), last = try value("net.inet.ip.portrange.last")
+    guard first <= last else { throw Unreadable(name: "net.inet.ip.portrange") }
+    return first...last
+} ?? 49152...65535
 
 /// The servers of each of those sessions from what `ps -Ao pid=,ppid=,command=` and
 /// `lsof -iTCP -sTCP:LISTEN -Fpn` print. Claude Code runs each command in a shell of its own,
 /// one that sources its snapshot of the person's shell, and a command is a server when that
-/// shell, or any process under it, listens.
-func servers(of sessions: Set<Int32>, in table: String, listening open: String) -> [Int32: Servers] {
+/// shell, or any process under it, listens on a port it was told to. A port in `handedOut` is
+/// one the system picked for it: a test run or a debugger listens there to talk to its own
+/// processes, and it ends by itself, as a server does not.
+func servers(of sessions: Set<Int32>, in table: String, listening open: String,
+             handedOut: ClosedRange<Int>) -> [Int32: Servers] {
     var children: [Int32: [Int32]] = [:], shells: [Int32: [Int32]] = [:]
     for row in table.split(separator: "\n") {
         guard let match = row.firstMatch(of: #/^\s*(\d+)\s+(\d+)\s+(.*)$/#),
@@ -105,7 +126,8 @@ func servers(of sessions: Set<Int32>, in table: String, listening open: String) 
     for line in open.split(separator: "\n") {
         if line.hasPrefix("p") {
             pid = Int32(line.dropFirst())
-        } else if line.hasPrefix("n"), let pid, let port = line.split(separator: ":").last.flatMap({ Int($0) }) {
+        } else if line.hasPrefix("n"), let pid, let port = line.split(separator: ":").last.flatMap({ Int($0) }),
+                  !handedOut.contains(port) {
             ports[pid, default: []].insert(port)
         }
     }

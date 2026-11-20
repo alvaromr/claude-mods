@@ -20,10 +20,25 @@ func serverTests() {
         // the session's own port and an MCP server's are not a command's
         let open = "p100\nf27\nn127.0.0.1:50571\np103\nf20\nn[::1]:5173\nf21\nn*:5173\np105\nn*:3100\n"
             + "p106\nn127.0.0.1:8765\n"
-        let found = servers(of: [100, 200], in: table, listening: open)
+        let handedOut = 49152...65535
+        let found = servers(of: [100, 200], in: table, listening: open, handedOut: handedOut)
         expect(found[100], Servers(commands: 2, ports: [5173, 8765]))
         expect(found[200], nil, "a session whose commands listen on nothing")
-        expect(servers(of: [100], in: table, listening: "")[100], nil, "nothing listening")
+        expect(servers(of: [100], in: table, listening: "", handedOut: handedOut)[100], nil, "nothing listening")
+
+        // a test run or a debugger listens too, on ports the system hands out, to talk to its own
+        // processes: it is still at work, as a server is not
+        let runs = """
+            300     1 claude
+            301   300 \(shell) 'pnpm mutation'
+            302   301 stryker
+            303   302 node --inspect --test
+            304   300 \(shell) 'pnpm dev'
+            305   304 node --inspect vite --port 5173
+            """
+        let picked = "p302\nn*:51782\np303\nn127.0.0.1:65475\np305\nn*:5173\nn127.0.0.1:49329\n"
+        expect(servers(of: [300], in: runs, listening: picked, handedOut: handedOut)[300],
+               Servers(commands: 1, ports: [5173]), "only the port a server was told to listen on")
 
         var serving = session(.idle)
         serving.ports = [5173, 8765]
