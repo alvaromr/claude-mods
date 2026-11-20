@@ -7,6 +7,9 @@ mod installs on its own.
 > Mods run on Claude Code's hooks API, which is early access and may change between releases. The mods' interface is
 > in Spanish; English is planned.
 
+This is a personal project, not affiliated with or endorsed by Anthropic. Claude and its mark, which the `pet` app
+shows, are Anthropic's.
+
 ## Mods
 
 |                                                                     | Mod             | What it adds                                                                                 |

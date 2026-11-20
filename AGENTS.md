@@ -62,6 +62,7 @@ who decided and what was rejected. The rules they leave for contributors:
 - No coverage threshold until `claude plugin test` can measure it; each mod's `tests/mutants.json` lists one mutant
   per behaviour it promises, a new mod's too ([coverage](docs/decisions/coverage.md)).
 - TypeScript stays on 6 until typescript-eslint supports 7 ([typescript-6](docs/decisions/typescript-6.md)).
+- The pet app shows the Claude mark; listing icons never do ([claude-mark](docs/decisions/claude-mark.md)).
 
 ## Where things live
 
