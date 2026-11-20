@@ -1,13 +1,50 @@
-// Mutation tests for a mod: `node scripts/mutate.mjs <mod>`. Each mutant in `<mod>/tests/mutants.json` breaks one
-// behaviour of the mod, `{ "file", "from", "to", "why" }`: in a copy of the mod, `from` is replaced by `to` in that
-// file and the mod's tests run; they must fail. A mutant they let through means a behaviour no test holds. A mutant
-// whose `from` is gone, or found more than once, fails too, so the list cannot rot as the code changes.
+// Mutation tests for the mods: `node scripts/mutate.mjs [--all] [<mod>...]`, every mod that lists mutants when none is
+// named. Each mutant in `<mod>/tests/mutants.json` breaks one behaviour of the mod, `{ "file", "from", "to", "why" }`:
+// in a copy of the mod, `from` is replaced by `to` in that file and the mod's tests run; they must fail. A mutant they
+// let through means a behaviour no test holds. A mutant whose `from` is gone, or found more than once, fails too, so
+// the list cannot rot as the code changes.
+// A mod whose mutants were all killed on the same files is not run again: RECORD keeps, per mod, the fingerprint of
+// what its run read. `--all` runs them all whatever the record says.
+import { Buffer } from 'node:buffer'
 import { execFile } from 'node:child_process'
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { availableParallelism, tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, relative } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
+
+/** Each mod's last run that killed every mutant, `{ [mod]: { fingerprint, killed } }`; git ignores it. */
+const RECORD = '.mutate.json'
+
+// What every mod's mutants depend on beyond the mod: the tools, their versions and this script. A change to any of
+// them runs every mod's mutants again.
+const SHARED = ['package.json', 'pnpm-lock.yaml', '.node-version', 'scripts/mutate.mjs']
+
+/** The files a run of the mod's mutants reads, as paths from the repo's root: the mod's own, but the engine's types. */
+export const inputsOf = mod => [
+  ...readdirSync(mod, { recursive: true, withFileTypes: true })
+    .filter(entry => entry.isFile() && entry.name !== '.DS_Store')
+    .map(entry => relative('.', join(entry.parentPath, entry.name)))
+    .filter(path => !path.startsWith(join(mod, '.claude-plugin', 'types'))),
+  ...SHARED,
+]
+
+/** A hash of `[path, content]` pairs, in any order: the same files give the same fingerprint. */
+export const fingerprint = files => {
+  const hash = createHash('sha256')
+
+  for (const [path, content] of [...files].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))) {
+    const bytes = Buffer.from(content)
+
+    hash.update(`${path}\0${bytes.length}\0`).update(bytes)
+  }
+
+  return hash.digest('hex')
+}
+
+/** Whether the mod's mutants must run: all are asked for, or no run killed them all on files of this fingerprint. */
+export const mustRun = (record, mod, print, all) => all || record[mod]?.fingerprint !== print
 
 /** The mutants a mod lists, checked to be whole; throws, naming the mod, on a malformed list. */
 export const mutantsOf = (mod, json) => {
@@ -123,12 +160,53 @@ const main = async mod => {
   return survived.size === 0
 }
 
+// The record, empty when there is none yet; one that cannot be read is said, and every mod runs.
+const recorded = () => {
+  if (!existsSync(RECORD)) {
+    return {}
+  }
+
+  try {
+    const record = JSON.parse(readFileSync(RECORD, 'utf8'))
+
+    if (typeof record === 'object' && record !== null && !Array.isArray(record)) {
+      return record
+    }
+  } catch {
+    // said below, as for a record of another shape
+  }
+
+  process.stderr.write(`mutate: ${RECORD} cannot be read, so every mod's mutants run again\n`)
+
+  return {}
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   try {
+    const all = process.argv[2] === '--all'
+    const named = process.argv.slice(all ? 3 : 2)
+    const mods =
+      named.length > 0 ? named : readdirSync('.').filter(name => existsSync(join(name, 'tests', 'mutants.json')))
+    const record = recorded()
     let isKilled = true
 
-    for (const mod of process.argv.slice(2)) {
-      isKilled = (await main(mod)) && isKilled
+    for (const mod of mods) {
+      const print = fingerprint(inputsOf(mod).map(path => [path, readFileSync(path)]))
+
+      if (!mustRun(record, mod, print, all)) {
+        process.stdout.write(`mutate: ${mod}: unchanged since a run that killed its ${record[mod].killed} mutants\n`)
+        continue
+      }
+
+      if (await main(mod)) {
+        record[mod] = {
+          fingerprint: print,
+          killed: mutantsOf(mod, readFileSync(join(mod, 'tests', 'mutants.json'), 'utf8')).length,
+        }
+        writeFileSync(RECORD, `${JSON.stringify(record, null, 2)}\n`)
+      } else {
+        isKilled = false
+      }
     }
 
     process.exitCode = isKilled ? 0 : 1

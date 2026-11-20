@@ -14,6 +14,7 @@ node_modules/
 .mcpb-cache/
 coverage/
 *.log
+.mutate.json
 
 # Local agent settings
 **/.claude/settings.local.json

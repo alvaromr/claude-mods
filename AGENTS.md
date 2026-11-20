@@ -9,17 +9,21 @@ Run each from the repo root:
 - Once after cloning: with the Node that `.node-version` pins, which the gate checks, `pnpm install`. It installs the
   tools and points git at `.githooks/`: the pre-commit hook runs the gate without the mutants, which take minutes,
   on the staged mods alone when nothing else but the root's Markdown is staged; the commit-msg hook checks the
-  subject's length; the pre-push hook runs every mod's mutants and the audit.
+  subject's length; the pre-push hook runs the mutants (`pnpm mutate`, below) and the audit.
 - Gate: `pnpm check` runs [scripts/check.sh](scripts/check.sh): formatting, lint (typed and strict; ShellCheck for
   every shell script), the
   marketplace, the scripts' tests, and each mod's manifest, tests (`tests/*.test.sh` too, for its shell scripts),
   types and, where it lists them, mutants; then [scripts/smoke.sh](scripts/smoke.sh), a real Claude Code that loads
   every mod with a configuration of its own and no login, so it asks no model; on macOS, the pet's SwiftLint, strict,
   and native tests too. Then [scripts/check.test.sh](scripts/check.test.sh) proves the gate fails on each kind of breakage.
+- Mutants: `pnpm mutate [<mod>...]` runs those of every mod, or of those named, whose files changed since a run that
+  killed them all; `.mutate.json`, which git ignores, keeps each mod's fingerprint, and a change to the tools, the
+  lockfile or `scripts/mutate.mjs` runs them all. `pnpm mutate --all` runs every one whatever changed, when asked:
+  the full set takes hours. The gate's mutants are these too.
 - Fix: `pnpm fix` formats, applies the linter's fixes and runs the gate.
 - Audit: `pnpm audit` reports the dependencies' known vulnerabilities.
 - One mod alone: `claude plugin test <mod>`, `claude plugin validate <mod>`, `pnpm exec tsc -p <mod>`,
-  `node scripts/mutate.mjs <mod>`, `sh scripts/smoke.sh <mod>`.
+  `pnpm mutate <mod>`, `sh scripts/smoke.sh <mod>`.
 - Engine types: a mod's `tsconfig.json` extends `<mod>/.claude-plugin/types/`, which the engine writes, for its own
   build, each time it loads the mod from a folder it watches. To write or refresh them, after cloning or updating
   Claude Code: `CLAUDE_CODE_PLUGIN_DIR_WATCH=1 claude -p --plugin-dir ./<mod> 'Reply with: ok'`.

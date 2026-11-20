@@ -10,7 +10,8 @@ the gate cannot measure one.
 `{ file, from, to, why }` breaking one behaviour, and [scripts/mutate.mjs](../../scripts/mutate.mjs) fails on one the
 tests let through, or one whose `from` is gone. Every mod lists one per behaviour it promises, and a new mod does too.
 The mutants run side by side, a quarter of the cores by default (`MUTATE_JOBS` sets another number), and in the
-background (`taskpolicy -b` on macOS, `nice` elsewhere), so the machine stays usable.
+background (`taskpolicy -b` on macOS, `nice` elsewhere), so the machine stays usable. They run only for the mods
+whose files changed since a run that killed them all, as `pnpm mutate` in AGENTS.md says.
 
 **Rejected, by the owner:**
 

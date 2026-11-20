@@ -5,6 +5,7 @@
   "scripts": {
     "check": "sh scripts/check.sh && sh scripts/check.test.sh",
     "fix": "prettier --write . && eslint --fix . && pnpm check",
+    "mutate": "node scripts/mutate.mjs",
     "prepare": "git config core.hooksPath .githooks",
     "release": "node scripts/release.mjs"
   },

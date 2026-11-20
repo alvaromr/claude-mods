@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { jobsOf, mutantsOf, mutated, yielding } from './mutate.mjs'
+import { fingerprint, inputsOf, jobsOf, mustRun, mutantsOf, mutated, yielding } from './mutate.mjs'
 
 const MUTANT = { file: 'hooks/a.ts', from: 'x > 1', to: 'x > 2', why: 'the limit' }
 
@@ -28,6 +28,45 @@ test('mutants run on a quarter of the cores, at least one, unless MUTATE_JOBS sa
 test('the runs go to the background on macOS, and behind nice elsewhere', () => {
   assert.deepEqual(yielding('darwin'), ['taskpolicy', '-b'])
   assert.deepEqual(yielding('linux'), ['nice', '-n', '10'])
+})
+
+test('the same files give the same fingerprint, in any order; a change of content or path gives another', () => {
+  const files = [
+    ['m/hooks/a.ts', 'one'],
+    ['m/tests/a.test.ts', 'two'],
+  ]
+  const print = fingerprint(files)
+
+  assert.match(print, /^[0-9a-f]{64}$/)
+  assert.equal(fingerprint([...files].reverse()), print)
+  assert.notEqual(fingerprint([files[0], ['m/tests/a.test.ts', 'two!']]), print)
+  assert.notEqual(fingerprint([files[0], ['m/tests/b.test.ts', 'two']]), print)
+  // a path and a content that run together are told apart
+  assert.notEqual(fingerprint([['ab', 'c']]), fingerprint([['a', 'bc']]))
+})
+
+test("a mod's fingerprint reads its own files and what every mod's mutants depend on, not the engine's types", () => {
+  const inputs = inputsOf('guard-pnpm')
+
+  for (const shared of ['package.json', 'pnpm-lock.yaml', '.node-version', 'scripts/mutate.mjs']) {
+    assert.ok(inputs.includes(shared), shared)
+  }
+
+  assert.ok(inputs.includes('guard-pnpm/tests/mutants.json'))
+  assert.ok(inputs.includes('guard-pnpm/.claude-plugin/plugin.json'))
+  assert.ok(inputs.some(path => path.startsWith('guard-pnpm/hooks/')))
+  assert.ok(!inputs.some(path => path.includes('/.claude-plugin/types/') || path.endsWith('.DS_Store')))
+  assert.ok(!inputs.some(path => path.startsWith('bar-git/')))
+})
+
+test("a mod's mutants run when asked for all, or when no run killed them all on these files", () => {
+  const record = { m: { fingerprint: 'abc', killed: 3 } }
+
+  assert.equal(mustRun(record, 'm', 'abc', false), false)
+  assert.equal(mustRun(record, 'm', 'abc', true), true)
+  assert.equal(mustRun(record, 'm', 'abd', false), true)
+  assert.equal(mustRun(record, 'other', 'abc', false), true)
+  assert.equal(mustRun({}, 'm', 'abc', false), true)
 })
 
 test('a list of whole mutants is read; anything else is refused, naming the mod', () => {
