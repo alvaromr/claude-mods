@@ -20,7 +20,6 @@ entry names its mod.
 - `bar-git`: an icon, for the plugin listing: a branching fork.
 - `bar-limits`: an icon, for the plugin listing: a ring nearly full.
 - `bar-path`: an icon, for the plugin listing: `~/`.
-- `guard-edit`: an icon, for the plugin listing: a `+` and a `−` on a shield.
 - `guard-outward`: an icon, for the plugin listing: an arrow going out, on a shield.
 - `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
 - `session-title`: an icon, for the plugin listing: a session's tab with its name.
@@ -78,7 +77,6 @@ entry names its mod.
 - `bar-limits`: a refused or failed read of the usage endpoint leaves its cause in the debug log, as other failed
   reads do.
 - `bar-path`: a read that fails leaves its cause in the debug log.
-- `guard-edit`: no change in what it denies; its command reading is simpler inside.
 - `pet`: a read that fails, and an icon the server refuses, leave their cause in the system log, each once.
 - `session-title`: a call that fails leaves its cause in the debug log.
 - `ui-companion`: the pane's title is in Spanish.
@@ -118,17 +116,6 @@ entry names its mod.
 - `session-title`: another session's metadata file, half written or empty, no longer stops the session's title.
 - `session-title`: the title carried over `/clear` no longer goes through the store all sessions share, and prompts
   that start with a path or `<` are titled; only slash commands and Claude Code's own text are skipped.
-- `guard-edit`: the command a `Monitor` runs is checked as a Bash one.
-- `guard-edit`: a command with a `\r` or a no-break space no longer hangs the hooks.
-- `guard-edit`: catches `sed -i''`, `perl -pi'.bak'`, a command line given to `bash -c` or `eval`, `cp` into a folder
-  named without a slash, `git -C dir apply` and paths through `/tmp/..`; `git apply --check` and
-  `patch --dry-run` pass.
-- `guard-edit`: finds writes past shell keywords and wrappers (`if`, `{ }`, `!`, `env`, `timeout`, `sudo -u`,
-  `xargs`, `find -exec`), in `$(...)`, backticks, `>(...)`, heredocs and pipes into a shell, after a subshell or
-  `cd -`, and with `cp`/`mv -t`; a here-string is no longer read as a heredoc, nor `>` inside `[[ ]]` as a
-  redirection.
-- `guard-edit`: a command its own check fails on is denied, as `guard-commit` and `guard-pnpm` do, in place of
-  running unchecked.
 - `ui-mods`: a switch pressed while the list is being read is no longer undone by that read.
 - `ui-mods`: switches run one at a time and the list is read back once they settle, a refused one saying why; a
   list read during a switch is read again; a plugin installed in two scopes is two rows, each switched in its own
@@ -198,6 +185,30 @@ entry names its mod.
   instead of failing to draw its message; Claude still gets the output as printed.
 - `ui-declutter`: when its jq check cannot run, it leaves every row to Claude Code and says why under the prompt,
   instead of taking jq as installed.
+
+## [guard-edit 0.2.0] - 2026-11-20
+
+### Added
+
+- `guard-edit`: an icon, for the plugin listing: a `+` and a `−` on a shield.
+
+### Changed
+
+- `guard-edit`: no change in what it denies; its command reading is simpler inside.
+
+### Fixed
+
+- `guard-edit`: the command a `Monitor` runs is checked as a Bash one.
+- `guard-edit`: a command with a `\r` or a no-break space no longer hangs the hooks.
+- `guard-edit`: catches `sed -i''`, `perl -pi'.bak'`, a command line given to `bash -c` or `eval`, `cp` into a folder
+  named without a slash, `git -C dir apply` and paths through `/tmp/..`; `git apply --check` and
+  `patch --dry-run` pass.
+- `guard-edit`: finds writes past shell keywords and wrappers (`if`, `{ }`, `!`, `env`, `timeout`, `sudo -u`,
+  `xargs`, `find -exec`), in `$(...)`, backticks, `>(...)`, heredocs and pipes into a shell, after a subshell or
+  `cd -`, and with `cp`/`mv -t`; a here-string is no longer read as a heredoc, nor `>` inside `[[ ]]` as a
+  redirection.
+- `guard-edit`: a command its own check fails on is denied, as `guard-commit` and `guard-pnpm` do, in place of
+  running unchecked.
 
 ## [guard-commit 0.2.0] - 2026-11-20
 
