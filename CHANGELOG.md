@@ -21,7 +21,6 @@ entry names its mod.
 - `bar-limits`: an icon, for the plugin listing: a ring nearly full.
 - `bar-path`: an icon, for the plugin listing: `~/`.
 - `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
-- `session-title`: an icon, for the plugin listing: a session's tab with its name.
 - `ui-colorify`: an icon, for the plugin listing: three circles that blend.
 - `ui-companion`: an icon, for the plugin listing: two speech bubbles.
 - `ui-declutter`: an icon, for the plugin listing: rows folded into one.
@@ -74,7 +73,6 @@ entry names its mod.
   reads do.
 - `bar-path`: a read that fails leaves its cause in the debug log.
 - `pet`: a read that fails, and an icon the server refuses, leave their cause in the system log, each once.
-- `session-title`: a call that fails leaves its cause in the debug log.
 - `ui-companion`: the pane's title is in Spanish.
 - `ui-companion`: the footer button's dot is hollow while no mode comments, so its state does not rest on color alone.
 - `ui-companion`: a read that fails leaves its cause in the debug log.
@@ -103,9 +101,6 @@ entry names its mod.
 - `ui-declutter`: rows are laid out in terminal cells (CJK, emoji) and fit narrow screens; results missing from the
   transcript file are read again; one read serves concurrent draws; long diffs no longer lag; a new conversation
   forgets the last one's state.
-- `session-title`: another session's metadata file, half written or empty, no longer stops the session's title.
-- `session-title`: the title carried over `/clear` no longer goes through the store all sessions share, and prompts
-  that start with a path or `<` are titled; only slash commands and Claude Code's own text are skipped.
 - `ui-mods`: a switch pressed while the list is being read is no longer undone by that read.
 - `ui-mods`: switches run one at a time and the list is read back once they settle, a refused one saying why; a
   list read during a switch is read again; a plugin installed in two scopes is two rows, each switched in its own
@@ -175,6 +170,22 @@ entry names its mod.
   instead of failing to draw its message; Claude still gets the output as printed.
 - `ui-declutter`: when its jq check cannot run, it leaves every row to Claude Code and says why under the prompt,
   instead of taking jq as installed.
+
+## [session-title 0.2.0] - 2026-11-20
+
+### Added
+
+- `session-title`: an icon, for the plugin listing: a session's tab with its name.
+
+### Changed
+
+- `session-title`: a call that fails leaves its cause in the debug log.
+
+### Fixed
+
+- `session-title`: another session's metadata file, half written or empty, no longer stops the session's title.
+- `session-title`: the title carried over `/clear` no longer goes through the store all sessions share, and prompts
+  that start with a path or `<` are titled; only slash commands and Claude Code's own text are skipped.
 
 ## [guard-outward 0.2.0] - 2026-11-20
 
