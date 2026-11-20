@@ -10,7 +10,6 @@ entry names its mod.
 
 - `pet`: an Orca bot's chat goes by the bot's name, with the chat's title beside it, and pressing its row opens that
   bot in Orca.
-- `bar-context`: an icon, for the plugin listing: a meter of blocks.
 - `bar-git`: an icon, for the plugin listing: a branching fork.
 - `bar-limits`: an icon, for the plugin listing: a ring nearly full.
 - `bar-path`: an icon, for the plugin listing: `~/`.
@@ -22,8 +21,6 @@ entry names its mod.
   `cc-plugin-sec-default`, which cannot be turned off.
 - `ui-linkify`: each proposed `! command` has a ⧉ right of its ▶ that copies it to the clipboard (macOS), to paste
   in a terminal: a ▶ run has no keyboard, so a command that asks for input, as a passphrase, ends without asking.
-- `bar-context`: a click on the row's model or effort offers the other models (`default`, `opus`, `sonnet`, `haiku`,
-  `fable`) or levels (`low` to `max`), and switches as `/model` and `/effort` do.
 - `ui-linkify`: while a Jira project's key is typed in the prompt box, the autocomplete offers the tickets of the
   branch and of the recent commits.
 - `ui-linkify`: the `[Image #n]` of a prompt is a link that opens the original Claude Code keeps in its temp folder,
@@ -51,15 +48,12 @@ entry names its mod.
   sending you to the terminal.
 - `bar-git`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
   sending you to the terminal.
-- `bar-context`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
-  sending you to the terminal.
 - `ui-linkify`: pasting an image is no longer slow: the images are looked up after the drawing, not before it. Under
   the fullscreen layout the box's pictures take at most half the band, so they hide none of the other mods' rows.
 - `ui-linkify`: a terminal that drops the pictures, as Orca on a tab switch, gets every one sent again at the first
   key typed after a 5 s pause, besides the ↻ under each.
 - `ui-linkify`: in the mobile app its pane shows its settings, which the app now draws as fields, in place of a line
   sending you to the terminal.
-- `bar-context`: a read that fails leaves its cause in the debug log.
 - `bar-git`: a read that fails leaves its cause in the debug log.
 - `bar-limits`: a refused or failed read of the usage endpoint leaves its cause in the debug log, as other failed
   reads do.
@@ -125,13 +119,6 @@ entry names its mod.
 - `bar-git`: changes made together in the pane keep each other's, and a start that fails, or a store that cannot be
   read, is logged instead of failing the session; a save or a forget the store refuses says why in a toast and leaves
   the changes shown as unsaved.
-- `bar-context`: the row shows the model switched to with `/model`, and the one each request runs on.
-- `bar-context`: an empty number in the pane no longer saves 0, and `0x10` or `1e2` are refused.
-- `bar-context`: `claude-opus-4-6[1m]` reads as Opus 4.6, not Opus 4; a compaction a hook vetoed says so and leaves
-  the window as it was; the expired-cache warning can no longer come back from a stale check.
-- `bar-context`: changes made together in the pane keep each other's, and a start that fails, or a store that cannot
-  be read, is logged instead of failing the session; a save or a forget the store refuses says why in a toast and
-  leaves the changes shown as unsaved.
 - `ui-linkify`: a large screenshot pasted into the box shows above it too: its file, which Claude Code writes seconds
   after the paste, is looked for up to 10 s, not 2.
 - `ui-linkify`: another session's metadata file, half written or empty, no longer stops the session's title.
@@ -143,6 +130,30 @@ entry names its mod.
   each item of a list keeps its own box.
 - `ui-linkify`: a ▶ command that prints escape sequences, such as colors or links, shows its output without them
   instead of failing to draw its message; Claude still gets the output as printed.
+
+## [bar-context 0.3.0] - 2026-11-20
+
+### Added
+
+- `bar-context`: an icon, for the plugin listing: a meter of blocks.
+- `bar-context`: a click on the row's model or effort offers the other models (`default`, `opus`, `sonnet`, `haiku`,
+  `fable`) or levels (`low` to `max`), and switches as `/model` and `/effort` do.
+
+### Changed
+
+- `bar-context`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
+  sending you to the terminal.
+- `bar-context`: a read that fails leaves its cause in the debug log.
+
+### Fixed
+
+- `bar-context`: the row shows the model switched to with `/model`, and the one each request runs on.
+- `bar-context`: an empty number in the pane no longer saves 0, and `0x10` or `1e2` are refused.
+- `bar-context`: `claude-opus-4-6[1m]` reads as Opus 4.6, not Opus 4; a compaction a hook vetoed says so and leaves
+  the window as it was; the expired-cache warning can no longer come back from a stale check.
+- `bar-context`: changes made together in the pane keep each other's, and a start that fails, or a store that cannot
+  be read, is logged instead of failing the session; a save or a forget the store refuses says why in a toast and
+  leaves the changes shown as unsaved.
 
 ## [ui-colorify 0.1.0] - 2026-11-20
 
