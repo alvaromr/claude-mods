@@ -2,3 +2,10 @@ minimumReleaseAge: 10080
 trustPolicy: no-downgrade
 verifyDepsBeforeRun: error
 allowBuilds: {}
+auditConfig:
+  ignoreGhsas:
+    # minimatch 10.2.6, which typescript-eslint 8.72.2 still needs through @typescript-eslint/typescript-estree
+    # (eslint itself is on the fixed minimatch 11): a denial of service through glob patterns, and the only ones it
+    # reads here are the repo's own lint globs. typescript-eslint 8.73.0 moves to minimatch 11 and clears
+    # minimumReleaseAge on 2026-11-23 at 17:06 UTC; update it then and drop this entry.
+    - GHSA-g3hv-75wg-m249
