@@ -16,6 +16,18 @@ expect() { # expect <got> <wanted> <what>
 }
 # how many times a line of the log starts with the word
 count() { grep -c "^$1" "$tmp/log" || true; }
+# eventually <command…>: waits until the command holds, for five seconds at most
+eventually() {
+	tries=0
+	until "$@"; do
+		tries=$((tries + 1))
+		[ "$tries" -lt 100 ] || return 1
+		/bin/sleep 0.05
+	done
+}
+compiling() { [ -e "$LOG.compiler" ]; }
+# the compiler has started, and three other launchers wait for its lock
+contended() { compiling && [ "$(sort -u "$LOG.waits" | grep -c .)" -ge 3 ]; }
 
 export HOME="$tmp/home"
 dir="$HOME/Library/Application Support/claude-pet"
@@ -25,16 +37,20 @@ for file in main.swift Controller.swift Text.swift Info.plist; do echo "$file" >
 cp "$here/launch.sh" "$tmp/src/launch.sh"
 launch() { sh "$tmp/src/launch.sh" "$@"; }
 
-# the compiler writes what it was asked for after SWIFTC_SLEEP seconds, and says its pid
+# the compiler says its pid and writes what it was asked for, once the test lets it through the
+# fifo that GATE names, if any
 cat >"$tmp/bin/swiftc" <<'EOF'
 #!/bin/sh
 echo swiftc >>"$LOG"
 echo $$ >"$LOG.compiler"
 while [ "$1" != -o ]; do shift; done
-sleep "${SWIFTC_SLEEP:-0}"
+[ -z "${GATE:-}" ] || read -r _ <"$GATE"
 echo built >"$2"
 chmod +x "$2"
 EOF
+# a launcher waiting for the lock sleeps between tries: the stand-in says which one
+# shellcheck disable=SC2016
+printf '#!/bin/sh\necho "$PPID" >>"$LOG.waits"\nexec /bin/sleep "$@"\n' >"$tmp/bin/sleep"
 for tool in open pkill; do
 	# The stand-in expands "$@" when it runs, not here.
 	# shellcheck disable=SC2016
@@ -75,7 +91,12 @@ expect "$(count open)" $((opens + 2)) "a session start opens it again:"
 # launchers at once: one compiles, the rest wait for it and leave no trace
 echo again >"$tmp/src/Controller.swift"
 compiled=$(count swiftc)
-for _ in 1 2 3 4; do SWIFTC_SLEEP=1 launch open & done
+mkfifo "$tmp/gate"
+rm -f "$LOG.compiler"
+: >"$LOG.waits"
+for _ in 1 2 3 4; do GATE="$tmp/gate" sh "$tmp/src/launch.sh" open & done
+eventually contended || expect no yes "three launchers wait for the one that compiles:"
+! compiling || echo go >"$tmp/gate"
 wait
 expect "$(count swiftc)" $((compiled + 1)) "four launchers at once:"
 expect "$(ls "$dir/Pet.app/Contents/MacOS")" claude-pet "no half-built binary:"
@@ -91,12 +112,9 @@ expect "$(count swiftc)" $((compiled + 1)) "a stale lock:"
 # one that is stopped mid-compile takes its compiler, its temporary and its lock with it
 echo last >"$tmp/src/Controller.swift"
 rm -f "$LOG.compiler"
-SWIFTC_SLEEP=5 sh "$tmp/src/launch.sh" open &
+GATE="$tmp/gate" sh "$tmp/src/launch.sh" open &
 launcher=$!
-for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
-	[ -e "$LOG.compiler" ] && break
-	sleep 0.25
-done
+eventually compiling || expect no yes "it compiles:"
 kill -TERM "$launcher"
 wait "$launcher" || true
 expect "$(kill -0 "$(cat "$LOG.compiler")" 2>/dev/null && echo alive || echo gone)" gone "its compiler:"

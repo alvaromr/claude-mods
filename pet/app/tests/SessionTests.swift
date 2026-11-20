@@ -156,7 +156,8 @@ func programTests() {
         var told: [String] = []
         report = { told.append($0) }
         let began = Date()
-        expect(run("/bin/sleep", ["30"], timeout: 0.3), nil)
+        // no time at all: a program that has not ended by the time it is asked is stopped
+        expect(run("/bin/sleep", ["30"], timeout: 0), nil)
         expect(Date().timeIntervalSince(began) < 5, true, "it waited no longer:")
         expect(told.count, 1, "lines told")
         expect(told.first?.contains("took more than") ?? false, true, told.first ?? "nothing told")
