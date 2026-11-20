@@ -11,7 +11,6 @@ entry names its mod.
 - `pet`: an Orca bot's chat goes by the bot's name, with the chat's title beside it, and pressing its row opens that
   bot in Orca.
 - `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
-- `ui-companion`: an icon, for the plugin listing: two speech bubbles.
 - `ui-linkify`: an icon, for the plugin listing: a chain link.
 - `ui-mods`: an icon, for the plugin listing: two switches.
 - `ui-mods`: the pane lists the mods built into Claude Code too, under «builtin», each with its switch but
@@ -37,8 +36,6 @@ entry names its mod.
   it asks first.
 - `pet`: «Salir», from the pet or with `/pet salir`, keeps it closed until the next `/pet`, in place of
   the next session opening it again.
-- `ui-companion`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a
-  line sending you to the terminal.
 - `ui-linkify`: pasting an image is no longer slow: the images are looked up after the drawing, not before it. Under
   the fullscreen layout the box's pictures take at most half the band, so they hide none of the other mods' rows.
 - `ui-linkify`: a terminal that drops the pictures, as Orca on a tab switch, gets every one sent again at the first
@@ -46,9 +43,6 @@ entry names its mod.
 - `ui-linkify`: in the mobile app its pane shows its settings, which the app now draws as fields, in place of a line
   sending you to the terminal.
 - `pet`: a read that fails, and an icon the server refuses, leave their cause in the system log, each once.
-- `ui-companion`: the pane's title is in Spanish.
-- `ui-companion`: the footer button's dot is hollow while no mode comments, so its state does not rest on color alone.
-- `ui-companion`: a read that fails leaves its cause in the debug log.
 - `ui-mods`: a plugin file it cannot read leaves its cause in the debug log.
 - `ui-linkify`: the footer button's dot is hollow while every part is off, so its state does not rest on color alone.
 - `ui-linkify`: a read that fails leaves its cause in the debug log.
@@ -81,9 +75,6 @@ entry names its mod.
   live; one unreadable for a moment no longer ends and restarts its session; a place not found is asked again.
 - `pet`: «Cerrar sesión» works when Claude Code tells no process start; a hung `ps` or `orca` no longer freezes
   the pet; `/pet` still opens the pet when its registration fails.
-- `ui-companion`: a model the engine refuses no longer stops the other modes; errors are kept per mode; redo replaces
-  the note it was made from even if another was discarded meanwhile; after a compaction the kept texts read the new
-  transcript whole.
 - `ui-linkify`: a large screenshot pasted into the box shows above it too: its file, which Claude Code writes seconds
   after the paste, is looked for up to 10 s, not 2.
 - `ui-linkify`: another session's metadata file, half written or empty, no longer stops the session's title.
@@ -95,6 +86,26 @@ entry names its mod.
   each item of a list keeps its own box.
 - `ui-linkify`: a ▶ command that prints escape sequences, such as colors or links, shows its output without them
   instead of failing to draw its message; Claude still gets the output as printed.
+
+## [ui-companion 0.3.0] - 2026-11-20
+
+### Added
+
+- `ui-companion`: an icon, for the plugin listing: two speech bubbles.
+
+### Changed
+
+- `ui-companion`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a
+  line sending you to the terminal.
+- `ui-companion`: the pane's title is in Spanish.
+- `ui-companion`: the footer button's dot is hollow while no mode comments, so its state does not rest on color alone.
+- `ui-companion`: a read that fails leaves its cause in the debug log.
+
+### Fixed
+
+- `ui-companion`: a model the engine refuses no longer stops the other modes; errors are kept per mode; redo replaces
+  the note it was made from even if another was discarded meanwhile; after a compaction the kept texts read the new
+  transcript whole.
 
 ## [bar-path 0.3.0] - 2026-11-20
 
