@@ -31,57 +31,86 @@ entry names its mod.
 - `ui-declutter`: an icon, for the plugin listing: rows folded into one.
 - `ui-linkify`: an icon, for the plugin listing: a chain link.
 - `ui-mods`: an icon, for the plugin listing: two switches.
+- `guard-outward`: first public release: `git push`, `gh` commands that write, the commands listed in its `commands` option and MCP
+  tools that are not reads ask a person in every mode; the auto mode's classifier cannot approve them, and where
+  nobody can be asked they are refused.
+- `guard-pnpm`: first public release: denies npm, npx and yarn.
+- `guard-commit`: first public release: denies commands that attribute a commit or PR to Claude, or sign one.
+- `ui-mods`: the pane lists the mods built into Claude Code too, under «builtin», each with its switch but
+  `cc-plugin-sec-default`, which cannot be turned off.
+- `ui-linkify`: each proposed `! command` has a ⧉ right of its ▶ that copies it to the clipboard (macOS), to paste
+  in a terminal: a ▶ run has no keyboard, so a command that asks for input, as a passphrase, ends without asking.
+- `bar-context`: a click on the row's model or effort offers the other models (`default`, `opus`, `sonnet`, `haiku`,
+  `fable`) or levels (`low` to `max`), and switches as `/model` and `/effort` do.
+- `ui-linkify`: while a Jira project's key is typed in the prompt box, the autocomplete offers the tickets of the
+  branch and of the recent commits.
+- `ui-linkify`: the `[Image #n]` of a prompt is a link that opens the original Claude Code keeps in its temp folder,
+  which Claude Code's own row under the picture does not always link.
+- `ui-linkify`: each `! command` an assistant message proposes is a row with a ▶ that runs it in the session's folder
+  and hands Claude what it printed, as bash mode does.
+- `ui-linkify`: while the command runs, its output shows as it comes, and a ■ in place of the ▶ stops it.
 
 ### Changed
 
 - `pet`: renamed from `mascota`, so every mod has an English name. The command is now `/pet`, and `/pet salir`
   closes it; installed as `mascota`, it is installed again as `pet`, and its settings start afresh.
+- `ui-linkify`: a ▶ command's output is cut at 30,000 characters per stream, saying how much was left out, and a
+  second press on ▶ stops the run.
+- `pet`: a command left running in the background that listens on a port, as a dev server, no longer keeps its
+  session in «Trabajando»: the session waits for you, its row says «servidor en marcha» with the ports, and closing
+  it asks first.
+- `pet`: «Salir», from the pet or with `/pet salir`, keeps it closed until the next `/pet`, in place of
+  the next session opening it again.
+- `ui-companion`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a
+  line sending you to the terminal.
+- `bar-path`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
+  sending you to the terminal.
+- `bar-limits`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
+  sending you to the terminal.
+- `bar-git`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
+  sending you to the terminal.
+- `bar-context`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
+  sending you to the terminal.
+- `ui-linkify`: pasting an image is no longer slow: the images are looked up after the drawing, not before it. Under
+  the fullscreen layout the box's pictures take at most half the band, so they hide none of the other mods' rows.
+- `ui-linkify`: a terminal that drops the pictures, as Orca on a tab switch, gets every one sent again at the first
+  key typed after a 5 s pause, besides the ↻ under each.
+- `ui-linkify`: in the mobile app its pane shows its settings, which the app now draws as fields, in place of a line
+  sending you to the terminal.
+- `bar-context`: a read that fails leaves its cause in the debug log.
+- `bar-git`: a read that fails leaves its cause in the debug log.
+- `bar-limits`: a refused or failed read of the usage endpoint leaves its cause in the debug log, as other failed
+  reads do.
+- `bar-path`: a read that fails leaves its cause in the debug log.
+- `guard-edit`: no change in what it denies; its command reading is simpler inside.
+- `pet`: a read that fails, and an icon the server refuses, leave their cause in the system log, each once.
+- `session-title`: a call that fails leaves its cause in the debug log.
+- `ui-companion`: the pane's title is in Spanish.
+- `ui-companion`: the footer button's dot is hollow while no mode comments, so its state does not rest on color alone.
+- `ui-companion`: a read that fails leaves its cause in the debug log.
+- `ui-declutter`: the pane's title is in Spanish.
+- `ui-declutter`: the footer button's dot is hollow while it is off, so its state does not rest on color alone.
+- `ui-declutter`: a read that fails leaves its cause in the debug log.
+- `ui-mods`: a plugin file it cannot read leaves its cause in the debug log.
+- `ui-linkify`: the footer button's dot is hollow while every part is off, so its state does not rest on color alone.
+- `ui-linkify`: a read that fails leaves its cause in the debug log.
 
 ### Fixed
 
 - `pet`: a session whose background command listens only on ports the system picks (a test or mutation run, a
   debugger) is in «Trabajando» until it ends, no longer in «Esperan» as if it had left a server running.
-
-## [guard-outward 0.1.0] - 2026-11-17
-
-### Added
-
-- `guard-outward`: first public release: `git push`, `gh` commands that write, the commands listed in its `commands` option and MCP
-  tools that are not reads ask a person in every mode; the auto mode's classifier cannot approve them, and where
-  nobody can be asked they are refused.
-
-### Fixed
-
 - `guard-outward`: asks before `url=$(gh pr create)`, `` x=`git push` ``, `gh pr -R owner/repo merge`, a command line
   given to `bash -c` or `eval`, wrappers with options (`timeout 60`, `sudo -u me`, `nice -n 5`),
   `git -C "my repo" push`, and a `gh api graphql` query it cannot see.
 - `guard-outward`: asks for pushes behind quoted assignments, shell options, `eval`, more wrappers,
   `git subtree`, `lfs`, `svn`, `submodule foreach` and inline aliases; classifies MCP tools by their leading verb,
   and no longer trusts an MCP tool's own read-only claim.
-
-## [guard-pnpm 0.1.0] - 2026-11-17
-
-### Added
-
-- `guard-pnpm`: first public release: denies npm, npx and yarn.
-
-### Fixed
-
 - `guard-pnpm`: text in quotes or in a heredoc fed to another command is no longer read as a command
   (`git commit -m "Drop (npm) support"`, `rg "yarn|npm"`); catches npm, npx and yarn by a path, behind wrappers with
   options, and in a command line given to `bash -c` or `eval`.
 - `guard-pnpm`: refuses npm, npx and yarn behind here-strings, heredocs piped to a shell, quoted or escaped command
   words, shell options before `-c`, nested shells, `eval` and more wrappers; `command -v npm`, `sudo -l npm` and
   `npm=1` pass.
-
-## [guard-commit 0.1.0] - 2026-11-17
-
-### Added
-
-- `guard-commit`: first public release: denies commands that attribute a commit or PR to Claude, or sign one.
-
-### Fixed
-
 - `guard-commit`: denies `git tag -sm`, `git -C dir commit -S`, and `commit.gpgsign` set to `1`, `yes`, `on` or a
   quoted `true`; reading the signing settings, `git log --grep=revert -S` and `-S` in a message pass.
 - `guard-commit`: refuses signing hidden in a nested shell, `eval`, quoted flags or settings, `-c` and
@@ -89,11 +118,6 @@ entry names its mod.
   follow a commit, or that merely name a trailer, pass.
 - `guard-commit`: a `git tag` that lists or names tags, with no message, no longer counts as a write, so a line that
   also greps for a trailer runs.
-
-## [ui-declutter 0.1.2] - 2026-11-17
-
-### Fixed
-
 - `ui-declutter`: a `web-fetch` agent, which Claude Code draws as `Fetch` where a session has no `WebFetch`, joins
   its span as a web lookup, its result with it, in place of ending the span.
 - `ui-declutter`: a stopped task (`Stop Task`) and the notice that a background task ended
@@ -108,19 +132,9 @@ entry names its mod.
 - `ui-declutter`: rows are laid out in terminal cells (CJK, emoji) and fit narrow screens; results missing from the
   transcript file are read again; one read serves concurrent draws; long diffs no longer lag; a new conversation
   forgets the last one's state.
-
-## [session-title 0.1.2] - 2026-11-17
-
-### Fixed
-
 - `session-title`: another session's metadata file, half written or empty, no longer stops the session's title.
 - `session-title`: the title carried over `/clear` no longer goes through the store all sessions share, and prompts
   that start with a path or `<` are titled; only slash commands and Claude Code's own text are skipped.
-
-## [guard-edit 0.1.2] - 2026-11-17
-
-### Fixed
-
 - `guard-edit`: the command a `Monitor` runs is checked as a Bash one.
 - `guard-edit`: a command with a `\r` or a no-break space no longer hangs the hooks.
 - `guard-edit`: catches `sed -i''`, `perl -pi'.bak'`, a command line given to `bash -c` or `eval`, `cp` into a folder
@@ -132,35 +146,10 @@ entry names its mod.
   redirection.
 - `guard-edit`: a command its own check fails on is denied, as `guard-commit` and `guard-pnpm` do, in place of
   running unchecked.
-
-## [ui-mods 0.2.0] - 2026-11-17
-
-### Added
-
-- `ui-mods`: the pane lists the mods built into Claude Code too, under «builtin», each with its switch but
-  `cc-plugin-sec-default`, which cannot be turned off.
-
-### Fixed
-
 - `ui-mods`: a switch pressed while the list is being read is no longer undone by that read.
 - `ui-mods`: switches run one at a time and the list is read back once they settle, a refused one saying why; a
   list read during a switch is read again; a plugin installed in two scopes is two rows, each switched in its own
   scope; the «sin aplicar» mark is cleared before the reload runs.
-
-## [ui-linkify 0.4.0] - 2026-11-17
-
-### Added
-
-- `ui-linkify`: each proposed `! command` has a ⧉ right of its ▶ that copies it to the clipboard (macOS), to paste
-  in a terminal: a ▶ run has no keyboard, so a command that asks for input, as a passphrase, ends without asking.
-
-### Changed
-
-- `ui-linkify`: a ▶ command's output is cut at 30,000 characters per stream, saying how much was left out, and a
-  second press on ▶ stops the run.
-
-### Fixed
-
 - `ui-linkify`: a ▶ command that asks in the terminal, as `sudo` does for a password, no longer takes the keys and
   the mouse from the prompt box, leaving stray characters in it: it runs without the terminal and ends without
   asking. It needs `perl`, which macOS ships.
@@ -171,67 +160,24 @@ entry names its mod.
   «running» by a reload shows as stopped; a command no longer fails to start when its shell already leads its group.
 - `ui-linkify`: pasted images are forgotten on `/clear` and new sessions, a miss is looked up again after 5 s, and an
   unreadable conversation no longer redraws forever.
-
-## [mascota 0.2.0] - 2026-11-17
-
-### Changed
-
-- `mascota`: a command left running in the background that listens on a port, as a dev server, no longer keeps its
-  session in «Trabajando»: the session waits for you, its row says «servidor en marcha» with the ports, and closing
-  it asks first.
-- `mascota`: «Salir», from the pet or with `/mascota salir`, keeps it closed until the next `/mascota`, in place of
-  the next session opening it again.
-
-### Fixed
-
-- `mascota`: `/mascota` says why when its launcher cannot run at all.
-- `mascota`: a command or subagent stopped with `TaskStop` no longer keeps its session in «Trabajando».
-- `mascota`: a session resumed with `--resume` no longer counts its earlier process's `/loop` or reminder as still
+- `pet`: `/pet` says why when its launcher cannot run at all.
+- `pet`: a command or subagent stopped with `TaskStop` no longer keeps its session in «Trabajando».
+- `pet`: a session resumed with `--resume` no longer counts its earlier process's `/loop` or reminder as still
   to run; background work launched long before the last look still counts as running.
-- `mascota`: the launcher recompiles when the sources change, whatever their dates, and concurrent launches no longer
+- `pet`: the launcher recompiles when the sources change, whatever their dates, and concurrent launches no longer
   compile or restart the pet over each other.
-- `mascota`: a session file left by a dead process whose pid was reused, or with an invalid pid, no longer shows as
+- `pet`: a session file left by a dead process whose pid was reused, or with an invalid pid, no longer shows as
   live; one unreadable for a moment no longer ends and restarts its session; a place not found is asked again.
-- `mascota`: «Cerrar sesión» works when Claude Code tells no process start; a hung `ps` or `orca` no longer freezes
-  the pet; `/mascota` still opens the pet when its registration fails.
-
-## [ui-companion 0.2.0] - 2026-11-17
-
-### Changed
-
-- `ui-companion`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a
-  line sending you to the terminal.
-
-### Fixed
-
+- `pet`: «Cerrar sesión» works when Claude Code tells no process start; a hung `ps` or `orca` no longer freezes
+  the pet; `/pet` still opens the pet when its registration fails.
 - `ui-companion`: a model the engine refuses no longer stops the other modes; errors are kept per mode; redo replaces
   the note it was made from even if another was discarded meanwhile; after a compaction the kept texts read the new
   transcript whole.
-
-## [bar-path 0.2.0] - 2026-11-17
-
-### Changed
-
-- `bar-path`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
-  sending you to the terminal.
-
-### Fixed
-
 - `bar-path`: the row follows a `/cd` or a shell `cd` at once, and a subagent's end no longer shows its own folder.
 - `bar-path`: the row keeps the folder of a shell `cd` instead of flipping back.
 - `bar-path`: changes made together in the pane keep each other's, and a start that fails, or a store that cannot be
   read, is logged instead of failing the session; a save or a forget the store refuses says why in a toast and leaves
   the changes shown as unsaved.
-
-## [bar-limits 0.2.0] - 2026-11-17
-
-### Changed
-
-- `bar-limits`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
-  sending you to the terminal.
-
-### Fixed
-
 - `bar-limits`: a change of the windows within a minute of the last read of the per-model limits is read once that
   minute is over.
 - `bar-limits`: an empty number in the pane no longer saves 0, and `0x10` or `1e2` are refused.
@@ -239,16 +185,6 @@ entry names its mod.
 - `bar-limits`: changes made together in the pane keep each other's, and a start that fails, or a store that cannot
   be read, is logged instead of failing the session; a save or a forget the store refuses says why in a toast and
   leaves the changes shown as unsaved.
-
-## [bar-git 0.2.0] - 2026-11-17
-
-### Changed
-
-- `bar-git`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
-  sending you to the terminal.
-
-### Fixed
-
 - `bar-git`: the row follows a `/cd` or a shell `cd` at once, and a subagent's end no longer shows its own
   repository.
 - `bar-git`: within a long turn, the row is read again a second after the last tool that may change the repository.
@@ -259,21 +195,6 @@ entry names its mod.
 - `bar-git`: changes made together in the pane keep each other's, and a start that fails, or a store that cannot be
   read, is logged instead of failing the session; a save or a forget the store refuses says why in a toast and leaves
   the changes shown as unsaved.
-
-## [bar-context 0.2.0] - 2026-11-17
-
-### Added
-
-- `bar-context`: a click on the row's model or effort offers the other models (`default`, `opus`, `sonnet`, `haiku`,
-  `fable`) or levels (`low` to `max`), and switches as `/model` and `/effort` do.
-
-### Changed
-
-- `bar-context`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
-  sending you to the terminal.
-
-### Fixed
-
 - `bar-context`: the row shows the model switched to with `/model`, and the one each request runs on.
 - `bar-context`: an empty number in the pane no longer saves 0, and `0x10` or `1e2` are refused.
 - `bar-context`: `claude-opus-4-6[1m]` reads as Opus 4.6, not Opus 4; a compaction a hook vetoed says so and leaves
@@ -281,27 +202,6 @@ entry names its mod.
 - `bar-context`: changes made together in the pane keep each other's, and a start that fails, or a store that cannot
   be read, is logged instead of failing the session; a save or a forget the store refuses says why in a toast and
   leaves the changes shown as unsaved.
-
-## [ui-linkify 0.3.0] - 2026-11-12
-
-### Added
-
-- `ui-linkify`: while a Jira project's key is typed in the prompt box, the autocomplete offers the tickets of the
-  branch and of the recent commits.
-- `ui-linkify`: the `[Image #n]` of a prompt is a link that opens the original Claude Code keeps in its temp folder,
-  which Claude Code's own row under the picture does not always link.
-
-### Changed
-
-- `ui-linkify`: pasting an image is no longer slow: the images are looked up after the drawing, not before it. Under
-  the fullscreen layout the box's pictures take at most half the band, so they hide none of the other mods' rows.
-- `ui-linkify`: a terminal that drops the pictures, as Orca on a tab switch, gets every one sent again at the first
-  key typed after a 5 s pause, besides the ↻ under each.
-- `ui-linkify`: in the mobile app its pane shows its settings, which the app now draws as fields, in place of a line
-  sending you to the terminal.
-
-### Fixed
-
 - `ui-linkify`: a large screenshot pasted into the box shows above it too: its file, which Claude Code writes seconds
   after the paste, is looked for up to 10 s, not 2.
 - `ui-linkify`: another session's metadata file, half written or empty, no longer stops the session's title.
@@ -313,86 +213,5 @@ entry names its mod.
   each item of a list keeps its own box.
 - `ui-linkify`: a ▶ command that prints escape sequences, such as colors or links, shows its output without them
   instead of failing to draw its message; Claude still gets the output as printed.
-
-## [bar-context 0.1.1] - 2026-11-03
-
-### Changed
-
-- `bar-context`: a read that fails leaves its cause in the debug log.
-
-## [bar-git 0.1.1] - 2026-11-03
-
-### Changed
-
-- `bar-git`: a read that fails leaves its cause in the debug log.
-
-## [bar-limits 0.1.1] - 2026-11-03
-
-### Changed
-
-- `bar-limits`: a refused or failed read of the usage endpoint leaves its cause in the debug log, as other failed
-  reads do.
-
-## [bar-path 0.1.1] - 2026-11-03
-
-### Changed
-
-- `bar-path`: a read that fails leaves its cause in the debug log.
-
-## [guard-edit 0.1.1] - 2026-11-03
-
-### Changed
-
-- `guard-edit`: no change in what it denies; its command reading is simpler inside.
-
-## [mascota 0.1.1] - 2026-11-03
-
-### Changed
-
-- `mascota`: a read that fails, and an icon the server refuses, leave their cause in the system log, each once.
-
-## [session-title 0.1.1] - 2026-11-03
-
-### Changed
-
-- `session-title`: a call that fails leaves its cause in the debug log.
-
-## [ui-companion 0.1.1] - 2026-11-03
-
-### Changed
-
-- `ui-companion`: the pane's title is in Spanish.
-- `ui-companion`: the footer button's dot is hollow while no mode comments, so its state does not rest on color alone.
-- `ui-companion`: a read that fails leaves its cause in the debug log.
-
-## [ui-declutter 0.1.1] - 2026-11-03
-
-### Changed
-
-- `ui-declutter`: the pane's title is in Spanish.
-- `ui-declutter`: the footer button's dot is hollow while it is off, so its state does not rest on color alone.
-- `ui-declutter`: a read that fails leaves its cause in the debug log.
-
-### Fixed
-
 - `ui-declutter`: when its jq check cannot run, it leaves every row to Claude Code and says why under the prompt,
   instead of taking jq as installed.
-
-## [ui-mods 0.1.1] - 2026-11-03
-
-### Changed
-
-- `ui-mods`: a plugin file it cannot read leaves its cause in the debug log.
-
-## [ui-linkify 0.2.0] - 2026-11-03
-
-### Added
-
-- `ui-linkify`: each `! command` an assistant message proposes is a row with a ▶ that runs it in the session's folder
-  and hands Claude what it printed, as bash mode does.
-- `ui-linkify`: while the command runs, its output shows as it comes, and a ■ in place of the ▶ stops it.
-
-### Changed
-
-- `ui-linkify`: the footer button's dot is hollow while every part is off, so its state does not rest on color alone.
-- `ui-linkify`: a read that fails leaves its cause in the debug log.
