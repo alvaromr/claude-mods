@@ -20,7 +20,6 @@ entry names its mod.
 - `bar-git`: an icon, for the plugin listing: a branching fork.
 - `bar-limits`: an icon, for the plugin listing: a ring nearly full.
 - `bar-path`: an icon, for the plugin listing: `~/`.
-- `guard-commit`: an icon, for the plugin listing: a commit on a shield.
 - `guard-edit`: an icon, for the plugin listing: a `+` and a `−` on a shield.
 - `guard-outward`: an icon, for the plugin listing: an arrow going out, on a shield.
 - `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
@@ -33,7 +32,6 @@ entry names its mod.
 - `guard-outward`: first public release: `git push`, `gh` commands that write, the commands listed in its `commands` option and MCP
   tools that are not reads ask a person in every mode; the auto mode's classifier cannot approve them, and where
   nobody can be asked they are refused.
-- `guard-commit`: first public release: denies commands that attribute a commit or PR to Claude, or sign one.
 - `ui-mods`: the pane lists the mods built into Claude Code too, under «builtin», each with its switch but
   `cc-plugin-sec-default`, which cannot be turned off.
 - `ui-linkify`: each proposed `! command` has a ⧉ right of its ▶ that copies it to the clipboard (macOS), to paste
@@ -103,13 +101,6 @@ entry names its mod.
 - `guard-outward`: asks for pushes behind quoted assignments, shell options, `eval`, more wrappers,
   `git subtree`, `lfs`, `svn`, `submodule foreach` and inline aliases; classifies MCP tools by their leading verb,
   and no longer trusts an MCP tool's own read-only claim.
-- `guard-commit`: denies `git tag -sm`, `git -C dir commit -S`, and `commit.gpgsign` set to `1`, `yes`, `on` or a
-  quoted `true`; reading the signing settings, `git log --grep=revert -S` and `-S` in a message pass.
-- `guard-commit`: refuses signing hidden in a nested shell, `eval`, quoted flags or settings, `-c` and
-  `GIT_CONFIG_*` forms, option prefixes (`--gpg`, `--sig`) and behind `--work-tree`-style options; reads that
-  follow a commit, or that merely name a trailer, pass.
-- `guard-commit`: a `git tag` that lists or names tags, with no message, no longer counts as a write, so a line that
-  also greps for a trailer runs.
 - `ui-declutter`: a `web-fetch` agent, which Claude Code draws as `Fetch` where a session has no `WebFetch`, joins
   its span as a web lookup, its result with it, in place of ending the span.
 - `ui-declutter`: a stopped task (`Stop Task`) and the notice that a background task ended
@@ -207,6 +198,23 @@ entry names its mod.
   instead of failing to draw its message; Claude still gets the output as printed.
 - `ui-declutter`: when its jq check cannot run, it leaves every row to Claude Code and says why under the prompt,
   instead of taking jq as installed.
+
+## [guard-commit 0.2.0] - 2026-11-20
+
+### Added
+
+- `guard-commit`: an icon, for the plugin listing: a commit on a shield.
+- `guard-commit`: first public release: denies commands that attribute a commit or PR to Claude, or sign one.
+
+### Fixed
+
+- `guard-commit`: denies `git tag -sm`, `git -C dir commit -S`, and `commit.gpgsign` set to `1`, `yes`, `on` or a
+  quoted `true`; reading the signing settings, `git log --grep=revert -S` and `-S` in a message pass.
+- `guard-commit`: refuses signing hidden in a nested shell, `eval`, quoted flags or settings, `-c` and
+  `GIT_CONFIG_*` forms, option prefixes (`--gpg`, `--sig`) and behind `--work-tree`-style options; reads that
+  follow a commit, or that merely name a trailer, pass.
+- `guard-commit`: a `git tag` that lists or names tags, with no message, no longer counts as a write, so a line that
+  also greps for a trailer runs.
 
 ## [guard-pnpm 0.2.0] - 2026-11-20
 
