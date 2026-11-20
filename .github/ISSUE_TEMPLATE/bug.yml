@@ -1,0 +1,49 @@
+name: Bug
+description: A mod does something it should not, or does not do what its description says.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: A vulnerability goes through the Security tab, as SECURITY.md says, not here.
+  - type: input
+    id: mod
+    attributes:
+      label: Mod
+      description: Its name, as the README's list of mods gives it, such as `bar-git`.
+    validations:
+      required: true
+  - type: input
+    id: mod-version
+    attributes:
+      label: Mod version
+      description: The `version` in the mod's `.claude-plugin/plugin.json`, or what `/plugin` shows.
+    validations:
+      required: true
+  - type: input
+    id: claude-version
+    attributes:
+      label: Claude Code version
+      description: What `claude --version` prints.
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: System
+      description: The operating system and terminal, such as macOS 26 and Ghostty.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps
+      description: What you did, from a new session, so someone else can do it again.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and what happened instead
+      description: A screenshot helps when the mod draws something. Leave out anything private from your session.
+    validations:
+      required: true

@@ -71,3 +71,4 @@ who decided and what was rejected. The rules they leave for contributors:
 - User-facing changes: [CHANGELOG.md](CHANGELOG.md).
 - Licence: [LICENSE](LICENSE).
 - How to report a vulnerability: [SECURITY.md](SECURITY.md).
+- How contributors behave: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md); the bug form: `.github/ISSUE_TEMPLATE/bug.yml`.
