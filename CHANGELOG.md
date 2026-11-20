@@ -23,7 +23,6 @@ entry names its mod.
 - `guard-commit`: an icon, for the plugin listing: a commit on a shield.
 - `guard-edit`: an icon, for the plugin listing: a `+` and a `−` on a shield.
 - `guard-outward`: an icon, for the plugin listing: an arrow going out, on a shield.
-- `guard-pnpm`: an icon, for the plugin listing: a package on a shield.
 - `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
 - `session-title`: an icon, for the plugin listing: a session's tab with its name.
 - `ui-colorify`: an icon, for the plugin listing: three circles that blend.
@@ -34,7 +33,6 @@ entry names its mod.
 - `guard-outward`: first public release: `git push`, `gh` commands that write, the commands listed in its `commands` option and MCP
   tools that are not reads ask a person in every mode; the auto mode's classifier cannot approve them, and where
   nobody can be asked they are refused.
-- `guard-pnpm`: first public release: denies npm, npx and yarn.
 - `guard-commit`: first public release: denies commands that attribute a commit or PR to Claude, or sign one.
 - `ui-mods`: the pane lists the mods built into Claude Code too, under «builtin», each with its switch but
   `cc-plugin-sec-default`, which cannot be turned off.
@@ -105,12 +103,6 @@ entry names its mod.
 - `guard-outward`: asks for pushes behind quoted assignments, shell options, `eval`, more wrappers,
   `git subtree`, `lfs`, `svn`, `submodule foreach` and inline aliases; classifies MCP tools by their leading verb,
   and no longer trusts an MCP tool's own read-only claim.
-- `guard-pnpm`: text in quotes or in a heredoc fed to another command is no longer read as a command
-  (`git commit -m "Drop (npm) support"`, `rg "yarn|npm"`); catches npm, npx and yarn by a path, behind wrappers with
-  options, and in a command line given to `bash -c` or `eval`.
-- `guard-pnpm`: refuses npm, npx and yarn behind here-strings, heredocs piped to a shell, quoted or escaped command
-  words, shell options before `-c`, nested shells, `eval` and more wrappers; `command -v npm`, `sudo -l npm` and
-  `npm=1` pass.
 - `guard-commit`: denies `git tag -sm`, `git -C dir commit -S`, and `commit.gpgsign` set to `1`, `yes`, `on` or a
   quoted `true`; reading the signing settings, `git log --grep=revert -S` and `-S` in a message pass.
 - `guard-commit`: refuses signing hidden in a nested shell, `eval`, quoted flags or settings, `-c` and
@@ -215,3 +207,19 @@ entry names its mod.
   instead of failing to draw its message; Claude still gets the output as printed.
 - `ui-declutter`: when its jq check cannot run, it leaves every row to Claude Code and says why under the prompt,
   instead of taking jq as installed.
+
+## [guard-pnpm 0.2.0] - 2026-11-20
+
+### Added
+
+- `guard-pnpm`: an icon, for the plugin listing: a package on a shield.
+- `guard-pnpm`: first public release: denies npm, npx and yarn.
+
+### Fixed
+
+- `guard-pnpm`: text in quotes or in a heredoc fed to another command is no longer read as a command
+  (`git commit -m "Drop (npm) support"`, `rg "yarn|npm"`); catches npm, npx and yarn by a path, behind wrappers with
+  options, and in a command line given to `bash -c` or `eval`.
+- `guard-pnpm`: refuses npm, npx and yarn behind here-strings, heredocs piped to a shell, quoted or escaped command
+  words, shell options before `-c`, nested shells, `eval` and more wrappers; `command -v npm`, `sudo -l npm` and
+  `npm=1` pass.
