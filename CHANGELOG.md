@@ -10,18 +10,11 @@ entry names its mod.
 
 - `pet`: an Orca bot's chat goes by the bot's name, with the chat's title beside it, and pressing its row opens that
   bot in Orca.
-- `ui-colorify`: first release: in the terminal, the GitHub alerts of an assistant reply (`> [!NOTE]`, `[!TIP]`,
-  `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`) and a quote without a marker drawn in a box, between two lines or under
-  a title of their colour, without the marker, each with a ⧉ that copies its text; the headings bold in a colour; your
-  own prompts in a box or between two lines; and a section of the system prompt that teaches Claude to write the
-  alerts, few and only where they matter. A button in the footer's first row opens a pane with every colour, frame
-  and title, and a switch that turns the whole mod off.
 - `bar-context`: an icon, for the plugin listing: a meter of blocks.
 - `bar-git`: an icon, for the plugin listing: a branching fork.
 - `bar-limits`: an icon, for the plugin listing: a ring nearly full.
 - `bar-path`: an icon, for the plugin listing: `~/`.
 - `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
-- `ui-colorify`: an icon, for the plugin listing: three circles that blend.
 - `ui-companion`: an icon, for the plugin listing: two speech bubbles.
 - `ui-linkify`: an icon, for the plugin listing: a chain link.
 - `ui-mods`: an icon, for the plugin listing: two switches.
@@ -150,6 +143,18 @@ entry names its mod.
   each item of a list keeps its own box.
 - `ui-linkify`: a ▶ command that prints escape sequences, such as colors or links, shows its output without them
   instead of failing to draw its message; Claude still gets the output as printed.
+
+## [ui-colorify 0.1.0] - 2026-11-20
+
+### Added
+
+- `ui-colorify`: first release: in the terminal, the GitHub alerts of an assistant reply (`> [!NOTE]`, `[!TIP]`,
+  `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`) and a quote without a marker drawn in a box, between two lines or under
+  a title of their colour, without the marker, each with a ⧉ that copies its text; the headings bold in a colour; your
+  own prompts in a box or between two lines; and a section of the system prompt that teaches Claude to write the
+  alerts, few and only where they matter. A button in the footer's first row opens a pane with every colour, frame
+  and title, and a switch that turns the whole mod off.
+- `ui-colorify`: an icon, for the plugin listing: three circles that blend.
 
 ## [ui-declutter 0.2.0] - 2026-11-20
 
