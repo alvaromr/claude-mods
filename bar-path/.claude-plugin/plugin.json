@@ -1,6 +1,6 @@
 {
   "name": "bar-path",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The session's folder as the footer's last row, the home folder as ~, the parent folders dim and the project's own in color as a file link that opens it; a ⚙ button opens a pane to choose what shows and the colors.",
   "author": { "name": "alvaro.martin" },
   "types": "./types/index.d.ts"

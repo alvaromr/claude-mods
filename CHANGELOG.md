@@ -10,7 +10,6 @@ entry names its mod.
 
 - `pet`: an Orca bot's chat goes by the bot's name, with the chat's title beside it, and pressing its row opens that
   bot in Orca.
-- `bar-path`: an icon, for the plugin listing: `~/`.
 - `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
 - `ui-companion`: an icon, for the plugin listing: two speech bubbles.
 - `ui-linkify`: an icon, for the plugin listing: a chain link.
@@ -40,15 +39,12 @@ entry names its mod.
   the next session opening it again.
 - `ui-companion`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a
   line sending you to the terminal.
-- `bar-path`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
-  sending you to the terminal.
 - `ui-linkify`: pasting an image is no longer slow: the images are looked up after the drawing, not before it. Under
   the fullscreen layout the box's pictures take at most half the band, so they hide none of the other mods' rows.
 - `ui-linkify`: a terminal that drops the pictures, as Orca on a tab switch, gets every one sent again at the first
   key typed after a 5 s pause, besides the ↻ under each.
 - `ui-linkify`: in the mobile app its pane shows its settings, which the app now draws as fields, in place of a line
   sending you to the terminal.
-- `bar-path`: a read that fails leaves its cause in the debug log.
 - `pet`: a read that fails, and an icon the server refuses, leave their cause in the system log, each once.
 - `ui-companion`: the pane's title is in Spanish.
 - `ui-companion`: the footer button's dot is hollow while no mode comments, so its state does not rest on color alone.
@@ -88,11 +84,6 @@ entry names its mod.
 - `ui-companion`: a model the engine refuses no longer stops the other modes; errors are kept per mode; redo replaces
   the note it was made from even if another was discarded meanwhile; after a compaction the kept texts read the new
   transcript whole.
-- `bar-path`: the row follows a `/cd` or a shell `cd` at once, and a subagent's end no longer shows its own folder.
-- `bar-path`: the row keeps the folder of a shell `cd` instead of flipping back.
-- `bar-path`: changes made together in the pane keep each other's, and a start that fails, or a store that cannot be
-  read, is logged instead of failing the session; a save or a forget the store refuses says why in a toast and leaves
-  the changes shown as unsaved.
 - `ui-linkify`: a large screenshot pasted into the box shows above it too: its file, which Claude Code writes seconds
   after the paste, is looked for up to 10 s, not 2.
 - `ui-linkify`: another session's metadata file, half written or empty, no longer stops the session's title.
@@ -104,6 +95,26 @@ entry names its mod.
   each item of a list keeps its own box.
 - `ui-linkify`: a ▶ command that prints escape sequences, such as colors or links, shows its output without them
   instead of failing to draw its message; Claude still gets the output as printed.
+
+## [bar-path 0.3.0] - 2026-11-20
+
+### Added
+
+- `bar-path`: an icon, for the plugin listing: `~/`.
+
+### Changed
+
+- `bar-path`: in the mobile app the pane shows its settings, which the app now draws as fields, in place of a line
+  sending you to the terminal.
+- `bar-path`: a read that fails leaves its cause in the debug log.
+
+### Fixed
+
+- `bar-path`: the row follows a `/cd` or a shell `cd` at once, and a subagent's end no longer shows its own folder.
+- `bar-path`: the row keeps the folder of a shell `cd` instead of flipping back.
+- `bar-path`: changes made together in the pane keep each other's, and a start that fails, or a store that cannot be
+  read, is logged instead of failing the session; a save or a forget the store refuses says why in a toast and leaves
+  the changes shown as unsaved.
 
 ## [bar-limits 0.3.0] - 2026-11-20
 
