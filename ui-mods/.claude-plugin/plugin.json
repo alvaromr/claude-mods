@@ -1,6 +1,6 @@
 {
   "name": "ui-mods",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A pane, opened and closed with /mods, listing every installed mod (a plugin with a hooks module), then the mods built into Claude Code, each with a switch to enable or disable it (cc-plugin-sec-default has none, as it cannot be turned off), and a button «recargar mods» that runs /reload-plugins to apply the changes.",
   "author": { "name": "alvaro.martin" },
   "types": "./types/index.d.ts"

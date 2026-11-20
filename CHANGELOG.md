@@ -12,9 +12,6 @@ entry names its mod.
   bot in Orca.
 - `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
 - `ui-linkify`: an icon, for the plugin listing: a chain link.
-- `ui-mods`: an icon, for the plugin listing: two switches.
-- `ui-mods`: the pane lists the mods built into Claude Code too, under «builtin», each with its switch but
-  `cc-plugin-sec-default`, which cannot be turned off.
 - `ui-linkify`: each proposed `! command` has a ⧉ right of its ▶ that copies it to the clipboard (macOS), to paste
   in a terminal: a ▶ run has no keyboard, so a command that asks for input, as a passphrase, ends without asking.
 - `ui-linkify`: while a Jira project's key is typed in the prompt box, the autocomplete offers the tickets of the
@@ -43,7 +40,6 @@ entry names its mod.
 - `ui-linkify`: in the mobile app its pane shows its settings, which the app now draws as fields, in place of a line
   sending you to the terminal.
 - `pet`: a read that fails, and an icon the server refuses, leave their cause in the system log, each once.
-- `ui-mods`: a plugin file it cannot read leaves its cause in the debug log.
 - `ui-linkify`: the footer button's dot is hollow while every part is off, so its state does not rest on color alone.
 - `ui-linkify`: a read that fails leaves its cause in the debug log.
 
@@ -51,10 +47,6 @@ entry names its mod.
 
 - `pet`: a session whose background command listens only on ports the system picks (a test or mutation run, a
   debugger) is in «Trabajando» until it ends, no longer in «Esperan» as if it had left a server running.
-- `ui-mods`: a switch pressed while the list is being read is no longer undone by that read.
-- `ui-mods`: switches run one at a time and the list is read back once they settle, a refused one saying why; a
-  list read during a switch is read again; a plugin installed in two scopes is two rows, each switched in its own
-  scope; the «sin aplicar» mark is cleared before the reload runs.
 - `ui-linkify`: a ▶ command that asks in the terminal, as `sudo` does for a password, no longer takes the keys and
   the mouse from the prompt box, leaving stray characters in it: it runs without the terminal and ends without
   asking. It needs `perl`, which macOS ships.
@@ -86,6 +78,25 @@ entry names its mod.
   each item of a list keeps its own box.
 - `ui-linkify`: a ▶ command that prints escape sequences, such as colors or links, shows its output without them
   instead of failing to draw its message; Claude still gets the output as printed.
+
+## [ui-mods 0.3.0] - 2026-11-20
+
+### Added
+
+- `ui-mods`: an icon, for the plugin listing: two switches.
+- `ui-mods`: the pane lists the mods built into Claude Code too, under «builtin», each with its switch but
+  `cc-plugin-sec-default`, which cannot be turned off.
+
+### Changed
+
+- `ui-mods`: a plugin file it cannot read leaves its cause in the debug log.
+
+### Fixed
+
+- `ui-mods`: a switch pressed while the list is being read is no longer undone by that read.
+- `ui-mods`: switches run one at a time and the list is read back once they settle, a refused one saying why; a
+  list read during a switch is read again; a plugin installed in two scopes is two rows, each switched in its own
+  scope; the «sin aplicar» mark is cleared before the reload runs.
 
 ## [ui-companion 0.3.0] - 2026-11-20
 
