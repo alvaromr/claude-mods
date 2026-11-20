@@ -6,6 +6,8 @@ entry names its mod.
 
 ## [Unreleased]
 
+## [ui-linkify 0.5.0] - 2026-11-20
+
 ### Added
 
 - `ui-linkify`: an icon, for the plugin listing: a chain link.
