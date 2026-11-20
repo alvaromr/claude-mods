@@ -20,7 +20,6 @@ entry names its mod.
 - `bar-git`: an icon, for the plugin listing: a branching fork.
 - `bar-limits`: an icon, for the plugin listing: a ring nearly full.
 - `bar-path`: an icon, for the plugin listing: `~/`.
-- `guard-outward`: an icon, for the plugin listing: an arrow going out, on a shield.
 - `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
 - `session-title`: an icon, for the plugin listing: a session's tab with its name.
 - `ui-colorify`: an icon, for the plugin listing: three circles that blend.
@@ -28,9 +27,6 @@ entry names its mod.
 - `ui-declutter`: an icon, for the plugin listing: rows folded into one.
 - `ui-linkify`: an icon, for the plugin listing: a chain link.
 - `ui-mods`: an icon, for the plugin listing: two switches.
-- `guard-outward`: first public release: `git push`, `gh` commands that write, the commands listed in its `commands` option and MCP
-  tools that are not reads ask a person in every mode; the auto mode's classifier cannot approve them, and where
-  nobody can be asked they are refused.
 - `ui-mods`: the pane lists the mods built into Claude Code too, under «builtin», each with its switch but
   `cc-plugin-sec-default`, which cannot be turned off.
 - `ui-linkify`: each proposed `! command` has a ⧉ right of its ▶ that copies it to the clipboard (macOS), to paste
@@ -93,12 +89,6 @@ entry names its mod.
 
 - `pet`: a session whose background command listens only on ports the system picks (a test or mutation run, a
   debugger) is in «Trabajando» until it ends, no longer in «Esperan» as if it had left a server running.
-- `guard-outward`: asks before `url=$(gh pr create)`, `` x=`git push` ``, `gh pr -R owner/repo merge`, a command line
-  given to `bash -c` or `eval`, wrappers with options (`timeout 60`, `sudo -u me`, `nice -n 5`),
-  `git -C "my repo" push`, and a `gh api graphql` query it cannot see.
-- `guard-outward`: asks for pushes behind quoted assignments, shell options, `eval`, more wrappers,
-  `git subtree`, `lfs`, `svn`, `submodule foreach` and inline aliases; classifies MCP tools by their leading verb,
-  and no longer trusts an MCP tool's own read-only claim.
 - `ui-declutter`: a `web-fetch` agent, which Claude Code draws as `Fetch` where a session has no `WebFetch`, joins
   its span as a web lookup, its result with it, in place of ending the span.
 - `ui-declutter`: a stopped task (`Stop Task`) and the notice that a background task ended
@@ -185,6 +175,24 @@ entry names its mod.
   instead of failing to draw its message; Claude still gets the output as printed.
 - `ui-declutter`: when its jq check cannot run, it leaves every row to Claude Code and says why under the prompt,
   instead of taking jq as installed.
+
+## [guard-outward 0.2.0] - 2026-11-20
+
+### Added
+
+- `guard-outward`: an icon, for the plugin listing: an arrow going out, on a shield.
+- `guard-outward`: first public release: `git push`, `gh` commands that write, the commands listed in its `commands` option and MCP
+  tools that are not reads ask a person in every mode; the auto mode's classifier cannot approve them, and where
+  nobody can be asked they are refused.
+
+### Fixed
+
+- `guard-outward`: asks before `url=$(gh pr create)`, `` x=`git push` ``, `gh pr -R owner/repo merge`, a command line
+  given to `bash -c` or `eval`, wrappers with options (`timeout 60`, `sudo -u me`, `nice -n 5`),
+  `git -C "my repo" push`, and a `gh api graphql` query it cannot see.
+- `guard-outward`: asks for pushes behind quoted assignments, shell options, `eval`, more wrappers,
+  `git subtree`, `lfs`, `svn`, `submodule foreach` and inline aliases; classifies MCP tools by their leading verb,
+  and no longer trusts an MCP tool's own read-only claim.
 
 ## [guard-edit 0.2.0] - 2026-11-20
 
