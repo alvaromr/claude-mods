@@ -8,9 +8,6 @@ entry names its mod.
 
 ### Added
 
-- `pet`: an Orca bot's chat goes by the bot's name, with the chat's title beside it, and pressing its row opens that
-  bot in Orca.
-- `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
 - `ui-linkify`: an icon, for the plugin listing: a chain link.
 - `ui-linkify`: each proposed `! command` has a ⧉ right of its ▶ that copies it to the clipboard (macOS), to paste
   in a terminal: a ▶ run has no keyboard, so a command that asks for input, as a passphrase, ends without asking.
@@ -24,29 +21,19 @@ entry names its mod.
 
 ### Changed
 
-- `pet`: renamed from `mascota`, so every mod has an English name. The command is now `/pet`, and `/pet salir`
-  closes it; installed as `mascota`, it is installed again as `pet`, and its settings start afresh.
 - `ui-linkify`: a ▶ command's output is cut at 30,000 characters per stream, saying how much was left out, and a
   second press on ▶ stops the run.
-- `pet`: a command left running in the background that listens on a port, as a dev server, no longer keeps its
-  session in «Trabajando»: the session waits for you, its row says «servidor en marcha» with the ports, and closing
-  it asks first.
-- `pet`: «Salir», from the pet or with `/pet salir`, keeps it closed until the next `/pet`, in place of
-  the next session opening it again.
 - `ui-linkify`: pasting an image is no longer slow: the images are looked up after the drawing, not before it. Under
   the fullscreen layout the box's pictures take at most half the band, so they hide none of the other mods' rows.
 - `ui-linkify`: a terminal that drops the pictures, as Orca on a tab switch, gets every one sent again at the first
   key typed after a 5 s pause, besides the ↻ under each.
 - `ui-linkify`: in the mobile app its pane shows its settings, which the app now draws as fields, in place of a line
   sending you to the terminal.
-- `pet`: a read that fails, and an icon the server refuses, leave their cause in the system log, each once.
 - `ui-linkify`: the footer button's dot is hollow while every part is off, so its state does not rest on color alone.
 - `ui-linkify`: a read that fails leaves its cause in the debug log.
 
 ### Fixed
 
-- `pet`: a session whose background command listens only on ports the system picks (a test or mutation run, a
-  debugger) is in «Trabajando» until it ends, no longer in «Esperan» as if it had left a server running.
 - `ui-linkify`: a ▶ command that asks in the terminal, as `sudo` does for a password, no longer takes the keys and
   the mouse from the prompt box, leaving stray characters in it: it runs without the terminal and ends without
   asking. It needs `perl`, which macOS ships.
@@ -57,16 +44,6 @@ entry names its mod.
   «running» by a reload shows as stopped; a command no longer fails to start when its shell already leads its group.
 - `ui-linkify`: pasted images are forgotten on `/clear` and new sessions, a miss is looked up again after 5 s, and an
   unreadable conversation no longer redraws forever.
-- `pet`: `/pet` says why when its launcher cannot run at all.
-- `pet`: a command or subagent stopped with `TaskStop` no longer keeps its session in «Trabajando».
-- `pet`: a session resumed with `--resume` no longer counts its earlier process's `/loop` or reminder as still
-  to run; background work launched long before the last look still counts as running.
-- `pet`: the launcher recompiles when the sources change, whatever their dates, and concurrent launches no longer
-  compile or restart the pet over each other.
-- `pet`: a session file left by a dead process whose pid was reused, or with an invalid pid, no longer shows as
-  live; one unreadable for a moment no longer ends and restarts its session; a place not found is asked again.
-- `pet`: «Cerrar sesión» works when Claude Code tells no process start; a hung `ps` or `orca` no longer freezes
-  the pet; `/pet` still opens the pet when its registration fails.
 - `ui-linkify`: a large screenshot pasted into the box shows above it too: its file, which Claude Code writes seconds
   after the paste, is looked for up to 10 s, not 2.
 - `ui-linkify`: another session's metadata file, half written or empty, no longer stops the session's title.
@@ -78,6 +55,40 @@ entry names its mod.
   each item of a list keeps its own box.
 - `ui-linkify`: a ▶ command that prints escape sequences, such as colors or links, shows its output without them
   instead of failing to draw its message; Claude still gets the output as printed.
+
+## [pet 0.3.0] - 2026-11-20
+
+### Added
+
+- `pet`: an Orca bot's chat goes by the bot's name, with the chat's title beside it, and pressing its row opens that
+  bot in Orca.
+- `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
+
+### Changed
+
+- `pet`: renamed from `mascota`, so every mod has an English name. The command is now `/pet`, and `/pet salir`
+  closes it; installed as `mascota`, it is installed again as `pet`, and its settings start afresh.
+- `pet`: a command left running in the background that listens on a port, as a dev server, no longer keeps its
+  session in «Trabajando»: the session waits for you, its row says «servidor en marcha» with the ports, and closing
+  it asks first.
+- `pet`: «Salir», from the pet or with `/pet salir`, keeps it closed until the next `/pet`, in place of
+  the next session opening it again.
+- `pet`: a read that fails, and an icon the server refuses, leave their cause in the system log, each once.
+
+### Fixed
+
+- `pet`: a session whose background command listens only on ports the system picks (a test or mutation run, a
+  debugger) is in «Trabajando» until it ends, no longer in «Esperan» as if it had left a server running.
+- `pet`: `/pet` says why when its launcher cannot run at all.
+- `pet`: a command or subagent stopped with `TaskStop` no longer keeps its session in «Trabajando».
+- `pet`: a session resumed with `--resume` no longer counts its earlier process's `/loop` or reminder as still
+  to run; background work launched long before the last look still counts as running.
+- `pet`: the launcher recompiles when the sources change, whatever their dates, and concurrent launches no longer
+  compile or restart the pet over each other.
+- `pet`: a session file left by a dead process whose pid was reused, or with an invalid pid, no longer shows as
+  live; one unreadable for a moment no longer ends and restarts its session; a place not found is asked again.
+- `pet`: «Cerrar sesión» works when Claude Code tells no process start; a hung `ps` or `orca` no longer freezes
+  the pet; `/pet` still opens the pet when its registration fails.
 
 ## [ui-mods 0.3.0] - 2026-11-20
 
