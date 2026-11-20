@@ -1,6 +1,6 @@
 {
   "name": "bar-git",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A row in the prompt's footer with a branch icon, the branch, the files and lines changed and the commits no remote has, and while there is pending work two buttons: one asks for a commit, one to integrate the changes; a ⚙ button opens a pane to choose what shows, the colors, the icon and what each button sends. Terminal only for the branch and counts: the desktop app tells them, and commits, itself.",
   "author": { "name": "alvaro.martin" },
   "types": "./types/index.d.ts"
