@@ -63,8 +63,9 @@ who decided and what was rejected. The rules they leave for contributors:
 - Each mod has its own version, below 1.0.0, set only in its `plugin.json` and released with
   `pnpm release <mod> <version>` ([versioning](docs/decisions/versioning.md)).
 - Mods share no code; a helper two mods need is written in each ([shared-code](docs/decisions/shared-code.md)).
-- No coverage threshold until `claude plugin test` can measure it; each mod's `tests/mutants.json` lists one mutant
-  per behaviour it promises, a new mod's too ([coverage](docs/decisions/coverage.md)).
+- No coverage threshold, as the owner decided: `claude plugin test` cannot measure it, so each mod's
+  `tests/mutants.json` lists one mutant per behaviour it promises, a new mod's too
+  ([coverage](docs/decisions/coverage.md)).
 - TypeScript stays on 6 until typescript-eslint supports 7 ([typescript-6](docs/decisions/typescript-6.md)).
 - The pet app shows the Claude mark; listing icons never do ([claude-mark](docs/decisions/claude-mark.md)).
 
