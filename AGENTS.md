@@ -66,7 +66,8 @@ who decided and what was rejected. The rules they leave for contributors:
 
 ## Where things live
 
-- What the repo is, install and requirements: [README.md](README.md).
+- What the repo is, install and requirements: [README.md](README.md). Its table of Claude Code versions lists those
+  the full gate passed on; a full gate on a new version adds its row.
 - User-facing changes: [CHANGELOG.md](CHANGELOG.md).
 - Licence: [LICENSE](LICENSE).
 - How to report a vulnerability: [SECURITY.md](SECURITY.md).

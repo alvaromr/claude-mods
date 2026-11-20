@@ -35,10 +35,16 @@ Each mod's full description is in its `.claude-plugin/plugin.json`. How the mods
 
 ## Requirements
 
-- A Claude Code build that loads mods (plugins with a hooks module).
+- A Claude Code build that loads mods (plugins with a hooks module), such as one of those below.
 - `git`, for `bar-git` and `guard-edit`.
 - [`jq`](https://jqlang.org/), for `ui-declutter` and the images of `ui-linkify`.
 - macOS with the Swift toolchain (Xcode Command Line Tools), for `pet`, which compiles the pet on first launch.
+
+Claude Code versions every mod has passed the full gate on (`pnpm check`, which prints the version it ran with):
+
+| Claude Code | Mods                           |
+| ----------- | ------------------------------ |
+| 2.1.329     | all, at their current versions |
 
 ## Install
 
