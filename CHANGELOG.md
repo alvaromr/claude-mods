@@ -23,7 +23,6 @@ entry names its mod.
 - `pet`: an icon, for the plugin listing: the pet's spark at the corner of a window.
 - `ui-colorify`: an icon, for the plugin listing: three circles that blend.
 - `ui-companion`: an icon, for the plugin listing: two speech bubbles.
-- `ui-declutter`: an icon, for the plugin listing: rows folded into one.
 - `ui-linkify`: an icon, for the plugin listing: a chain link.
 - `ui-mods`: an icon, for the plugin listing: two switches.
 - `ui-mods`: the pane lists the mods built into Claude Code too, under «builtin», each with its switch but
@@ -76,9 +75,6 @@ entry names its mod.
 - `ui-companion`: the pane's title is in Spanish.
 - `ui-companion`: the footer button's dot is hollow while no mode comments, so its state does not rest on color alone.
 - `ui-companion`: a read that fails leaves its cause in the debug log.
-- `ui-declutter`: the pane's title is in Spanish.
-- `ui-declutter`: the footer button's dot is hollow while it is off, so its state does not rest on color alone.
-- `ui-declutter`: a read that fails leaves its cause in the debug log.
 - `ui-mods`: a plugin file it cannot read leaves its cause in the debug log.
 - `ui-linkify`: the footer button's dot is hollow while every part is off, so its state does not rest on color alone.
 - `ui-linkify`: a read that fails leaves its cause in the debug log.
@@ -87,20 +83,6 @@ entry names its mod.
 
 - `pet`: a session whose background command listens only on ports the system picks (a test or mutation run, a
   debugger) is in «Trabajando» until it ends, no longer in «Esperan» as if it had left a server running.
-- `ui-declutter`: a `web-fetch` agent, which Claude Code draws as `Fetch` where a session has no `WebFetch`, joins
-  its span as a web lookup, its result with it, in place of ending the span.
-- `ui-declutter`: a stopped task (`Stop Task`) and the notice that a background task ended
-  (`Background command … completed`) join their span, in place of each drawing on its own and ending it. So do the
-  calls that look at tasks (`TaskOutput`, `TaskList`, `TaskGet`, `CronList`), `Monitor`, `ListAgents` and
-  `ScheduleWakeup`.
-- `ui-declutter`: a prompt that quotes a task notification is no longer taken for one; a prompt typed beside a call's
-  result ends the span; a task that notifies more than once leaves its notices to Claude Code; a new notice redraws
-  the rows before it.
-- `ui-declutter`: ctrl+o and `--verbose` draw lone calls and their results as Claude Code does, and a span still
-  draws when part of it was unfolded; interrupted calls say «stopped»; times never read «1m 60s».
-- `ui-declutter`: rows are laid out in terminal cells (CJK, emoji) and fit narrow screens; results missing from the
-  transcript file are read again; one read serves concurrent draws; long diffs no longer lag; a new conversation
-  forgets the last one's state.
 - `ui-mods`: a switch pressed while the list is being read is no longer undone by that read.
 - `ui-mods`: switches run one at a time and the list is read back once they settle, a refused one saying why; a
   list read during a switch is read again; a plugin installed in two scopes is two rows, each switched in its own
@@ -168,6 +150,35 @@ entry names its mod.
   each item of a list keeps its own box.
 - `ui-linkify`: a ▶ command that prints escape sequences, such as colors or links, shows its output without them
   instead of failing to draw its message; Claude still gets the output as printed.
+
+## [ui-declutter 0.2.0] - 2026-11-20
+
+### Added
+
+- `ui-declutter`: an icon, for the plugin listing: rows folded into one.
+
+### Changed
+
+- `ui-declutter`: the pane's title is in Spanish.
+- `ui-declutter`: the footer button's dot is hollow while it is off, so its state does not rest on color alone.
+- `ui-declutter`: a read that fails leaves its cause in the debug log.
+
+### Fixed
+
+- `ui-declutter`: a `web-fetch` agent, which Claude Code draws as `Fetch` where a session has no `WebFetch`, joins
+  its span as a web lookup, its result with it, in place of ending the span.
+- `ui-declutter`: a stopped task (`Stop Task`) and the notice that a background task ended
+  (`Background command … completed`) join their span, in place of each drawing on its own and ending it. So do the
+  calls that look at tasks (`TaskOutput`, `TaskList`, `TaskGet`, `CronList`), `Monitor`, `ListAgents` and
+  `ScheduleWakeup`.
+- `ui-declutter`: a prompt that quotes a task notification is no longer taken for one; a prompt typed beside a call's
+  result ends the span; a task that notifies more than once leaves its notices to Claude Code; a new notice redraws
+  the rows before it.
+- `ui-declutter`: ctrl+o and `--verbose` draw lone calls and their results as Claude Code does, and a span still
+  draws when part of it was unfolded; interrupted calls say «stopped»; times never read «1m 60s».
+- `ui-declutter`: rows are laid out in terminal cells (CJK, emoji) and fit narrow screens; results missing from the
+  transcript file are read again; one read serves concurrent draws; long diffs no longer lag; a new conversation
+  forgets the last one's state.
 - `ui-declutter`: when its jq check cannot run, it leaves every row to Claude Code and says why under the prompt,
   instead of taking jq as installed.
 
