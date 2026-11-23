@@ -7,6 +7,20 @@ import AppKit
 
 Settings.register()
 
+// Run from a git hook, as the gate is, git's own variables would point every command at that repository:
+// these must act on their own folders alone.
+for name in ProcessInfo.processInfo.environment.keys where name.hasPrefix("GIT_") { unsetenv(name) }
+// The tests run in a git worktree of their own, so a session with no folder, which is of the folder the pet
+// runs in, shows whether git was asked of it: git would name the repository the worktree was made from.
+let started = home.appendingPathComponent("started").path, here = home.appendingPathComponent("here").path
+_ = run("/usr/bin/git", ["init", "-q", started])
+_ = run("/usr/bin/git", [
+    "-C", started, "-c", "user.name=pet", "-c", "user.email=pet@example.com", "commit", "-q", "--allow-empty",
+    "-m", "start",
+])
+_ = run("/usr/bin/git", ["-C", started, "worktree", "add", "-q", here])
+FileManager.default.changeCurrentDirectoryPath(here)
+
 settingsTests()
 groupTests()
 liveSessionTests()

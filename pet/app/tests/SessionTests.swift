@@ -106,9 +106,6 @@ func liveSessionTests() {
 
 func projectTests() {
     test("a session in a git worktree is of the project the worktree was made from, as git says it") {
-        // run from a git hook, as the gate is, git's own variables would point every command at that
-        // repository: these must act on their own folders alone
-        for name in ProcessInfo.processInfo.environment.keys where name.hasPrefix("GIT_") { unsetenv(name) }
         let root = home.appendingPathComponent("repos").path
         let git = { (arguments: [String]) in
             _ = run("/usr/bin/git", ["-c", "user.name=pet", "-c", "user.email=pet@example.com"] + arguments)
@@ -134,8 +131,8 @@ func projectTests() {
         git(["-C", "\(root)/store.git", "worktree", "add", "-q", "\(root)/elsewhere/crinoid"])
         expect(project(of: "\(root)/elsewhere/crinoid"), "store", "a worktree of a bare repository:")
         expect(project(of: "/work/app"), "app", "a folder that is no repository's:")
-        // none is the folder the pet runs in, by its own name: git is not asked of it
-        expect(project(of: ""), URL(fileURLWithPath: "").lastPathComponent, "no folder:")
+        // none is the folder the pet runs in, the tests' own worktree, by its own name: git is not asked of it
+        expect(project(of: ""), "here", "no folder:")
         // the answer stays with the folder, which the pet asks of again every second
         try! FileManager.default.removeItem(atPath: "\(root)/elsewhere")
         expect(project(of: "\(root)/elsewhere/kelpie"), "shop", "asked again:")
