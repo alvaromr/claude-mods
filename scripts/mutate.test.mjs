@@ -45,11 +45,14 @@ test('the same files give the same fingerprint, in any order; a change of conten
   assert.notEqual(fingerprint([['ab', 'c']]), fingerprint([['a', 'bc']]))
 })
 
-test("a mod's fingerprint reads its own files and what every mod's mutants depend on, not the engine's types", () => {
+test("a mod's fingerprint reads its own files and this script, not the engine's types nor the repo's tools", () => {
   const inputs = inputsOf('guard-pnpm')
 
-  for (const shared of ['package.json', 'pnpm-lock.yaml', '.node-version', 'scripts/mutate.mjs']) {
-    assert.ok(inputs.includes(shared), shared)
+  assert.ok(inputs.includes('scripts/mutate.mjs'))
+
+  // the mods import only the engine, so the tools pnpm installs change no mutant's result
+  for (const tool of ['package.json', 'pnpm-lock.yaml', '.node-version']) {
+    assert.ok(!inputs.includes(tool), tool)
   }
 
   assert.ok(inputs.includes('guard-pnpm/tests/mutants.json'))

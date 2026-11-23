@@ -17,8 +17,8 @@ Run each from the repo root:
   every mod with a configuration of its own and no login, so it asks no model; on macOS, the pet's SwiftLint, strict,
   and native tests too. Then [scripts/check.test.sh](scripts/check.test.sh) proves the gate fails on each kind of breakage.
 - Mutants: `pnpm mutate [<mod>...]` runs those of every mod, or of those named, whose files changed since a run that
-  killed them all; `.mutate.json`, which git ignores, keeps each mod's fingerprint, and a change to the tools, the
-  lockfile or `scripts/mutate.mjs` runs them all. `pnpm mutate --all` runs every one whatever changed, when asked:
+  killed them all; `.mutate.json`, which git ignores, keeps each mod's fingerprint, and a change to
+  `scripts/mutate.mjs` runs them all. The tools pnpm installs are left out: the mods import only the engine. `pnpm mutate --all` runs every one whatever changed, when asked:
   the full set takes hours. The gate's mutants are these too.
 - Fix: `pnpm fix` formats, applies the linter's fixes and runs the gate.
 - Audit: `pnpm audit` reports the dependencies' known vulnerabilities.

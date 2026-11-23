@@ -17,9 +17,9 @@ import { fileURLToPath } from 'node:url'
 /** Each mod's last run that killed every mutant, `{ [mod]: { fingerprint, killed } }`; git ignores it. */
 const RECORD = '.mutate.json'
 
-// What every mod's mutants depend on beyond the mod: the tools, their versions and this script. A change to any of
-// them runs every mod's mutants again.
-const SHARED = ['package.json', 'pnpm-lock.yaml', '.node-version', 'scripts/mutate.mjs']
+// What every mod's mutants depend on beyond the mod: this script, whose change runs them all again. The tools pnpm
+// installs are not among them: the mods import only the engine, and `claude plugin test` runs them on its own.
+const SHARED = ['scripts/mutate.mjs']
 
 /** The files a run of the mod's mutants reads, as paths from the repo's root: the mod's own, but the engine's types. */
 export const inputsOf = mod => [
