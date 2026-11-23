@@ -45,6 +45,7 @@ Claude Code versions every mod has passed the full gate on (`pnpm check`, which 
 | Claude Code | Mods                           |
 | ----------- | ------------------------------ |
 | 2.1.329     | all, at their current versions |
+| 2.1.330     | all, at their current versions |
 
 ## Install
 
