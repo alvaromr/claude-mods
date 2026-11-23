@@ -1,7 +1,22 @@
 import assert from 'node:assert/strict'
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import process from 'node:process'
 import { test } from 'node:test'
 
-import { fingerprint, inputsOf, jobsOf, mustRun, mutantsOf, mutated, yielding } from './mutate.mjs'
+import {
+  fingerprint,
+  inputsOf,
+  jobsOf,
+  mustRun,
+  mutantsOf,
+  mutated,
+  passes,
+  testOf,
+  workersOf,
+  yielding,
+} from './mutate.mjs'
 
 const MUTANT = { file: 'hooks/a.ts', from: 'x > 1', to: 'x > 2', why: 'the limit' }
 
@@ -77,5 +92,42 @@ test('a list of whole mutants is read; anything else is refused, naming the mod'
 
   for (const json of ['{}', '[{"file": "a"}]', '[null]', JSON.stringify([{ ...MUTANT, to: 2 }])]) {
     assert.throws(() => mutantsOf('m', json), /^Error: m\/tests\/mutants\.json: a list of/)
+  }
+})
+
+test("a mutant runs the test.sh next to its file, as the pet's Swift has, and the mod's plugin tests otherwise", () => {
+  assert.deepEqual(testOf('pet', 'app/Sessions.swift'), ['sh', join('pet', 'app', 'test.sh')])
+  assert.deepEqual(testOf('no-such-mod', 'app/Sessions.swift'), ['claude', 'plugin', 'test', 'no-such-mod'])
+  assert.deepEqual(testOf('pet', 'hooks/register.ts'), ['claude', 'plugin', 'test', 'pet'])
+})
+
+test('a mod with mutants a test.sh runs, which compile, has at most two at once', () => {
+  const swift = { ...MUTANT, file: 'app/Sessions.swift' }
+  const native = mutant => mutant.file.endsWith('.swift')
+
+  assert.equal(workersOf(3, [MUTANT, MUTANT, MUTANT, MUTANT], native), 3)
+  assert.equal(workersOf(3, [MUTANT, swift, swift], native), 2)
+  assert.equal(workersOf(1, [swift, swift], native), 1)
+  assert.equal(workersOf(3, [MUTANT], native), 1)
+})
+
+test('a run passes when its command ends well, fails otherwise, and one that cannot start is an error', async () => {
+  assert.equal(await passes(['sh', '-c', 'exit 0']), true)
+  assert.equal(await passes(['sh', '-c', 'exit 1']), false)
+  await assert.rejects(passes(['/no/such/command']))
+})
+
+test('a run past its time is stopped with every process it started, so none is left running', async () => {
+  const tmp = mkdtempSync(join(tmpdir(), 'mutate-test-'))
+  const pid = join(tmp, 'pid')
+
+  try {
+    assert.equal(await passes(['sh', '-c', `sleep 30 & echo $! >${pid}; wait`], 500), false)
+    const left = Number(readFileSync(pid, 'utf8'))
+
+    assert.ok(existsSync(pid))
+    assert.throws(() => process.kill(left, 0), /ESRCH/)
+  } finally {
+    rmSync(tmp, { recursive: true, force: true })
   }
 })

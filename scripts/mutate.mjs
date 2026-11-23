@@ -1,17 +1,19 @@
 // Mutation tests for the mods: `node scripts/mutate.mjs [--all] [<mod>...]`, every mod that lists mutants when none is
 // named. Each mutant in `<mod>/tests/mutants.json` breaks one behaviour of the mod, `{ "file", "from", "to", "why" }`:
-// in a copy of the mod, `from` is replaced by `to` in that file and the mod's tests run; they must fail. A mutant they
-// let through means a behaviour no test holds. A mutant whose `from` is gone, or found more than once, fails too, so
-// the list cannot rot as the code changes.
+// in a copy of the mod, `from` is replaced by `to` in that file and the mod's tests run (the `test.sh` next to the
+// file, when there is one, as for the pet's Swift); they must fail. A mutant they let through means a behaviour no
+// test holds. A mutant whose `from` is gone, or found more than once, fails too, so the list cannot rot as the code
+// changes.
 // A mod whose mutants were all killed on the same files is not run again: RECORD keeps, per mod, the fingerprint of
 // what its run read. `--all` runs them all whatever the record says.
 import { Buffer } from 'node:buffer'
-import { execFile } from 'node:child_process'
+import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { availableParallelism, tmpdir } from 'node:os'
-import { join, relative } from 'node:path'
+import { dirname, join, relative } from 'node:path'
 import process from 'node:process'
+import { clearTimeout, setTimeout } from 'node:timers'
 import { fileURLToPath } from 'node:url'
 
 /** Each mod's last run that killed every mutant, `{ [mod]: { fingerprint, killed } }`; git ignores it. */
@@ -87,9 +89,31 @@ export const jobsOf = (setting, cores) => {
   return Number(setting)
 }
 
-// How long the tests may run on one mutant, some twenty times the slowest
-// mod's run: one that never ends them, as an endless loop, is caught by this,
-// not by waiting forever.
+/**
+ * The command that runs the tests a mutant of `file` must fail, in the copy of the mod at `folder`: the `test.sh` in
+ * the file's folder, as the pet's Swift has to compile its own; else the mod's plugin tests.
+ */
+export const testOf = (folder, file) => {
+  const script = join(folder, dirname(file), 'test.sh')
+
+  return existsSync(script) ? ['sh', script] : ['claude', 'plugin', 'test', folder]
+}
+
+// How many mutants a test.sh runs may run at once, whatever the jobs: each
+// compiles a whole app, the heaviest work here.
+const NATIVE_JOBS = 2
+
+/**
+ * How many copies of the mod run its mutants side by side: the jobs, at most one per mutant, and NATIVE_JOBS when
+ * any is native.
+ */
+export const workersOf = (jobs, mutants, isNative) =>
+  Math.min(jobs, mutants.length, mutants.some(isNative) ? NATIVE_JOBS : Infinity)
+
+// How long the tests may run on one mutant: some twenty times the slowest
+// mod's plugin tests, four times the pet's native ones in the background. One
+// that never ends them, as an endless loop, is caught by this, not by waiting
+// forever.
 const RUN_MS = 60_000
 
 /**
@@ -99,20 +123,29 @@ const RUN_MS = 60_000
  */
 export const yielding = platform => (platform === 'darwin' ? ['taskpolicy', '-b'] : ['nice', '-n', '10'])
 
-// Whether the mod's tests pass in `folder`. A run that cannot start at all is
-// a failure of the gate, not a killed mutant.
-const passes = folder =>
+/**
+ * Whether the command ends well within `ms`. One past it is stopped with every process it started, as a test binary
+ * a shell left looping. One that cannot start at all is a failure of the gate, not a killed mutant.
+ */
+export const passes = ([command = 'true', ...args], ms = RUN_MS) =>
   new Promise((resolve, reject) => {
-    const [command = 'nice', ...args] = yielding(process.platform)
-
-    execFile(command, [...args, 'claude', 'plugin', 'test', folder], { timeout: RUN_MS }, failure => {
-      if (failure === null) {
-        resolve(true)
-      } else if (typeof failure.code === 'number' || failure.killed) {
-        resolve(false)
-      } else {
-        reject(failure)
+    // a group of its own, so stopping it reaches what it started
+    const run = spawn(command, args, { detached: true, stdio: 'ignore' })
+    const timer = setTimeout(() => {
+      try {
+        process.kill(-run.pid, 'SIGKILL')
+      } catch {
+        // the group ended as its time ran out: nothing is left to stop
       }
+    }, ms)
+
+    run.on('error', failure => {
+      clearTimeout(timer)
+      reject(failure)
+    })
+    run.on('exit', code => {
+      clearTimeout(timer)
+      resolve(code === 0)
     })
   })
 
@@ -137,14 +170,18 @@ const main = async mod => {
 
         writeFileSync(join(copy, mutant.file), broken[n])
 
-        if (await passes(copy)) {
+        if (await passes([...yielding(process.platform), ...testOf(copy, mutant.file)])) {
           survived.add(mutant)
         }
 
         writeFileSync(join(copy, mutant.file), sources[n])
       }
     }
-    const workers = Math.min(jobsOf(process.env.MUTATE_JOBS, availableParallelism()), mutants.length)
+    const workers = workersOf(
+      jobsOf(process.env.MUTATE_JOBS, availableParallelism()),
+      mutants,
+      mutant => testOf(mod, mutant.file)[0] === 'sh',
+    )
 
     await Promise.all(Array.from({ length: workers }, (_, n) => work(join(tmp, String(n), mod))))
   } finally {

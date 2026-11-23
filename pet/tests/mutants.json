@@ -106,5 +106,239 @@
     "from": "{ timeoutMs: 180_000 }",
     "to": "{ timeoutMs: 1_000 }",
     "why": "the first run has time to compile the pet"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "case .busy: return .working",
+    "to": "case .busy: return .waiting",
+    "why": "a busy session is at work"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "case .blocked: return .waiting",
+    "to": "case .blocked: return .inactive",
+    "why": "a blocked session waits however long ago it stopped"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "now.timeIntervalSince(updated) < Settings.inactiveAfter",
+    "to": "now.timeIntervalSince(updated) > Settings.inactiveAfter",
+    "why": "an idle session waits until it has been idle long enough"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "return !isSeen && now",
+    "to": "return now",
+    "why": "an idle session the person has seen waits no more"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "case blocked, scheduled, command, agents, failed, server",
+    "to": "case scheduled, blocked, command, agents, failed, server",
+    "why": "a blocked session's mark goes before any other"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "return session.phase == .idle && !session.failure.isEmpty",
+    "to": "return !session.failure.isEmpty",
+    "why": "an API error is marked only once the session is done with its turn"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "session.runningAgents > 0",
+    "to": "session.runningAgents > 1",
+    "why": "one subagent left running marks the session"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "self == .command || self == .agents",
+    "to": "self == .command",
+    "why": "a session with subagents still running goes on by itself"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "case .server: return Text.lossServer",
+    "to": "case .server: return nil",
+    "why": "closing a session that left a server running says it stops the server"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "if words.isEmpty { return Text.reasonNeeded }",
+    "to": "if words.isEmpty { return words }",
+    "why": "a blocked session that tells no reason still says it needs the person"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "Text.reasonApprove(words.dropFirst(8))",
+    "to": "Text.reasonApprove(words.dropFirst(7))",
+    "why": "what a session asks to approve is said without Claude Code's verb"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "now.timeIntervalSince(last.at) < readGrace",
+    "to": "true",
+    "why": "a session file unreadable for a while loses its session"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "if let session = readSession(at: file) { lastRead[name] = (session, now) }",
+    "to": "if lastRead[name] == nil, let session = readSession(at: file) { lastRead[name] = (session, now) }",
+    "why": "a session is shown as its file says it now, not as it was first read"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "guard kill(session.pid, 0) == 0 || errno == EPERM else {",
+    "to": "guard true else {",
+    "why": "a session whose process is gone is no live session"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "guard !session.started.isEmpty else { return true }",
+    "to": "guard !session.started.isEmpty else { return false }",
+    "why": "a session that tells no start is live while its pid is"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "    return start == session.started\n",
+    "to": "    return true\n",
+    "why": "a file left by a session whose pid another process has since been given is no live session"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "pid > 0 else { return nil }",
+    "to": "pid >= 0 else { return nil }",
+    "why": "a file that names no process, as pid 0, is no session"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "status == \"waiting\" ? .blocked",
+    "to": "status == \"blocked\" ? .blocked",
+    "why": "a session Claude Code says is waiting is blocked"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "(fields[\"statusUpdatedAt\"] ?? fields[\"updatedAt\"])",
+    "to": "(fields[\"updatedAt\"] ?? fields[\"statusUpdatedAt\"])",
+    "why": "a session is as recent as its status last changed"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "$0.updated > $1.updated",
+    "to": "$0.updated < $1.updated",
+    "why": "the most recently active sessions come first"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": ": $0.phase == .blocked\n",
+    "to": ": $1.phase == .blocked\n",
+    "why": "the blocked sessions come before any other"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "let project = bot?.name ?? URL(",
+    "to": "let project = URL(",
+    "why": "an Orca bot's chat goes by the bot's name"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "now.timeIntervalSince(date) < 60",
+    "to": "now.timeIntervalSince(date) < 1",
+    "why": "how long ago is said as now within the minute"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "if reporting.withLock({ reported.insert(line).inserted }) { report(line) }",
+    "to": "report(line)",
+    "why": "a read that keeps failing tells why once"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "_ = orNil(\"running \\(path)\") { throw TimedOut(seconds: timeout) }",
+    "to": "_ = 0",
+    "why": "a program that does not end in time says so"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "return allowing.contains(process.terminationStatus) ? lossyText(printed.data) : nil",
+    "to": "return lossyText(printed.data)",
+    "why": "a program that fails gives nothing, unless its status is allowed"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "sessions.contains(parent), match.3.contains(\"/shell-snapshots/\")",
+    "to": "sessions.contains(parent)",
+    "why": "only the shells Claude Code runs commands in are background commands"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "!handedOut.contains(port)",
+    "to": "true",
+    "why": "a port the system picked, as a test run's, is no server's"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "{ $0.union(listens(under: $1)) }",
+    "to": "{ found, _ in found }",
+    "why": "a process under a background command that listens makes it a server"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "Servers(commands: each.count",
+    "to": "Servers(commands: shells.count",
+    "why": "only the background commands that listen are counted as servers"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "each.reduce(Set<Int>(), { $0.union($1) }).sorted()",
+    "to": "each.reduce(Set<Int>(), { $0.union($1) }).sorted(by: >)",
+    "why": "a session's ports are listed in order"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "if !session.started.isEmpty { return isRunning(session) }",
+    "to": "if false { return isRunning(session) }",
+    "why": "a session that tells its start is ended only while its process is that one"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": ".map(isClaude(command:)) ?? false",
+    "to": ".map(isClaude(command:)) ?? true",
+    "why": "a session that tells no start is ended only when ps says its process is Claude Code"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": ".lastPathComponent == \"claude\"",
+    "to": ".lastPathComponent.hasPrefix(\"claude\")",
+    "why": "only a process named claude is Claude Code"
+  },
+  {
+    "file": "app/Places.swift",
+    "from": "\"^local_[A-Za-z0-9-]{1,64}$\"",
+    "to": "\"^local_.*$\"",
+    "why": "a desktop session is opened only by an id of the shape the app gives"
+  },
+  {
+    "file": "app/Places.swift",
+    "from": "if !session.botID.isEmpty { return .bot(session.botID) }",
+    "to": "",
+    "why": "an Orca bot's chat is opened in Orca, by the bot's id"
+  },
+  {
+    "file": "app/Places.swift",
+    "from": "run(\"/bin/ps\", [\"eww\", \"-p\", String(session.pid)]) else { return nil }",
+    "to": "run(\"/bin/ps\", [\"eww\", \"-p\", String(session.pid)]) else { return .nowhere }",
+    "why": "a place that could not be found out is none, to be asked again"
+  },
+  {
+    "file": "app/Places.swift",
+    "from": "URLQueryItem(name: \"session\", value: id)",
+    "to": "URLQueryItem(name: \"id\", value: id)",
+    "why": "a desktop session's link names it as the app reads it"
+  },
+  {
+    "file": "app/Places.swift",
+    "from": "orca://bot/",
+    "to": "orca://bots/",
+    "why": "a bot's link is the one Orca opens it by"
   }
 ]

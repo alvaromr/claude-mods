@@ -26,6 +26,22 @@ func groupTests() {
         expect(reason("something new"), "something new")
     }
 
+    test("a session has one mark, the first that fits, and those that go on by themselves keep it at work") {
+        func marked(_ phase: Phase, _ change: (inout Session) -> Void) -> Mark? {
+            var marked = session(phase)
+            change(&marked)
+            return Mark.of(marked)
+        }
+        expect(marked(.idle) { _ in }, nil)
+        expect(marked(.blocked) { $0.isScheduled = true }, .blocked, "blocked with a task to run:")
+        expect(marked(.idle) { $0.runningAgents = 1 }, .agents, "one subagent at work:")
+        expect(marked(.idle) { $0.failure = "Rate limited" }, .failed)
+        expect(marked(.busy) { $0.failure = "Rate limited" }, nil, "an error of a turn it has gone on from:")
+        expect(Mark.allCases.filter(\.goesOnByItself), [.scheduled, .command, .agents])
+        let losses = [nil, Text.lossScheduled, Text.lossCommand, Text.lossAgents, nil, Text.lossServer]
+        expect(Mark.allCases.map(\.loss), losses)
+    }
+
     test("how long ago is said in short, and as now within the minute") {
         expect(ago(now.addingTimeInterval(-59), from: now), "ahora")
         expect(ago(now.addingTimeInterval(-5 * 60), from: now), "hace 5 min")
@@ -37,8 +53,9 @@ func liveSessionTests() {
     test("the live sessions are read from Claude Code's registry, the blocked first, then the latest") {
         let pid = Int(getpid()), ms = now.timeIntervalSince1970 * 1000
         write([
+            // the status's own time, not the file's, says how recent the session is
             "pid": pid, "sessionId": "a", "name": "older", "cwd": "/work/app", "status": "idle",
-            "statusUpdatedAt": ms - 5000,
+            "statusUpdatedAt": ms - 5000, "updatedAt": ms - 20_000,
         ], to: ".claude/sessions/1.json")
         write([
             "pid": pid, "sessionId": "b", "cwd": "/work/site", "status": "busy", "updatedAt": ms,
@@ -93,6 +110,16 @@ func sessionFileTests() {
         write([["pid": pid, "sessionId": "reused", "status": "busy", "procStart": "Thu Jan  1 00:00:00 1970"]],
               to: ".claude/sessions/12.json")
         expect(liveSessions().contains { $0.id == "reused" }, false)
+        // the same for a pid `ps` has not been asked of yet
+        let other = Process()
+        other.executableURL = URL(fileURLWithPath: "/bin/sleep")
+        other.arguments = ["30"]
+        try! other.run()
+        let fresh: [String: Any] = ["pid": Int(other.processIdentifier), "sessionId": "fresh", "status": "busy"]
+        write(fresh.merging(["procStart": "Thu Jan  1 00:00:00 1970"]) { $1 }, to: ".claude/sessions/14.json")
+        expect(liveSessions().contains { $0.id == "fresh" }, false, "asked for the first time:")
+        other.terminate()
+        try! FileManager.default.removeItem(at: home.appendingPathComponent(".claude/sessions/14.json"))
         // no start to tell them apart by, and the pid alive, is as it has always been
         write([["pid": pid, "sessionId": "reused", "status": "busy"]], to: ".claude/sessions/12.json")
         expect(liveSessions().contains { $0.id == "reused" }, true)
@@ -139,6 +166,8 @@ func processTests() {
 
     test("a session of the Claude desktop app is opened there, by the id the app gives it") {
         expect(place(of: session(.idle, desktopID: "local_f61c0690-f9ed")), .desktop("local_f61c0690-f9ed"))
+        // an id of another shape is not put in the app's link
+        expect(place(of: session(.idle, desktopID: "local_f6&x=1")) == .desktop("local_f6&x=1"), false)
     }
 
     test("a place that could not be found out is none, to be asked again, and not a place with no window") {

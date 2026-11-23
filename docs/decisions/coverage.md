@@ -12,9 +12,10 @@ that the tests must kill, which says more than a line count about whether the te
 
 **What stands in:** a mod's `tests/mutants.json` lists mutants, each `{ file, from, to, why }` breaking one
 behaviour, and [scripts/mutate.mjs](../../scripts/mutate.mjs) fails on one the tests let through, or one whose `from`
-is gone. Every mod lists one per behaviour it promises, and a new mod does too. The mutants run side by side, a
-quarter of the cores by default (`MUTATE_JOBS` sets another number), and in the background (`taskpolicy -b` on
-macOS, `nice` elsewhere), so the machine stays usable. They run only for the mods whose files changed since a run
+is gone. Every mod lists one per behaviour it promises, and a new mod does too; the pet's list covers its Swift
+logic as well (sessions, processes, places), which `pet/app/test.sh` tests. The mutants run side by side, a quarter
+of the cores by default (`MUTATE_JOBS` sets another number) and at most two of the pet's, which each compile the
+app, and in the background (`taskpolicy -b` on macOS, `nice` elsewhere), so the machine stays usable. They run only for the mods whose files changed since a run
 that killed them all, as `pnpm mutate` in AGENTS.md says.
 
 **When to revisit:** if `claude plugin test` gains a coverage option, the gate can hold 100 % with it.
