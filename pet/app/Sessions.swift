@@ -42,7 +42,7 @@ struct Session: Equatable {
     let id: String
     let name: String
     let project: String
-    /// The folder it works in, whose last part is its project.
+    /// The folder it works in, which its project is worked out from (see `project(of:)`).
     var cwd = ""
     var phase: Phase
     /// What a blocked session waits on, in a few words; empty for any other.
@@ -213,6 +213,31 @@ private func isOfRunningProcess(_ session: Session, at now: Date) -> Bool {
     return start == session.started
 }
 
+/// The project of each folder asked of, by its path. A folder stays a worktree or not for as long as it
+/// lives, so git is asked once for each.
+private var projects: [String: String] = [:]
+
+/// The project a session in the folder works on: for a git worktree, the repository it was made from,
+/// by the folder of its main checkout (or of the bare repository, without its `.git`), as git's
+/// common dir names it; for any other folder, the folder's own name.
+func project(of folder: String) -> String {
+    if let known = projects[folder] { return known }
+    var project = URL(fileURLWithPath: folder).lastPathComponent
+    // git ends with 128 in a folder that is no repository's, which leaves the folder's own name
+    if !folder.isEmpty,
+       let dirs = run("/usr/bin/git", [
+           "-C", folder, "rev-parse", "--path-format=absolute", "--git-dir", "--git-common-dir",
+       ], allowing: [0, 128])?.split(separator: "\n"),
+       dirs.count == 2, dirs[0] != dirs[1] {
+        let common = URL(fileURLWithPath: String(dirs[1]))
+        let name = common.lastPathComponent
+        project = name == ".git" ? common.deletingLastPathComponent().lastPathComponent
+            : name.hasSuffix(".git") ? String(name.dropLast(4)) : name
+    }
+    projects[folder] = project
+    return project
+}
+
 /// What a session's file says, or nil when it cannot be read, is not JSON yet or names no process.
 private func readSession(at file: URL) -> Session? {
     guard let data = try? Data(contentsOf: file),
@@ -222,7 +247,7 @@ private func readSession(at file: URL) -> Session? {
     let cwd = fields["cwd"] as? String ?? ""
     // Orca starts a bot's chats in the bot's own folder, which its bot.json names
     let bot = fields["entrypoint"] as? String == "orca" ? orcaBot(in: cwd) : nil
-    let project = bot?.name ?? URL(fileURLWithPath: cwd).lastPathComponent
+    let project = bot?.name ?? project(of: cwd)
     let ms = (fields["statusUpdatedAt"] ?? fields["updatedAt"]) as? Double ?? 0
     let status = fields["status"] as? String
     let phase: Phase = status == "busy" ? .busy : status == "waiting" ? .blocked : .idle

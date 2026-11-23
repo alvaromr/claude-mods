@@ -235,8 +235,8 @@
   },
   {
     "file": "app/Sessions.swift",
-    "from": "let project = bot?.name ?? URL(",
-    "to": "let project = URL(",
+    "from": "let project = bot?.name ?? project(of: cwd)",
+    "to": "let project = project(of: cwd)",
     "why": "an Orca bot's chat goes by the bot's name"
   },
   {
@@ -340,5 +340,35 @@
     "from": "orca://bot/",
     "to": "orca://bots/",
     "why": "a bot's link is the one Orca opens it by"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "let project = bot?.name ?? project(of: cwd)",
+    "to": "let project = bot?.name ?? URL(fileURLWithPath: cwd).lastPathComponent",
+    "why": "a session in a git worktree goes by the project the worktree was made from"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "dirs.count == 2, dirs[0] != dirs[1] {",
+    "to": "dirs.count == 2 {",
+    "why": "a folder in a main checkout keeps its own name"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "String(name.dropLast(4))",
+    "to": "name",
+    "why": "a worktree of a bare repository goes by the repository without its .git"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "    if let known = projects[folder] { return known }\n",
+    "to": "",
+    "why": "git is asked once for each folder"
+  },
+  {
+    "file": "app/Sessions.swift",
+    "from": "if !folder.isEmpty,",
+    "to": "if true,",
+    "why": "git is not asked of a session with no folder"
   }
 ]

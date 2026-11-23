@@ -6,6 +6,10 @@ entry names its mod.
 
 ## [Unreleased]
 
+### Fixed
+
+- `pet`: a session in a git worktree goes by the project the worktree was made from, not by the worktree's folder.
+
 ## [ui-linkify 0.5.0] - 2026-11-20
 
 ### Added

@@ -104,6 +104,44 @@ func liveSessionTests() {
     }
 }
 
+func projectTests() {
+    test("a session in a git worktree is of the project the worktree was made from, as git says it") {
+        // run from a git hook, as the gate is, git's own variables would point every command at that
+        // repository: these must act on their own folders alone
+        for name in ProcessInfo.processInfo.environment.keys where name.hasPrefix("GIT_") { unsetenv(name) }
+        let root = home.appendingPathComponent("repos").path
+        let git = { (arguments: [String]) in
+            _ = run("/usr/bin/git", ["-c", "user.name=pet", "-c", "user.email=pet@example.com"] + arguments)
+        }
+        git(["init", "-q", "\(root)/shop"])
+        git(["-C", "\(root)/shop", "commit", "-q", "--allow-empty", "-m", "start"])
+        git(["-C", "\(root)/shop", "worktree", "add", "-q", "\(root)/elsewhere/kelpie"])
+        try! FileManager.default.createDirectory(atPath: "\(root)/elsewhere/kelpie/src",
+                                                 withIntermediateDirectories: true)
+        expect(project(of: "\(root)/elsewhere/kelpie"), "shop", "a worktree:")
+        expect(project(of: "\(root)/elsewhere/kelpie/src"), "shop", "a folder in a worktree:")
+        expect(project(of: "\(root)/shop"), "shop", "the checkout itself:")
+        try! FileManager.default.createDirectory(atPath: "\(root)/shop/docs", withIntermediateDirectories: true)
+        expect(project(of: "\(root)/shop/docs"), "docs", "a folder in the checkout, by its own name as ever:")
+        // a session there with no name of its own is called by the project too
+        write([["pid": Int(getpid()), "sessionId": "worktree", "cwd": "\(root)/elsewhere/kelpie", "status": "idle"]],
+              to: ".claude/sessions/15.json")
+        let listed = liveSessions().first { $0.id == "worktree" }
+        expect(listed?.project, "shop", "its session's project:")
+        expect(listed?.name, "shop", "its session's name:")
+        try! FileManager.default.removeItem(at: home.appendingPathComponent(".claude/sessions/15.json"))
+        git(["clone", "-q", "--bare", "\(root)/shop", "\(root)/store.git"])
+        git(["-C", "\(root)/store.git", "worktree", "add", "-q", "\(root)/elsewhere/crinoid"])
+        expect(project(of: "\(root)/elsewhere/crinoid"), "store", "a worktree of a bare repository:")
+        expect(project(of: "/work/app"), "app", "a folder that is no repository's:")
+        // none is the folder the pet runs in, by its own name: git is not asked of it
+        expect(project(of: ""), URL(fileURLWithPath: "").lastPathComponent, "no folder:")
+        // the answer stays with the folder, which the pet asks of again every second
+        try! FileManager.default.removeItem(atPath: "\(root)/elsewhere")
+        expect(project(of: "\(root)/elsewhere/kelpie"), "shop", "asked again:")
+    }
+}
+
 func sessionFileTests() {
     test("a file left by a session whose pid another process has since been given is no live session") {
         let pid = Int(getpid())
