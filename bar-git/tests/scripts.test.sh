@@ -7,6 +7,10 @@ scripts=$(cd "$(dirname "$0")/../scripts" && pwd)
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
+# The pre-commit hook hands git's repository variables down, which would point
+# these git commands at the repository being committed.
+# shellcheck disable=SC2046
+unset $(git rev-parse --local-env-vars)
 export GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1
 export GIT_AUTHOR_NAME=test GIT_AUTHOR_EMAIL=test@example.com
 export GIT_COMMITTER_NAME=test GIT_COMMITTER_EMAIL=test@example.com
