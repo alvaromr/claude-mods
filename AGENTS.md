@@ -18,7 +18,10 @@ Run each from the repo root:
   and native tests too. Then [scripts/check.test.sh](scripts/check.test.sh) proves the gate fails on each kind of breakage.
 - Mutants: `pnpm mutate [<mod>...]` runs those of every mod, or of those named, whose files changed since a run that
   killed them all; `.mutate.json`, which git ignores, keeps each mod's fingerprint, and a change to
-  `scripts/mutate.mjs` runs them all. The tools pnpm installs are left out: the mods import only the engine. `pnpm mutate --all` runs every one whatever changed, when asked:
+  `scripts/mutate.mjs` runs them all. Left out are the tools pnpm installs, as the mods import only the engine, the
+  version in a manifest and a mod's shell tests, which no mutant runs. `pnpm mutate --verified <commit> <mod>...`
+  records a run that killed every mutant of those mods on that commit, once it checks their files are as they were
+  there. `pnpm mutate --all` runs every one whatever changed, when asked:
   the full set takes hours. The gate's mutants are these too.
 - Fix: `pnpm fix` formats, applies the linter's fixes and runs the gate.
 - Audit: `pnpm audit` reports the dependencies' known vulnerabilities.

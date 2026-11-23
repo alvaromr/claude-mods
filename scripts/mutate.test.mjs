@@ -6,8 +6,10 @@ import process from 'node:process'
 import { test } from 'node:test'
 
 import {
+  contentOf,
   fingerprint,
   inputsOf,
+  isUnchanged,
   jobsOf,
   mustRun,
   mutantsOf,
@@ -75,6 +77,41 @@ test("a mod's fingerprint reads its own files and this script, not the engine's 
   assert.ok(inputs.some(path => path.startsWith('guard-pnpm/hooks/')))
   assert.ok(!inputs.some(path => path.includes('/.claude-plugin/types/') || path.endsWith('.DS_Store')))
   assert.ok(!inputs.some(path => path.startsWith('bar-git/')))
+  // the gate runs a mod's shell tests on their own, and no mutant runs them
+  assert.ok(!inputsOf('bar-git').includes('bar-git/tests/scripts.test.sh'))
+  assert.ok(inputsOf('bar-git').includes('bar-git/tests/repo.test.ts'))
+})
+
+test("a manifest's version, which only a release sets, changes no fingerprint; the rest of it does", () => {
+  const manifest = fields => [
+    'm/.claude-plugin/plugin.json',
+    contentOf('m/.claude-plugin/plugin.json', JSON.stringify(fields)),
+  ]
+  const print = fingerprint([manifest({ name: 'm', version: '0.1.0', description: 'one' })])
+
+  assert.equal(fingerprint([manifest({ name: 'm', version: '0.2.0', description: 'one' })]), print)
+  assert.notEqual(fingerprint([manifest({ name: 'm', version: '0.1.0', description: 'two' })]), print)
+  assert.equal(contentOf('m/hooks/a.ts', 'version: 1'), 'version: 1')
+})
+
+test("a mod's run on an earlier commit holds while its own files are as they were there, but the version", () => {
+  const then = [
+    ['m/hooks/a.ts', 'one'],
+    ['m/.claude-plugin/plugin.json', '{"name":"m","version":"0.1.0"}'],
+    ['m/tests/scripts.test.sh', 'echo old'],
+    ['scripts/mutate.mjs', 'old'],
+  ]
+  const now = [
+    ['m/hooks/a.ts', 'one'],
+    ['m/.claude-plugin/plugin.json', '{"name":"m","version":"0.2.0"}'],
+    ['m/tests/scripts.test.sh', 'echo new'],
+    ['scripts/mutate.mjs', 'new'],
+  ]
+
+  assert.ok(isUnchanged('m', now, then))
+  assert.ok(!isUnchanged('m', [['m/hooks/a.ts', 'two'], ...now.slice(1)], then))
+  assert.ok(!isUnchanged('m', [...now, ['m/hooks/b.ts', 'new']], then))
+  assert.ok(!isUnchanged('m', now.slice(1), then))
 })
 
 test("a mod's mutants run when asked for all, or when no run killed them all on these files", () => {

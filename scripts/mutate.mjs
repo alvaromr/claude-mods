@@ -5,9 +5,10 @@
 // test holds. A mutant whose `from` is gone, or found more than once, fails too, so the list cannot rot as the code
 // changes.
 // A mod whose mutants were all killed on the same files is not run again: RECORD keeps, per mod, the fingerprint of
-// what its run read. `--all` runs them all whatever the record says.
+// what its run read. `--all` runs them all whatever the record says. `--verified <commit> <mod>...` records a run
+// that killed every mutant of those mods on that commit, once it checks their files are as they were there.
 import { Buffer } from 'node:buffer'
-import { spawn } from 'node:child_process'
+import { execFileSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { availableParallelism, tmpdir } from 'node:os'
@@ -23,14 +24,29 @@ const RECORD = '.mutate.json'
 // installs are not among them: the mods import only the engine, and `claude plugin test` runs them on its own.
 const SHARED = ['scripts/mutate.mjs']
 
-/** The files a run of the mod's mutants reads, as paths from the repo's root: the mod's own, but the engine's types. */
+/**
+ * Whether a run of the mod's mutants reads its file at this path: not the engine's types, nor the mod's shell tests,
+ * which the gate runs on their own.
+ */
+const isInput = (mod, path) =>
+  !path.endsWith('.DS_Store') &&
+  !path.startsWith(join(mod, '.claude-plugin', 'types')) &&
+  !(dirname(path) === join(mod, 'tests') && path.endsWith('.test.sh'))
+
+/** The files a run of the mod's mutants reads, as paths from the repo's root. */
 export const inputsOf = mod => [
   ...readdirSync(mod, { recursive: true, withFileTypes: true })
-    .filter(entry => entry.isFile() && entry.name !== '.DS_Store')
+    .filter(entry => entry.isFile())
     .map(entry => relative('.', join(entry.parentPath, entry.name)))
-    .filter(path => !path.startsWith(join(mod, '.claude-plugin', 'types'))),
+    .filter(path => isInput(mod, path)),
   ...SHARED,
 ]
+
+/** What of a file the mutants depend on: all of it, but the version of a manifest, which only a release sets. */
+export const contentOf = (path, content) =>
+  path.endsWith(join('.claude-plugin', 'plugin.json'))
+    ? JSON.stringify({ ...JSON.parse(String(content)), version: undefined })
+    : content
 
 /** A hash of `[path, content]` pairs, in any order: the same files give the same fingerprint. */
 export const fingerprint = files => {
@@ -44,6 +60,17 @@ export const fingerprint = files => {
 
   return hash.digest('hex')
 }
+
+/** The fingerprint of the mod's own files, `[path, content]`, as a run of its mutants reads them. */
+const ownPrint = (mod, files) =>
+  fingerprint(
+    files
+      .filter(([path]) => isInput(mod, path) && !SHARED.includes(path))
+      .map(([path, c]) => [path, contentOf(path, c)]),
+  )
+
+/** Whether the mod's own files now, `[path, content]`, are as they were then, as a run of its mutants reads them. */
+export const isUnchanged = (mod, now, then) => ownPrint(mod, now) === ownPrint(mod, then)
 
 /** Whether the mod's mutants must run: all are asked for, or no run killed them all on files of this fingerprint. */
 export const mustRun = (record, mod, print, all) => all || record[mod]?.fingerprint !== print
@@ -218,37 +245,82 @@ const recorded = () => {
   return {}
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  try {
-    const all = process.argv[2] === '--all'
-    const named = process.argv.slice(all ? 3 : 2)
-    const mods =
-      named.length > 0 ? named : readdirSync('.').filter(name => existsSync(join(name, 'tests', 'mutants.json')))
-    const record = recorded()
-    let isKilled = true
+// The mod's files at a commit, `[path, content]`, as git keeps them.
+const filesAt = (commit, mod) =>
+  execFileSync('git', ['ls-tree', '-r', '-z', '--name-only', commit, '--', mod], { encoding: 'utf8' })
+    .split('\0')
+    .filter(Boolean)
+    .map(path => [path, execFileSync('git', ['show', `${commit}:${path}`])])
 
-    for (const mod of mods) {
-      const print = fingerprint(inputsOf(mod).map(path => [path, readFileSync(path)]))
+// `--verified <commit> <mod>...` records, for each mod named, a run that killed every mutant on that commit, as of
+// the files the mutants now read; it refuses a mod whose own files have changed since, but the version.
+const verify = ([commit, ...mods], record) => {
+  const sha = execFileSync('git', ['rev-parse', '--verify', `${commit}^{commit}`], { encoding: 'utf8' }).trim()
+  let isRecorded = true
 
-      if (!mustRun(record, mod, print, all)) {
-        process.stdout.write(`mutate: ${mod}: unchanged since a run that killed its ${record[mod].killed} mutants\n`)
-        continue
-      }
+  for (const mod of mods) {
+    const now = inputsOf(mod).map(path => [path, readFileSync(path)])
 
-      if (await main(mod)) {
-        record[mod] = {
-          fingerprint: print,
-          killed: mutantsOf(mod, readFileSync(join(mod, 'tests', 'mutants.json'), 'utf8')).length,
-        }
-        writeFileSync(RECORD, `${JSON.stringify(record, null, 2)}\n`)
-      } else {
-        isKilled = false
-      }
+    if (!isUnchanged(mod, now, filesAt(sha, mod))) {
+      process.stderr.write(`mutate: ${mod}: its files changed since ${sha}, so its mutants must run\n`)
+      isRecorded = false
+      continue
     }
 
-    process.exitCode = isKilled ? 0 : 1
+    const killed = mutantsOf(mod, readFileSync(join(mod, 'tests', 'mutants.json'), 'utf8')).length
+    record[mod] = {
+      fingerprint: fingerprint(now.map(([path, c]) => [path, contentOf(path, c)])),
+      killed,
+      verified: sha,
+    }
+    process.stdout.write(`mutate: ${mod}: recorded the run on ${sha} that killed its ${killed} mutants\n`)
+  }
+
+  writeFileSync(RECORD, `${JSON.stringify(record, null, 2)}\n`)
+
+  return isRecorded
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  try {
+    if (process.argv[2] === '--verified') {
+      process.exitCode = verify(process.argv.slice(3), recorded()) ? 0 : 1
+    } else {
+      await run()
+    }
   } catch (failure) {
     process.stderr.write(`mutate: ${failure instanceof Error ? failure.message : String(failure)}\n`)
     process.exitCode = 1
   }
+}
+
+// Runs the mutants of the mods asked for, or of every mod that lists some, that changed since a run that killed them.
+async function run() {
+  const all = process.argv[2] === '--all'
+  const named = process.argv.slice(all ? 3 : 2)
+  const mods =
+    named.length > 0 ? named : readdirSync('.').filter(name => existsSync(join(name, 'tests', 'mutants.json')))
+  const record = recorded()
+  let isKilled = true
+
+  for (const mod of mods) {
+    const print = fingerprint(inputsOf(mod).map(path => [path, contentOf(path, readFileSync(path))]))
+
+    if (!mustRun(record, mod, print, all)) {
+      process.stdout.write(`mutate: ${mod}: unchanged since a run that killed its ${record[mod].killed} mutants\n`)
+      continue
+    }
+
+    if (await main(mod)) {
+      record[mod] = {
+        fingerprint: print,
+        killed: mutantsOf(mod, readFileSync(join(mod, 'tests', 'mutants.json'), 'utf8')).length,
+      }
+      writeFileSync(RECORD, `${JSON.stringify(record, null, 2)}\n`)
+    } else {
+      isKilled = false
+    }
+  }
+
+  process.exitCode = isKilled ? 0 : 1
 }
