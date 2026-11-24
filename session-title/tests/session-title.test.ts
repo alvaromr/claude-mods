@@ -264,12 +264,42 @@ test('a prompt left out, or a title not given, says why in the debug log', async
   logged.length = 0
   it.fromHook = 'ABC-7'
   await prompt('dime cuál de las tarifas me conviene')
-  it.fromHook = undefined
-  await prompt('un cuarto prompt que ya no cambia nada')
-  expect(logged).toEqual([
-    'debug: no title: another hook titled the session',
-    'debug: prompt left out: the title is made to stay',
+  expect(logged).toEqual(['debug: no title: another hook titled the session'])
+})
+
+test('a long session is titled again at its tenth and thirtieth prompts, from its first two and last five', async ($, on) => {
+  const logged: string[] = []
+  on('ui.log', (_, e) => (logged.push(e.text), { value: undefined }))
+  const it = await world($, on)
+  const said = (n: number) => `el prompt número ${n} de la sesión`
+  const asked = (...at: number[]) => at.map(n => `${n}. ${said(n)}`).join('\n')
+  const titles: (string | undefined)[] = []
+
+  for (let n = 1; n <= 31; n++) {
+    it.reply = `Título ${n}`
+
+    const answer = await $.classic.UserPromptSubmit({
+      prompt: said(n),
+      source: 'user',
+      session_id: 'abc',
+      session_title: it.name,
+    })
+
+    titles.push(answer.sessionTitle)
+
+    if (answer.sessionTitle !== undefined) {
+      Object.assign(it, { name: answer.sessionTitle, nameSource: 'hook' })
+    }
+  }
+
+  expect(titles.flatMap((title, at) => (title === undefined ? [] : [`${at + 1}: ${title}`]))).toEqual([
+    '1: Título 1',
+    '3: Título 3',
+    '10: Título 10',
+    '30: Título 30',
   ])
+  expect(it.asked).toEqual([asked(1), asked(1, 2, 3), asked(1, 2, 6, 7, 8, 9, 10), asked(1, 2, 26, 27, 28, 29, 30)])
+  expect(logged).toEqual(['prompt left out: the title is made to stay'])
 })
 
 test('a name not the mod’s to replace says so in the debug log', async ($, on) => {

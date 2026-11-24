@@ -1,9 +1,45 @@
 [
   {
     "file": "hooks/prompts.ts",
-    "from": "const ENOUGH = 3",
-    "to": "const ENOUGH = 4",
+    "from": "const AGAIN = [3, 10, 30]",
+    "to": "const AGAIN = [4, 10, 30]",
     "why": "the title is made again at the third prompt"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "const AGAIN = [3, 10, 30]",
+    "to": "const AGAIN = [3, 30]",
+    "why": "a long session is titled again at its tenth prompt"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "const AGAIN = [3, 10, 30]",
+    "to": "const AGAIN = [3, 10, 30, 31]",
+    "why": "a long session is titled again at its thirtieth prompt, and not after"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "const FIRST = 2",
+    "to": "const FIRST = 3",
+    "why": "a long session's title is made from its first two prompts"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "const LAST = 5",
+    "to": "const LAST = 6",
+    "why": "a long session's title is made from its last five prompts"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "all.length <= FIRST + LAST ? all :",
+    "to": "true ? all :",
+    "why": "the prompts kept stay few"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "count - said.length + index + 1",
+    "to": "index + 1",
+    "why": "each prompt kept is numbered by its place in the session"
   },
   {
     "file": "hooks/prompts.ts",
@@ -229,9 +265,9 @@
   },
   {
     "file": "hooks/prompts.ts",
-    "from": "said.map((one, index) => `${index + 1}. ${one}`).join('\\n')",
-    "to": "said.slice(-1).join('\\n')",
-    "why": "the model is asked with every prompt said so far"
+    "from": "said.map((one, index)",
+    "to": "said.slice(-1).map((one, index)",
+    "why": "the model is asked with every prompt kept"
   },
   {
     "file": "hooks/register.ts",
@@ -313,21 +349,39 @@
   },
   {
     "file": "hooks/register.ts",
-    "from": "if (isFull(before.length)) {",
+    "from": "if (isFull(sofar)) {",
     "to": "if (false) {",
-    "why": "prompts after the third change nothing"
+    "why": "prompts after the thirtieth change nothing"
   },
   {
     "file": "hooks/register.ts",
-    "from": "!completes(said.length) && (await read($, isTitled))",
-    "to": "!completes(said.length)",
+    "from": "    await update($, counted, () => count)\n",
+    "to": "",
+    "why": "the prompts said are counted"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "      await update($, counted, () => 0)\n",
+    "to": "",
+    "why": "a new conversation counts its prompts from one"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "AGAIN.includes(count) || (!isTitled && count < Math.min(...AGAIN))",
+    "to": "AGAIN.includes(count)",
     "why": "a session not yet titled is titled at its next prompt"
   },
   {
-    "file": "hooks/register.ts",
-    "from": "!completes(said.length) && (await read($, isTitled))",
-    "to": "(await read($, isTitled))",
+    "file": "hooks/prompts.ts",
+    "from": "AGAIN.includes(count) || (!isTitled && count < Math.min(...AGAIN))",
+    "to": "!isTitled && count < Math.min(...AGAIN)",
     "why": "a session titled at its first prompt is titled again at its third"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "count < Math.min(...AGAIN)",
+    "to": "count < Math.max(...AGAIN)",
+    "why": "a session the model never titled by its third prompt waits for the tenth"
   },
   {
     "file": "hooks/register.ts",

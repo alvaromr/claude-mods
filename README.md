@@ -23,7 +23,7 @@ shows, are Anthropic's.
 | <img src="guard-outward/.claude-plugin/icon.png" width="28" alt=""> | `guard-outward` | Puts pushes, gh writes, listed commands and MCP writes to a person, whatever the mode.       |
 | <img src="guard-pnpm/.claude-plugin/icon.png" width="28" alt="">    | `guard-pnpm`    | Denies npm, npx and yarn.                                                                    |
 | <img src="pet/.claude-plugin/icon.png" width="28" alt="">           | `pet`           | A desktop pet listing the live sessions (macOS).                                             |
-| <img src="session-title/.claude-plugin/icon.png" width="28" alt=""> | `session-title` | Titles unnamed sessions after your first prompts.                                            |
+| <img src="session-title/.claude-plugin/icon.png" width="28" alt=""> | `session-title` | Titles unnamed sessions after your prompts, and again as a long one moves on.                |
 | <img src="ui-colorify/.claude-plugin/icon.png" width="28" alt="">   | `ui-colorify`   | Colours alerts, quotes, headings and your prompts, so what matters stands out (terminal).    |
 | <img src="ui-companion/.claude-plugin/icon.png" width="28" alt="">  | `ui-companion`  | A pane where a second model comments on the conversation.                                    |
 | <img src="ui-declutter/.claude-plugin/icon.png" width="28" alt="">  | `ui-declutter`  | Folds runs of tool calls into one line (terminal).                                           |

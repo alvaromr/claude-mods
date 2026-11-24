@@ -1,6 +1,11 @@
-// A title is made from the person's first prompt, and made again, to stay, once
-// there are this many: by then the session has shown what it is about.
-const ENOUGH = 3
+// A title is made from the person's first prompt, and made again once there are
+// this many: at the third the session has shown what it is about, and at the
+// tenth and the thirtieth a long one may have moved on; after that it stays.
+const AGAIN = [3, 10, 30]
+// The prompts a title is made from: the first ones, what the session set out to
+// do, and the last ones, what it does now; the list stays this short.
+const FIRST = 2
+const LAST = 5
 // A prompt shorter than this ("sí", "sigue") says nothing of the session.
 const SHORTEST = 12
 const EXCERPT = 400
@@ -44,10 +49,19 @@ export const typed = (e: { prompt: string; source?: string }): { text: string } 
 }
 
 /** Whether `count` prompts are all a title needs: the ones after change nothing. */
-export const isFull = (count: number) => count >= ENOUGH
+export const isFull = (count: number) => count >= Math.max(...AGAIN)
 
-/** Whether `count` prompts is where the title is made again, to stay. */
-export const completes = (count: number) => count === ENOUGH
+/** Whether the `count`th prompt makes a title: where it is made again, or before the first of those, while none was given. */
+export const isDue = (count: number, isTitled: boolean) =>
+  AGAIN.includes(count) || (!isTitled && count < Math.min(...AGAIN))
 
-/** The prompts said, numbered one to a line, as the model is asked to title them. */
-export const numbered = (said: readonly string[]) => said.map((one, index) => `${index + 1}. ${one}`).join('\n')
+/** The prompts kept once `text` is said after `said`: the first and the last ones. */
+export const kept = (said: readonly string[], text: string) => {
+  const all = [...said, text]
+
+  return all.length <= FIRST + LAST ? all : [...all.slice(0, FIRST), ...all.slice(-LAST)]
+}
+
+/** The prompts kept of `count` said, one to a line, each numbered by its place, as the model is asked to title them. */
+export const numbered = (said: readonly string[], count: number) =>
+  said.map((one, index) => `${index < FIRST ? index + 1 : count - said.length + index + 1}. ${one}`).join('\n')

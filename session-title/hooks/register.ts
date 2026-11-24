@@ -2,7 +2,7 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
 import { reasonOf } from './failure'
-import { completes, isFull, numbered, typed } from './prompts'
+import { isDue, isFull, kept, numbered, typed } from './prompts'
 import { folderOf, isNameOurs, isNameOursUnlisted, metaOf, metadataFiles } from './sessions'
 import { TEXT } from './text'
 import { isTicket, titleOf } from './title'
@@ -17,6 +17,7 @@ let carried: string | null = null
 let isInteractive = false
 
 const prompts = atom({ plugin: 'session-title', key: 'prompts' } as const, [])
+const counted = atom({ plugin: 'session-title', key: 'counted' } as const, 0)
 const given = atom({ plugin: 'session-title', key: 'given' } as const, null)
 const isTitled = atom({ plugin: 'session-title', key: 'isTitled' } as const, false)
 
@@ -34,12 +35,12 @@ const because = ($: EngineInterface, why: string) => {
   $.ui.log(why, { to: 'debug' })
 }
 
-const titleFor = async ($: EngineInterface, said: readonly string[]) => {
+const titleFor = async ($: EngineInterface, said: string) => {
   const reply = await $.model
     .complete({
       model: 'haiku',
       system: TEXT.ask,
-      prompt: numbered(said),
+      prompt: said,
       maxTokens: 40,
       timeoutMs: 8000,
     })
@@ -113,6 +114,7 @@ export const register: Register = on => {
 
       carried = null
       await update($, prompts, () => [])
+      await update($, counted, () => 0)
       await update($, isTitled, () => false)
       await update($, given, () => crossed)
     }
@@ -144,8 +146,9 @@ export const register: Register = on => {
     }
 
     const before = await read($, prompts)
+    const sofar = await read($, counted)
 
-    if (isFull(before.length)) {
+    if (isFull(sofar)) {
       return leftOut('the title is made to stay')
     }
 
@@ -154,10 +157,12 @@ export const register: Register = on => {
       return leftOut('said before')
     }
 
-    const said = [...before, heard.text]
+    const said = kept(before, heard.text)
+    const count = sofar + 1
     await update($, prompts, () => said)
+    await update($, counted, () => count)
 
-    if (!completes(said.length) && (await read($, isTitled))) {
+    if (!isDue(count, await read($, isTitled))) {
       return answer
     }
 
@@ -169,7 +174,7 @@ export const register: Register = on => {
       return noTitle("the session's name is not the mod's to replace")
     }
 
-    const title = await titleFor($, said)
+    const title = await titleFor($, numbered(said, count))
 
     if (title === undefined) {
       return answer

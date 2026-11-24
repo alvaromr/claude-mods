@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { completes, isFull, numbered, typed } from '../hooks/prompts'
+import { isDue, isFull, kept, numbered, typed } from '../hooks/prompts'
 
 /** What `typed` keeps of a prompt; nothing for one it leaves out. */
 const textOf = (e: Parameters<typeof typed>[0]) => {
@@ -118,16 +118,28 @@ test('what Orca writes in a worker’s prompt box is nothing', () => {
   )
 })
 
-test('a title is made again, to stay, at the third prompt', () => {
-  expect([0, 1, 2, 3, 4].map(completes)).toEqual([false, false, false, true, false])
+test('a title is made at the first prompt, and again at the third, the tenth and the thirtieth', () => {
+  const due = (isTitled: boolean) =>
+    Array.from({ length: 31 }, (_, at) => at + 1).filter(count => isDue(count, isTitled))
+
+  expect(due(true)).toEqual([3, 10, 30])
+  // One the model has not titled yet is tried again until the third.
+  expect(due(false)).toEqual([1, 2, 3, 10, 30])
 })
 
-test('prompts after the third are not kept', () => {
-  expect([0, 1, 2, 3, 4].map(isFull)).toEqual([false, false, false, true, true])
+test('prompts after the thirtieth are not kept', () => {
+  expect([0, 29, 30, 31].map(isFull)).toEqual([false, false, true, true])
 })
 
-test('the prompts said are numbered one to a line', () => {
-  expect(numbered(['uno', 'dos', 'tres'])).toBe('1. uno\n2. dos\n3. tres')
-  expect(numbered(['uno'])).toBe('1. uno')
-  expect(numbered([])).toBe('')
+test('the prompts kept are the first two and the last five', () => {
+  const said = Array.from({ length: 12 }, (_, at) => String(at + 1)).reduce<readonly string[]>(kept, [])
+
+  expect(said).toEqual(['1', '2', '8', '9', '10', '11', '12'])
+  expect(['1', '2', '3'].reduce<readonly string[]>(kept, [])).toEqual(['1', '2', '3'])
+})
+
+test('the prompts kept are numbered one to a line, each by its place in the session', () => {
+  expect(numbered(['uno', 'dos', 'tres'], 3)).toBe('1. uno\n2. dos\n3. tres')
+  expect(numbered(['uno'], 1)).toBe('1. uno')
+  expect(numbered(['a', 'b', 'f', 'g', 'h', 'i', 'j'], 10)).toBe('1. a\n2. b\n6. f\n7. g\n8. h\n9. i\n10. j')
 })
