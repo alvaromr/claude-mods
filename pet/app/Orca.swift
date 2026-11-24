@@ -53,22 +53,25 @@ func focusedHandles(worktrees: [[String: Any]], layouts: [[String: Any]]) -> Set
     return handles
 }
 
+/// What Orca's CLI answers the command with, its `--json` result; nil when Orca is not installed,
+/// fails or does not answer within `timeout` seconds.
+func askOrca(_ arguments: [String], timeout: TimeInterval = 5) -> [String: Any]? {
+    guard let orca = NSWorkspace.shared.urlForApplication(withBundleIdentifier: orcaBundleID),
+          let output = run(orca.appendingPathComponent("Contents/Resources/bin/orca").path, arguments + ["--json"],
+                           timeout: timeout),
+          let json = orNil("reading orca \(arguments.joined(separator: " "))", {
+              try JSONSerialization.jsonObject(with: Data(output.utf8)) as? [String: Any]
+          }) ?? nil else { return nil }
+    return json["result"] as? [String: Any]
+}
+
 /// The same, asked of Orca's CLI, while Orca is the app at the front; none while another one is.
 /// Asked on the main thread, so it waits briefly for an answer.
 func focusedOrcaHandles() -> Set<String> {
-    guard NSWorkspace.shared.frontmostApplication?.bundleIdentifier == orcaBundleID,
-          let orca = NSWorkspace.shared.urlForApplication(withBundleIdentifier: orcaBundleID) else { return [] }
-    let cli = orca.appendingPathComponent("Contents/Resources/bin/orca").path
-    func result(_ arguments: [String]) -> [String: Any]? {
-        guard let output = run(cli, arguments + ["--json"], timeout: 2),
-              let json = orNil("reading orca \(arguments.joined(separator: " "))", {
-                  try JSONSerialization.jsonObject(with: Data(output.utf8)) as? [String: Any]
-              }) ?? nil else { return nil }
-        return json["result"] as? [String: Any]
-    }
-    return focusedHandles(worktrees: result(["worktree", "ps"])?["worktrees"] as? [[String: Any]] ?? [],
-                          layouts: result(["terminal", "list", "--include-visual-layouts"])?["visualLayouts"]
-                              as? [[String: Any]] ?? [])
+    guard NSWorkspace.shared.frontmostApplication?.bundleIdentifier == orcaBundleID else { return [] }
+    let worktrees = askOrca(["worktree", "ps"], timeout: 2)?["worktrees"]
+    let layouts = askOrca(["terminal", "list", "--include-visual-layouts"], timeout: 2)?["visualLayouts"]
+    return focusedHandles(worktrees: worktrees as? [[String: Any]] ?? [], layouts: layouts as? [[String: Any]] ?? [])
 }
 
 /// Of Orca's worktree folders, the one the folder is in: the deepest, as one can hold another.
@@ -129,14 +132,9 @@ final class OrcaIcons {
     /// Asks Orca off the main thread, which it answers from the next look on.
     private func ask() {
         asked = Date()
-        guard let cli = app?.appendingPathComponent("Contents/Resources/bin/orca").path else { return }
         DispatchQueue.global(qos: .utility).async { [self] in
             func result(_ arguments: [String], _ key: String) -> [[String: Any]] {
-                guard let output = run(cli, arguments + ["--json"]),
-                      let json = orNil("reading orca \(arguments.joined(separator: " "))", {
-                          try JSONSerialization.jsonObject(with: Data(output.utf8)) as? [String: Any]
-                      }) ?? nil else { return [] }
-                return (json["result"] as? [String: Any])?[key] as? [[String: Any]] ?? []
+                askOrca(arguments)?[key] as? [[String: Any]] ?? []
             }
             let repos = Dictionary(result(["repo", "list"], "repos").map { ($0["id"] as? String ?? "", $0) },
                                    uniquingKeysWith: { first, _ in first })
