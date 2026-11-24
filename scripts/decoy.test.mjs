@@ -11,9 +11,13 @@ import { test } from 'node:test'
 // its git commands at that repository unless it clears them first.
 test("a mod's shell tests leave the repository git hands its hooks as it was", () => {
   const decoy = mkdtempSync(join(tmpdir(), 'decoy-'))
+  // This test runs under that hook too, and from a worktree git hands it GIT_DIR: its own commands
+  // would build the decoy in the repository being committed.
+  const clean = Object.fromEntries(Object.entries(process.env).filter(([name]) => !name.startsWith('GIT_')))
   const git = (...args) =>
     execFileSync('git', ['-C', decoy, '-c', 'user.name=decoy', '-c', 'user.email=decoy@example.com', ...args], {
       encoding: 'utf8',
+      env: clean,
     })
   const state = () => [
     git('log', '--all', '--oneline'),
@@ -25,7 +29,7 @@ test("a mod's shell tests leave the repository git hands its hooks as it was", (
     git('init', '-q')
     git('commit', '-q', '--allow-empty', '-m', 'decoy')
     const before = state()
-    const env = { ...process.env, GIT_DIR: join(decoy, '.git'), GIT_INDEX_FILE: join(decoy, '.git/index') }
+    const env = { ...clean, GIT_DIR: join(decoy, '.git'), GIT_INDEX_FILE: join(decoy, '.git/index') }
 
     for (const script of globSync('*/tests/*.test.sh')) {
       execFileSync('sh', [script], { env, stdio: 'ignore' })
