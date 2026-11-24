@@ -44,7 +44,8 @@ Run each from the repo root:
 
 ## Non-negotiables
 
-- Every change comes with its test, and the commands above pass — a red check means a broken mod in someone's session.
+- Every change comes with its test, and the gate and the audit pass — a red check means a broken mod in someone's
+  session.
 - English for code, comments, docs, manifests and commit messages — the shared language of any contributor.
 - Commit subjects in the imperative, at most 72 characters — history is read to understand intent.
 - Nothing personal or machine-specific in the repo: no secrets, paths, company data or one developer's setup — the
