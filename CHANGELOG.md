@@ -6,6 +6,12 @@ entry names its mod.
 
 ## [Unreleased]
 
+### Fixed
+
+- `pet`: a session in a git worktree goes by the project the worktree was made from, not by the worktree's folder.
+
+## [session-title 0.3.0] - 2026-11-24
+
 ### Changed
 
 - `session-title`: a title is a short phrase in Spanish, «Comparar facturas de luz», as Claude Code's own titles
@@ -20,7 +26,6 @@ entry names its mod.
 
 ### Fixed
 
-- `pet`: a session in a git worktree goes by the project the worktree was made from, not by the worktree's folder.
 - `session-title`: an Orca worker's session is titled after its task, what follows the `=== TASK ===` line of its
   brief, typed or pasted, not after Orca's own instructions; Orca's notices in the prompt box, and a prompt said
   again, no longer count among the prompts a title is made from.

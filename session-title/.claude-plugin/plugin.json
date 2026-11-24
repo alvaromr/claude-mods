@@ -1,6 +1,6 @@
 {
   "name": "session-title",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Titles a session that has no name yet with a short Spanish phrase from your own prompts: at the first, and again at the third, the tenth and the thirtieth.",
   "author": { "name": "alvaro.martin" },
   "types": "./types/index.d.ts"
