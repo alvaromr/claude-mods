@@ -499,9 +499,21 @@
   },
   {
     "file": "app/orca-reveal.mjs",
-    "from": "if (waited >= 3000) throw",
+    "from": "if (waited >= Number(deadline)) throw",
     "to": "if (false) throw",
-    "why": "a workspace Orca does not show is waited for no longer than 3 s"
+    "why": "a workspace Orca does not show is waited for no longer than the deadline"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "deadline = '3000'",
+    "to": "deadline = '0'",
+    "why": "Orca's window is given 3 s to show the workspace unless told otherwise"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "if (!/^\\d+$/.test(deadline)) fail",
+    "to": "if (false) fail",
+    "why": "a deadline that is no number of milliseconds is a failure, not a wait that never ends"
   },
   {
     "file": "app/orca-reveal.mjs",

@@ -217,9 +217,10 @@ private func writeStandIns() {
 }
 
 /// Whether the reveal script took the person to chat c1 of the workspace, with Orca showing the
-/// other, and the calls it made, each on a line: the client's arguments first.
+/// other, and the calls it made, each on a line: the client's arguments first. A deadline, in
+/// milliseconds, replaces the 3 s the script waits for Orca to show the workspace.
 private func reveal(_ worktree: String, bot: String = "", showing: String, obeyed: Bool = true,
-                    refused: Bool = false) -> (taken: Bool, calls: [String]) {
+                    refused: Bool = false, deadline: String? = nil) -> (taken: Bool, calls: [String]) {
     let script = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
         .appendingPathComponent("orca-reveal.mjs").path
     try? FileManager.default.removeItem(atPath: standIns.calls)
@@ -228,7 +229,7 @@ private func reveal(_ worktree: String, bot: String = "", showing: String, obeye
     let taken = run("/usr/bin/env", [
         "PATH=\(path)", "CALLS=\(standIns.calls)", "SHOWN=\(standIns.shown)", "OBEYED=\(obeyed ? 1 : 0)",
         "REFUSED=\(refused ? 1 : 0)", "node", script, standIns.cli.path, worktree, "c1",
-    ] + (bot.isEmpty ? [] : [bot]), timeout: 10) != nil
+    ] + (deadline.map { [bot, $0] } ?? (bot.isEmpty ? [] : [bot])), timeout: 10) != nil
     let lines = (try? String(contentsOfFile: standIns.calls, encoding: .utf8)) ?? ""
     return (taken, lines.split(separator: "\n").map(String.init))
 }
@@ -257,10 +258,17 @@ func orcaRevealTests() {
         ])
         expect(other.calls.dropFirst().first, asked, "asked first:")
         let began = Date()
-        let unshown = reveal("r1::/work", showing: "r1::/other", obeyed: false)
+        let unshown = reveal("r1::/work", showing: "r1::/other", obeyed: false, deadline: "100")
         expect(unshown.taken, false, "not shown:")
         expect(unshown.calls.contains(activated("r1::/work")), false, "a tab activated where Orca does not show it:")
-        expect(Date().timeIntervalSince(began) < 6, true, "it gave up waiting:")
+        expect(Date().timeIntervalSince(began) < 2, true, "it gave up waiting at its deadline:")
+        expect(reveal("r1::/work", showing: "r1::/other", deadline: "100").taken, false, "shown after the deadline:")
+    }
+
+    test("the script fails, asking Orca nothing, for a deadline that is no number of milliseconds") {
+        let soon = reveal("r1::/work", showing: "r1::/work", deadline: "soon")
+        expect(soon.taken, false, "taken:")
+        expect(soon.calls, [])
     }
 
     test("the script shows a bot's folder by the bot's link, and fails for a folder no bot has") {

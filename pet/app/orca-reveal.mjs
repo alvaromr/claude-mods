@@ -4,15 +4,22 @@
 // workspace it shows, and leaves one in any other as it was, so the chat's workspace is shown first: a
 // repo's by Orca's runtime, a bot's folder by the bot's link, which opens the bot's chat in it; a folder
 // no bot has Orca shows only from its sidebar. The pet runs it in Orca's Node (ELECTRON_RUN_AS_NODE) as
-// `orca-reveal.mjs <Orca's CLI folder> <worktree id> <chat id> [<bot id>]`; it ends in failure, saying
-// why on a line, when Orca does not take it, as for a tab Orca has not.
+// `orca-reveal.mjs <Orca's CLI folder> <worktree id> <chat id> [<bot id> [<deadline>]]`; it ends in
+// failure, saying why on a line, when Orca does not take it, as for a tab Orca has not. The deadline is
+// how many milliseconds Orca's window is given to show the workspace, 3000 unless told; an empty bot id
+// is none, so the tests can name a deadline alone.
 import { execFile } from 'node:child_process'
 import { createRequire } from 'node:module'
 import process from 'node:process'
 import { setTimeout } from 'node:timers/promises'
 import { promisify } from 'node:util'
 
-const [cli, worktreeId, chatId, botId] = process.argv.slice(2)
+const [cli, worktreeId, chatId, botId, deadline = '3000'] = process.argv.slice(2)
+const fail = message => {
+  process.stderr.write(`${message}\n`)
+  process.exit(1)
+}
+if (!/^\d+$/.test(deadline)) fail(`The deadline ${deadline} is no number of milliseconds`)
 const require = createRequire(import.meta.url)
 const { RuntimeClient } = require(`${cli}/runtime/client.js`)
 const { getDefaultUserDataPath } = require(`${cli}/runtime/profile/metadata.js`)
@@ -35,7 +42,7 @@ try {
     }
     // Orca's window takes a moment to show it
     for (let waited = 0; !(await isShown()); waited += 100) {
-      if (waited >= 3000) throw new Error(`Orca did not show the workspace ${worktreeId}`)
+      if (waited >= Number(deadline)) throw new Error(`Orca did not show the workspace ${worktreeId}`)
       await setTimeout(100)
     }
   }
@@ -46,8 +53,7 @@ try {
     intent: 'user',
   })
 } catch (error) {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`)
-  process.exit(1)
+  fail(error instanceof Error ? error.message : String(error))
 }
 // the client may keep its connection open, which would keep the process alive
 process.exit(0)
