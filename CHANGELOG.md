@@ -26,9 +26,9 @@ entry names its mod.
 
 ### Fixed
 
-- `session-title`: an Orca worker's session is titled after its task, what follows the `=== TASK ===` line of its
-  brief, typed or pasted, not after Orca's own instructions; Orca's notices in the prompt box, and a prompt said
-  again, no longer count among the prompts a title is made from.
+- `session-title`: a session given an Orca worker's brief, typed or pasted, is titled after its task, what follows
+  the brief's `=== TASK ===` line, not after Orca's own instructions; Orca's notices in the prompt box, and a prompt
+  said again, no longer count among the prompts a title is made from.
 - `session-title`: a session with nobody at the prompt, a `claude -p` run or the Agent SDK, is no longer titled, and
   asks Haiku for nothing.
 
