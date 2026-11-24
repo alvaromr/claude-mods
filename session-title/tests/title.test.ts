@@ -38,6 +38,21 @@ test('a title holds no control, bidi or zero-width character', () => {
   expect(titleOf('‮Comparar\u0007 facturas​ de\u001b]0;x luz')).toBe('Comparar facturas de 0 x luz')
 })
 
+test('a title drops what reads as an id: a hash, a uuid, a long number', () => {
+  expect(titleOf('Orca coordinador bddc464 sesión f7dbd465')).toBe('Orca coordinador sesión')
+  expect(titleOf('Error 1795513776698 en 468a6b41-d895-4814-99f5-fd62a669c227 de la sesión')).toBe(
+    'Error en de la sesión',
+  )
+  // Only ids: no title.
+  expect(titleOf('3f692e03 909e677')).toBeUndefined()
+})
+
+test('a date, a version, a ticket or a word of letters a to f is not an id', () => {
+  expect(titleOf('Informe del 2026-11-24 en Node 26.13.1')).toBe('Informe del 2026-11-24 en Node 26.13.1')
+  expect(titleOf('RAD-26249: facade del pedido 12345')).toBe('RAD-26249: facade del pedido 12345')
+  expect(titleOf('Cerrar el ABC-12 y el fe-123456')).toBe('Cerrar el ABC-12 y el fe-123456')
+})
+
 test('a title is made of the first line of the reply that has words', () => {
   expect(titleOf('\n  \nPrimera línea\nSegunda línea')).toBe('Primera línea')
 })

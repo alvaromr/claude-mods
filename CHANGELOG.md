@@ -11,6 +11,8 @@ entry names its mod.
 - `session-title`: a title is a short phrase in Spanish, «Comparar facturas de luz», as Claude Code's own titles
   are: in sentence case, with its accents and spaces, not words joined by dashes. It is still at most 60
   characters, now cut after a whole word.
+- `session-title`: Haiku is asked to start a title with its topic and to leave out ids, codes and people's names,
+  and a word of its reply that reads as an id, a hash, a uuid or a long number, is dropped from the title.
 
 ### Fixed
 

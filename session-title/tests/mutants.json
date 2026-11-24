@@ -133,9 +133,51 @@
   },
   {
     "file": "hooks/title.ts",
-    "from": ".replace(/ +/g, ' ')",
+    "from": "word !== '' && ",
     "to": "",
     "why": "a title's words are parted by one space"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": " && !isId(word)",
+    "to": "",
+    "why": "a title drops what reads as an id"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "/^[\\da-f-]{6,}$/i",
+    "to": "/[\\da-f-]{6,}/i",
+    "why": "only a whole word is an id"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "[\\da-f-]{6,}",
+    "to": "[\\da-f-]{60,}",
+    "why": "an id of six characters is dropped"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "/\\d{6}/.test(word) || ",
+    "to": "",
+    "why": "a long number is an id"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": " && /[a-f]/i.test(word)",
+    "to": "",
+    "why": "a date is not an id"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "(/\\d/.test(word) && ",
+    "to": "(",
+    "why": "a word of the letters a to f is not an id"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": " &&\n  !isTicket(word.toUpperCase())",
+    "to": "",
+    "why": "a ticket's key is not an id"
   },
   {
     "file": "hooks/title.ts",
