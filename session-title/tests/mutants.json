@@ -91,6 +91,12 @@
   },
   {
     "file": "hooks/register.ts",
+    "from": "isInteractive = e.isInteractive",
+    "to": "isInteractive = true",
+    "why": "a session with nobody at the prompt is not titled"
+  },
+  {
+    "file": "hooks/register.ts",
     "from": " || before.includes(text)",
     "to": "",
     "why": "a prompt said again counts once"

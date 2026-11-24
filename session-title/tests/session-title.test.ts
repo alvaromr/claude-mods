@@ -1,10 +1,16 @@
 import { expect, mock, test } from 'claude-code/testing'
+import type { Engine } from 'claude-code/testing'
 import type { On } from 'claude-code'
 
 const USAGE = { input_tokens: 1, output_tokens: 1, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 }
 
-// A session as the mod reads it, and the model that writes its titles.
-const world = (on: On, stored: Record<string, unknown> = {}) => {
+// A session as the mod reads it, and the model that writes its titles; started
+// with a person at the prompt unless `isInteractive` says it is a `-p` run.
+const world = async (
+  $: Engine,
+  on: On,
+  { stored = {}, isInteractive = true }: { stored?: Record<string, unknown>; isInteractive?: boolean } = {},
+) => {
   const it = {
     name: 'project-87',
     nameSource: 'derived',
@@ -74,12 +80,14 @@ const world = (on: On, stored: Record<string, unknown> = {}) => {
   on('classic.SessionStart', () => ({}))
   on('classic.SessionEnd', () => ({}))
   on('classic.UserPromptSubmit', () => (it.fromHook === undefined ? {} : { sessionTitle: it.fromHook }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  await $.session.start({ cwd: '/repo', surface: isInteractive ? 'terminal' : null, isInteractive })
 
   return it
 }
 
 test('titles from the person’s first prompt, and again from the first three', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string, source: 'user' | 'system' = 'user') =>
     $.classic.UserPromptSubmit({ prompt: text, source, session_id: 'abc', session_title: it.name })
   // What a title the mod gave leaves behind in the session's metadata.
@@ -120,8 +128,20 @@ test('titles from the person’s first prompt, and again from the first three', 
   expect(await titled('empecemos con otra cosa distinta')).toBe('otro-tema-distinto')
 })
 
+test('a session with nobody at the prompt, a `-p` run or the SDK, is not titled', async ($, on) => {
+  const it = await world($, on, { isInteractive: false })
+  const answer = await $.classic.UserPromptSubmit({
+    prompt: 'Reply with: ok, and nothing else',
+    session_id: 'abc',
+    session_title: it.name,
+  })
+
+  expect(answer.sessionTitle).toBeUndefined()
+  expect(it.asked).toEqual([])
+})
+
 test('the same prompt said again, as Orca repeats a brief, counts once', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
@@ -137,7 +157,7 @@ test('the same prompt said again, as Orca repeats a brief, counts once', async (
 })
 
 test('a prompt that starts with a path or a tag is titled; only a slash command, or what the engine wraps, is not', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
@@ -157,7 +177,7 @@ test('a prompt that starts with a path or a tag is titled; only a slash command,
 
 test('what another session left in the store for its own /clear is neither taken nor deleted', async ($, on) => {
   // As a /clear in another session would leave it, under the key the mod once used.
-  const it = world(on, { carried: 'someone-elses-title' })
+  const it = await world($, on, { stored: { carried: 'someone-elses-title' } })
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
@@ -172,7 +192,7 @@ test('what another session left in the store for its own /clear is neither taken
 })
 
 test('another session’s metadata, half written or empty, does not stop the title', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
 
   it.others = ['', '{"sessionId": "x', 'null']
 
@@ -187,7 +207,7 @@ test('another session’s metadata, half written or empty, does not stop the tit
 })
 
 test('tries again at the next prompt when the model gave no title', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
@@ -202,9 +222,9 @@ test('tries again at the next prompt when the model gave no title', async ($, on
 })
 
 test('a model it cannot ask gives no title, says why in the debug log, and is asked again', async ($, on) => {
-  const it = world(on)
   const logged: { text: string; to: string }[] = []
   on('ui.log', (_, e) => (logged.push(e), { value: undefined }))
+  const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
@@ -219,7 +239,7 @@ test('a model it cannot ask gives no title, says why in the debug log, and is as
 })
 
 test('never replaces a ticket, a name the person gave or another hook’s title', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   // Each prompt its own, so none is left out as said before.
   const prompt = (title: string) =>
     $.classic.UserPromptSubmit({
@@ -241,7 +261,7 @@ test('never replaces a ticket, a name the person gave or another hook’s title'
 })
 
 test('leaves the title another hook gives at the same prompt', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
 
   it.fromHook = 'ABC-7'
 
@@ -257,7 +277,7 @@ test('leaves the title another hook gives at the same prompt', async ($, on) => 
 })
 
 test('asks the model for an excerpt of a long prompt, not all of it', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
 
   await $.classic.UserPromptSubmit({
     prompt: 'a'.repeat(500),
@@ -270,7 +290,7 @@ test('asks the model for an excerpt of a long prompt, not all of it', async ($, 
 })
 
 test('does not title from what the engine echoes or injects', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
@@ -282,7 +302,7 @@ test('does not title from what the engine echoes or injects', async ($, on) => {
 })
 
 test('a title is made of the reply’s first line, at most sixty characters, with no dash at its ends', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
@@ -300,7 +320,7 @@ test('a title is made of the reply’s first line, at most sixty characters, wit
 })
 
 test('a title that starts like a ticket but says more is given', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
 
   it.reply = 'ABC-12 arreglar facturas'
 
@@ -315,7 +335,7 @@ test('a title that starts like a ticket but says more is given', async ($, on) =
 })
 
 test('a ticket name is never replaced, even one the session was born with', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
 
   Object.assign(it, { name: 'ABC-22133', nameSource: 'derived' })
 
@@ -331,7 +351,7 @@ test('a ticket name is never replaced, even one the session was born with', asyn
 })
 
 test('only the session’s own metadata, in a file of metadata, says where its name came from', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = () =>
     $.classic.UserPromptSubmit({
       prompt: 'compara estas dos facturas de la luz',
@@ -346,7 +366,7 @@ test('only the session’s own metadata, in a file of metadata, says where its n
 })
 
 test('a file of the sessions’ folder that is not metadata says nothing of the session', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
 
   it.strays = ['notes.txt']
 
@@ -361,7 +381,7 @@ test('a file of the sessions’ folder that is not metadata says nothing of the 
 })
 
 test('with no metadata for the session, only a name it was born without is replaced', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string, title: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: title })
 
@@ -372,7 +392,7 @@ test('with no metadata for the session, only a name it was born without is repla
 })
 
 test('a session that ends for another reason than a /clear does not carry its title over', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
@@ -386,7 +406,7 @@ test('a session that ends for another reason than a /clear does not carry its ti
 })
 
 test('a title given before a /clear does not cross a later fresh start', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
@@ -400,7 +420,7 @@ test('a title given before a /clear does not cross a later fresh start', async (
 })
 
 test('a resumed session keeps the prompts it has said', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
@@ -413,7 +433,7 @@ test('a resumed session keeps the prompts it has said', async ($, on) => {
 })
 
 test('a session never titled by its third prompt is not titled by a fourth', async ($, on) => {
-  const it = world(on)
+  const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 

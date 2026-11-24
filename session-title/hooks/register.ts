@@ -12,6 +12,9 @@ import { isTicket, slug } from './title'
 // the hooks module stays loaded through it, and is the process's own, where
 // `$.store` is shared by every session.
 let carried: string | null = null
+// Whether a person is at the prompt, as the session started: a `-p` run or the
+// SDK is never titled. The process's own too, as a /clear starts no session.
+let isInteractive = false
 
 const prompts = atom({ plugin: 'session-title', key: 'prompts' } as const, [])
 const given = atom({ plugin: 'session-title', key: 'given' } as const, null)
@@ -69,6 +72,12 @@ const isOursToName = async ($: EngineInterface, e: { session_id: string; session
 }
 
 export const register: Register = on => {
+  on('session.start', async ($, e, next) => {
+    isInteractive = e.isInteractive
+
+    return next(e)
+  })
+
   // The title given crosses a /clear, so the name is still ours to replace.
   on('classic.SessionEnd', async ($, e, next) => {
     if (e.reason === 'clear') {
@@ -99,7 +108,7 @@ export const register: Register = on => {
     const before = await read($, prompts)
 
     // A prompt said again, as Orca repeats a brief, counts once.
-    if (text === undefined || isFull(before.length) || before.includes(text)) {
+    if (!isInteractive || text === undefined || isFull(before.length) || before.includes(text)) {
       return answer
     }
 
