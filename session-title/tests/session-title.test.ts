@@ -129,6 +129,8 @@ test('titles from the person’s first prompt, and again from the first three', 
 })
 
 test('a session with nobody at the prompt, a `-p` run or the SDK, is not titled', async ($, on) => {
+  const logged: string[] = []
+  on('ui.log', (_, e) => (logged.push(e.text), { value: undefined }))
   const it = await world($, on, { isInteractive: false })
   const answer = await $.classic.UserPromptSubmit({
     prompt: 'Reply with: ok, and nothing else',
@@ -138,6 +140,7 @@ test('a session with nobody at the prompt, a `-p` run or the SDK, is not titled'
 
   expect(answer.sessionTitle).toBeUndefined()
   expect(it.asked).toEqual([])
+  expect(logged).toEqual(['prompt left out: nobody is at the prompt'])
 })
 
 test('the same prompt said again, as Orca repeats a brief, counts once', async ($, on) => {
@@ -236,6 +239,53 @@ test('a model it cannot ask gives no title, says why in the debug log, and is as
 
   it.refusal = null
   expect((await prompt('y ahora mira también la del gas')).sessionTitle).toBe('Comparar facturas de luz')
+})
+
+test('a prompt left out, or a title not given, says why in the debug log', async ($, on) => {
+  const logged: string[] = []
+  on('ui.log', (_, e) => (logged.push(`${e.to}: ${e.text}`), { value: undefined }))
+  const it = await world($, on)
+  const prompt = (text: string) =>
+    $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
+
+  await prompt('/clear')
+  it.reply = undefined
+  await prompt('compara estas dos facturas de la luz')
+  await prompt('compara estas dos facturas de la luz')
+  it.reply = 'ABC-1'
+  await prompt('y ahora mira también la del gas')
+  expect(logged).toEqual([
+    'debug: prompt left out: a slash command',
+    'debug: no title: the model gave none (aborted)',
+    'debug: prompt left out: said before',
+    'debug: no title: the reply "ABC-1" has no words or reads as a ticket',
+  ])
+
+  logged.length = 0
+  it.fromHook = 'ABC-7'
+  await prompt('dime cuál de las tarifas me conviene')
+  it.fromHook = undefined
+  await prompt('un cuarto prompt que ya no cambia nada')
+  expect(logged).toEqual([
+    'debug: no title: another hook titled the session',
+    'debug: prompt left out: the title is made to stay',
+  ])
+})
+
+test('a name not the mod’s to replace says so in the debug log', async ($, on) => {
+  const logged: string[] = []
+  on('ui.log', (_, e) => (logged.push(e.text), { value: undefined }))
+  const it = await world($, on)
+
+  Object.assign(it, { name: 'my-own-name', nameSource: 'user' })
+  await $.classic.UserPromptSubmit({
+    prompt: 'compara estas dos facturas de la luz',
+    source: 'user',
+    session_id: 'abc',
+    session_title: it.name,
+  })
+
+  expect(logged).toEqual(["no title: the session's name is not the mod's to replace"])
 })
 
 test('never replaces a ticket, a name the person gave or another hook’s title', async ($, on) => {

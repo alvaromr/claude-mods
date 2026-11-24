@@ -21,19 +21,26 @@ const taskOf = (prompt: string) => {
 }
 
 /**
- * What the person typed, less the marks of what they attached or pasted; nothing for a
- * command, a prompt nobody typed, Orca's notice or one too short to say anything.
+ * What the person typed, less the marks of what they attached or pasted; for a command, a prompt
+ * nobody typed, Orca's notice or one too short to say anything, why it is left out.
  */
-export const typed = (e: { prompt: string; source?: string }) => {
+export const typed = (e: { prompt: string; source?: string }): { text: string } | { dropped: string } => {
   const text = taskOf(e.prompt)
     .replace(/\[(?:Image|Pasted text) #\d+[^\]]*\]/g, ' ')
     .replace(/<\/?pasted_content[^>]*>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
-  const isTheirs =
-    (e.source ?? 'user') === 'user' && !IS_COMMAND.test(text) && !IS_WRAPPED.test(text) && !IS_ORCA_NOTICE.test(text)
+  // Each reason to leave a prompt out, and whether it holds, the first that does said.
+  const reasons: [boolean, string][] = [
+    [(e.source ?? 'user') !== 'user', 'not typed by the person'],
+    [IS_COMMAND.test(text), 'a slash command'],
+    [IS_WRAPPED.test(text), "Claude Code's own text"],
+    [IS_ORCA_NOTICE.test(text), 'a notice of Orca'],
+    [text.length < SHORTEST, 'too short to say anything'],
+  ]
+  const dropped = reasons.find(([holds]) => holds)?.[1]
 
-  return isTheirs && text.length >= SHORTEST ? text.slice(0, EXCERPT) : undefined
+  return dropped === undefined ? { text: text.slice(0, EXCERPT) } : { dropped }
 }
 
 /** Whether `count` prompts are all a title needs: the ones after change nothing. */

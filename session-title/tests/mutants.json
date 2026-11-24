@@ -97,14 +97,14 @@
   },
   {
     "file": "hooks/register.ts",
-    "from": " || before.includes(text)",
-    "to": "",
+    "from": "if (before.includes(heard.text)) {",
+    "to": "if (false) {",
     "why": "a prompt said again counts once"
   },
   {
     "file": "hooks/prompts.ts",
-    "from": "(e.source ?? 'user') === 'user' && ",
-    "to": "",
+    "from": "(e.source ?? 'user') !== 'user'",
+    "to": "false",
     "why": "a prompt nobody typed makes no title"
   },
   {
@@ -313,27 +313,45 @@
   },
   {
     "file": "hooks/register.ts",
-    "from": "text === undefined || isFull(before.length)",
-    "to": "text === undefined",
+    "from": "if (isFull(before.length)) {",
+    "to": "if (false) {",
     "why": "prompts after the third change nothing"
   },
   {
     "file": "hooks/register.ts",
-    "from": "completes(said.length) || !(await read($, isTitled))",
-    "to": "completes(said.length)",
+    "from": "!completes(said.length) && (await read($, isTitled))",
+    "to": "!completes(said.length)",
     "why": "a session not yet titled is titled at its next prompt"
   },
   {
     "file": "hooks/register.ts",
-    "from": "completes(said.length) || !(await read($, isTitled))",
-    "to": "!(await read($, isTitled))",
+    "from": "!completes(said.length) && (await read($, isTitled))",
+    "to": "(await read($, isTitled))",
     "why": "a session titled at its first prompt is titled again at its third"
   },
   {
     "file": "hooks/register.ts",
-    "from": "answer.sessionTitle !== undefined || ",
-    "to": "",
+    "from": "if (answer.sessionTitle !== undefined) {",
+    "to": "if (false) {",
     "why": "a title another hook gives is left"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "  $.ui.log(why, { to: 'debug' })\n",
+    "to": "",
+    "why": "why a prompt makes no title goes to the debug log"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "if (reply !== undefined) {",
+    "to": "if (false) {",
+    "why": "a model that gives no answer says why"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": "if (title === undefined) {\n    because",
+    "to": "if (false) {\n    because",
+    "why": "a reply that makes no title says why"
   },
   {
     "file": "hooks/register.ts",

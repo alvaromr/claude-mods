@@ -29,6 +29,11 @@ const orElse =
     return fallback
   }
 
+/** Why a prompt makes no title, in the debug log, so a session left untitled can be told why. */
+const because = ($: EngineInterface, why: string) => {
+  $.ui.log(why, { to: 'debug' })
+}
+
 const titleFor = async ($: EngineInterface, said: readonly string[]) => {
   const reply = await $.model
     .complete({
@@ -40,7 +45,21 @@ const titleFor = async ($: EngineInterface, said: readonly string[]) => {
     })
     .catch(orElse($, 'asking for a title', undefined))
 
-  return reply?.isAnswered === true ? titleOf(reply.text) : undefined
+  if (reply?.isAnswered !== true) {
+    if (reply !== undefined) {
+      because($, `no title: the model gave none (${reply.reason})`)
+    }
+
+    return undefined
+  }
+
+  const title = titleOf(reply.text)
+
+  if (title === undefined) {
+    because($, `no title: the reply ${JSON.stringify(reply.text)} has no words or reads as a ticket`)
+  }
+
+  return title
 }
 
 // Whether the session's name is still the one it was born with, or the one this
@@ -104,21 +123,50 @@ export const register: Register = on => {
   // Made while the prompt is answered, so a session of one prompt is titled too.
   on('classic.UserPromptSubmit', async ($, e, next) => {
     const answer = await next(e)
-    const text = typed(e)
+    const leftOut = (why: string) => {
+      because($, `prompt left out: ${why}`)
+
+      return answer
+    }
+    const noTitle = (why: string) => {
+      because($, `no title: ${why}`)
+
+      return answer
+    }
+    const heard = typed(e)
+
+    if (!isInteractive) {
+      return leftOut('nobody is at the prompt')
+    }
+
+    if ('dropped' in heard) {
+      return leftOut(heard.dropped)
+    }
+
     const before = await read($, prompts)
 
+    if (isFull(before.length)) {
+      return leftOut('the title is made to stay')
+    }
+
     // A prompt said again, as Orca repeats a brief, counts once.
-    if (!isInteractive || text === undefined || isFull(before.length) || before.includes(text)) {
+    if (before.includes(heard.text)) {
+      return leftOut('said before')
+    }
+
+    const said = [...before, heard.text]
+    await update($, prompts, () => said)
+
+    if (!completes(said.length) && (await read($, isTitled))) {
       return answer
     }
 
-    const said = [...before, text]
-    await update($, prompts, () => said)
+    if (answer.sessionTitle !== undefined) {
+      return noTitle('another hook titled the session')
+    }
 
-    const isDue = completes(said.length) || !(await read($, isTitled))
-
-    if (!isDue || answer.sessionTitle !== undefined || !(await isOursToName($, e))) {
-      return answer
+    if (!(await isOursToName($, e))) {
+      return noTitle("the session's name is not the mod's to replace")
     }
 
     const title = await titleFor($, said)

@@ -13,6 +13,8 @@ entry names its mod.
   characters, now cut after a whole word.
 - `session-title`: Haiku is asked to start a title with its topic and to leave out ids, codes and people's names,
   and a word of its reply that reads as an id, a hash, a uuid or a long number, is dropped from the title.
+- `session-title`: the debug log says why a prompt is left out, as a slash command, Claude Code's or Orca's own
+  text, one too short or one said before, and why a prompt that counts makes no title.
 
 ### Fixed
 
