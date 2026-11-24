@@ -18,4 +18,5 @@ for file in "$src"/*.swift; do
 	[ "${file##*/}" = main.swift ] || set -- "$@" "$file"
 done
 swiftc -o "$tmp/tests" "$@" "$src"/tests/*.swift
-CFFIXED_USER_HOME="$tmp/home" "$tmp/tests"
+# Run from an Orca tab, the tests would find their own process in it, by what Orca exports to it.
+CFFIXED_USER_HOME="$tmp/home" env -u ORCA_AGENT_SESSION_ID -u ORCA_TERMINAL_HANDLE "$tmp/tests"

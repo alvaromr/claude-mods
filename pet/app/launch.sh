@@ -35,8 +35,9 @@ start)
 	;;
 esac
 
-# Every Swift file of the folder, in the order of their names' bytes whatever the locale.
-sources() { (LC_ALL=C; cat "$src"/*.swift "$src/Info.plist" | shasum -a 256); }
+# Every Swift file of the folder, in the order of their names' bytes whatever the locale, and the scripts
+# the app runs in Orca's Node.
+sources() { (LC_ALL=C; cat "$src"/*.swift "$src/Info.plist" "$src"/*.mjs | shasum -a 256); }
 is_built() { [ -x "$bin" ] && [ "$(cat "$built" 2>/dev/null || true)" = "$(sources)" ]; }
 
 holds_lock=
@@ -74,6 +75,8 @@ if ! is_built; then
 		rm -f "$bin".[0-9]*
 		mkdir -p "$app/Contents/MacOS"
 		cp "$src/Info.plist" "$app/Contents/Info.plist"
+		mkdir -p "$app/Contents/Resources"
+		cp "$src"/*.mjs "$app/Contents/Resources/"
 		# built aside and moved in, so a second session starting meanwhile never opens half a binary
 		swiftc -O -o "$bin.$$" "$src"/*.swift &
 		child=$!

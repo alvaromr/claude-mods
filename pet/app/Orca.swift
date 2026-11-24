@@ -13,6 +13,80 @@ func orcaHandle(in environment: String) -> String? {
     return String(environment[match].split(separator: "=")[1])
 }
 
+/// Orca exports ORCA_AGENT_SESSION_ID to every agent it runs as a chat, a worker's or a bot's, which
+/// has a tab of its own and no terminal: the id `orca agent list` gives that chat.
+func orcaChatID(in environment: String) -> String? {
+    guard let match = environment.range(of: #"\bORCA_AGENT_SESSION_ID=[A-Za-z0-9_-]{1,128}(?=\s|$)"#,
+                                        options: .regularExpression) else { return nil }
+    return String(environment[match].split(separator: "=")[1])
+}
+
+/// A chat Orca runs, as its agent list tells it: its id, the workspace it is in, the title Orca
+/// shows for it, and its project by the name Orca gives it.
+struct OrcaChat: Equatable {
+    let id: String
+    let worktree: String
+    let title: String
+    let project: String
+}
+
+/// The chats of Orca's agent list, by their id, the first place of one open in two. A chat in a
+/// folder workspace, as a bot's, is of no repo, and its project is the workspace.
+func orcaChats(in agents: [[String: Any]]) -> [String: OrcaChat] {
+    var chats: [String: OrcaChat] = [:]
+    for agent in agents where agent["kind"] as? String == "chat" {
+        guard let id = agent["orcaSessionId"] as? String, chats[id] == nil,
+              let worktree = agent["worktreeId"] as? String else { continue }
+        let repo = agent["repo"] as? String ?? ""
+        chats[id] = OrcaChat(id: id, worktree: worktree, title: agent["title"] as? String ?? "",
+                             project: repo.isEmpty ? agent["workspace"] as? String ?? "" : repo)
+    }
+    return chats
+}
+
+extension Session {
+    /// The session as Orca shows the chat it is: by Orca's title for it and its project. Its own name
+    /// is kept where Orca gives no title, or one that only repeats the project, as a bot's chat has
+    /// the bot's name; its own project where Orca gives none.
+    func named(by chat: OrcaChat?) -> Session {
+        guard let chat else { return self }
+        var named = self
+        if !chat.title.isEmpty && chat.title != chat.project { named.name = chat.title }
+        if !chat.project.isEmpty { named.project = chat.project }
+        return named
+    }
+}
+
+/// The chats Orca runs, as its agent list last said, asked again every 10 s off the main thread
+/// while there is a chat to ask of.
+final class OrcaChats {
+    private var chats: [String: OrcaChat] = [:]
+    private var asked = Date.distantPast
+
+    /// The chat by that id, if Orca lists it.
+    func chat(_ id: String) -> OrcaChat? {
+        if Date().timeIntervalSince(asked) > 10 {
+            asked = Date()
+            DispatchQueue.global(qos: .utility).async {
+                // none when Orca does not answer: what it said before still holds
+                guard let agents = askOrca(["agent", "list"])?["agents"] as? [[String: Any]] else { return }
+                let chats = orcaChats(in: agents)
+                DispatchQueue.main.async { self.chats = chats }
+            }
+        }
+        return chats[id]
+    }
+}
+
+/// The command, for `/usr/bin/env`, that brings the chat's tab forward in Orca, the app at `orca`:
+/// the script that asks Orca's runtime for it (orca-reveal.mjs), run by Orca's own Node.
+func revealCommand(_ chat: OrcaChat, orca: URL, script: URL) -> [String] {
+    [
+        "ELECTRON_RUN_AS_NODE=1", orca.appendingPathComponent("Contents/MacOS/Orca").path, script.path,
+        orca.appendingPathComponent("Contents/Resources/app.asar.unpacked/out/cli").path, chat.worktree, chat.id,
+    ]
+}
+
 /// The Orca bot whose own folder this is, as the bot.json Orca keeps there says: its id, which
 /// Orca's `orca://bot/<id>` links take, and its name. None for a folder that is no bot's, nor for
 /// a bot.json with no name or with an id no link can take.

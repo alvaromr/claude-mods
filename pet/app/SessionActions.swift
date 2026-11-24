@@ -6,13 +6,13 @@ extension Controller {
     /// Takes the person to the session, wherever it lives.
     func open(_ session: Session) {
         switch places[session.pid]?.place ?? .nowhere {
-        case .orca(let handle):
-            guard let orca = NSWorkspace.shared.urlForApplication(withBundleIdentifier: orcaBundleID) else {
+        case .orca, .orcaChat:
+            guard let orca = NSWorkspace.shared.urlForApplication(withBundleIdentifier: orcaBundleID),
+                  let command = orcaCommand(for: places[session.pid]?.place ?? .nowhere, orca: orca) else {
                 return refuse(session)
             }
             DispatchQueue.global(qos: .userInitiated).async { [self] in
-                let cli = orca.appendingPathComponent("Contents/Resources/bin/orca").path
-                if run(cli, ["terminal", "switch", "--terminal", handle, "--json"]) == nil {
+                if run(command[0], Array(command.dropFirst())) == nil {
                     DispatchQueue.main.async { self.refuse(session) }
                 } else {
                     NSWorkspace.shared.openApplication(at: orca, configuration: NSWorkspace.OpenConfiguration())
@@ -48,6 +48,23 @@ extension Controller {
         }
         // it leaves the bubble at the next look, once it is gone
         guard isEndable(session), kill(session.pid, SIGTERM) == 0 else { return NSSound.beep() }
+    }
+
+    /// The command that brings the Orca tab forward: Orca's CLI switches to a terminal; a chat, which
+    /// it does not take, is shown where Orca's agent list last said it is. None for a chat Orca does
+    /// not list.
+    private func orcaCommand(for place: Place, orca: URL) -> [String]? {
+        switch place {
+        case .orca(let handle):
+            let cli = orca.appendingPathComponent("Contents/Resources/bin/orca").path
+            return [cli, "terminal", "switch", "--terminal", handle, "--json"]
+        case .orcaChat(let id):
+            guard let chat = orcaChats.chat(id),
+                  let script = Bundle.main.url(forResource: "orca-reveal", withExtension: "mjs") else { return nil }
+            return ["/usr/bin/env"] + revealCommand(chat, orca: orca, script: script)
+        case .bot, .desktop, .app, .nowhere:
+            return nil
+        }
     }
 
     /// The session's place did not take the person there, as a tab closed under it or Orca

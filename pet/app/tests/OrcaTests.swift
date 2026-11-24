@@ -84,6 +84,123 @@ func botTests() {
     }
 }
 
+func orcaChatTests() {
+    test("an Orca chat is known by the id Orca exports to it, and found in Orca's agent list") {
+        let environment = "123 ?? S claude TERM=xterm ORCA_TERMINAL_HANDLE=structworker_aa-7f "
+            + "ORCA_AGENT_SESSION_ID=9f63e272-d66b HOME=/Users/me"
+        expect(orcaChatID(in: environment), "9f63e272-d66b")
+        expect(orcaChatID(in: "123 claude ORCA_AGENT_SESSION_ID=../x HOME=/"), nil, "an id Orca's CLI cannot take")
+        expect(orcaChatID(in: "123 claude TERM=xterm"), nil)
+        // a chat worker's handle is no terminal's, which Orca's CLI switches to
+        expect(orcaHandle(in: environment), nil)
+
+        let agents: [[String: Any]] = [
+            [
+                "orcaSessionId": "w1", "kind": "chat", "worktreeId": "r1::/work/ondine", "repo": "claude-mods",
+                "workspace": "Improve session title mod", "paneKey": "structured-agent-session-w1:l1",
+                "title": "claude-mods: improve session-title",
+            ],
+            // a bot's chat is in a folder workspace, of no repo
+            [
+                "orcaSessionId": "b1", "kind": "chat", "worktreeId": "folder:f1", "workspace": "Casper",
+                "paneKey": "structured-agent-session-b1:l2", "title": "Casper",
+            ],
+            [
+                "orcaSessionId": "claude_t1", "kind": "terminal", "worktreeId": "r1::/work", "repo": "x",
+                "paneKey": "t1:l3", "title": "terminal",
+            ],
+            // the same chat open in a second place, and one that says nowhere
+            ["orcaSessionId": "w1", "kind": "chat", "worktreeId": "r1::/work", "title": "again"],
+            ["orcaSessionId": "w2", "kind": "chat", "title": "nowhere"],
+        ]
+        expect(orcaChats(in: agents), [
+            "w1": OrcaChat(id: "w1", worktree: "r1::/work/ondine", title: "claude-mods: improve session-title",
+                           project: "claude-mods"),
+            "b1": OrcaChat(id: "b1", worktree: "folder:f1", title: "Casper", project: "Casper"),
+        ])
+    }
+
+    test("an Orca chat's session goes by Orca's title and project, and keeps its own where Orca gives none") {
+        let own = session(.idle)
+        let named = own.named(by: OrcaChat(id: "c", worktree: "w", title: "pet: Orca chats", project: "mods"))
+        expect(named.name, "pet: Orca chats")
+        expect(named.project, "mods")
+        let untitled = own.named(by: OrcaChat(id: "c", worktree: "w", title: "", project: "mods"))
+        expect(untitled.name, "name")
+        expect(untitled.project, "mods")
+        let projectless = own.named(by: OrcaChat(id: "c", worktree: "w", title: "pet: Orca chats", project: ""))
+        expect(projectless.name, "pet: Orca chats")
+        expect(projectless.project, "project")
+        // a bot's chat, which Orca titles by the bot's name, its project
+        let bot = own.named(by: OrcaChat(id: "c", worktree: "w", title: "Casper", project: "Casper"))
+        expect(bot.name, "name")
+        expect(bot.project, "Casper")
+        expect(own.named(by: nil), own, "a chat Orca does not list")
+    }
+}
+
+func orcaOpenTests() {
+    test("an Orca chat's row opens its tab in Orca, rather than the bot whose chat it may be") {
+        // a process Orca runs as a chat; node, as `ps` shows no environment of the system's own programs
+        let chat = Process()
+        chat.executableURL = URL(fileURLWithPath: run("/usr/bin/which", ["node"])!
+            .trimmingCharacters(in: .whitespacesAndNewlines))
+        chat.arguments = ["-e", "setTimeout(() => {}, 30000)"]
+        chat.environment = ["ORCA_AGENT_SESSION_ID": "9f63e272-d66b"]
+        try! chat.run()
+        defer { chat.terminate() }
+        let session = Session(pid: chat.processIdentifier, id: "chat", name: "", project: "", phase: .idle,
+                              reason: "", desktopID: "", updated: now, botID: "aef56e62-1634")
+        expect(place(of: session), .orcaChat("9f63e272-d66b"))
+        expect(Place.orcaChat("9f63e272-d66b").appName, "Orca")
+        expect(Place.orcaChat("9f63e272-d66b").link, nil)
+    }
+
+    test("Orca's own Node brings a chat's tab forward, by the script that asks Orca's runtime for it") {
+        let chat = OrcaChat(id: "c1", worktree: "r1::/work", title: "", project: "")
+        expect(revealCommand(chat, orca: URL(fileURLWithPath: "/Applications/Orca.app"),
+                             script: URL(fileURLWithPath: "/pet/orca-reveal.mjs")), [
+            "ELECTRON_RUN_AS_NODE=1", "/Applications/Orca.app/Contents/MacOS/Orca", "/pet/orca-reveal.mjs",
+            "/Applications/Orca.app/Contents/Resources/app.asar.unpacked/out/cli", "r1::/work", "c1",
+        ])
+    }
+}
+
+func orcaRevealTests() {
+    test("the script asks this machine's Orca to activate the chat's tab, and fails when Orca does not take it") {
+        // a stand-in for Orca's CLI, whose runtime client writes down what it was asked
+        let cli = home.appendingPathComponent("orca-cli"), calls = home.appendingPathComponent("reveal.json").path
+        try! FileManager.default.createDirectory(at: cli.appendingPathComponent("runtime/profile"),
+                                                 withIntermediateDirectories: true)
+        try! """
+            const { writeFileSync } = require('node:fs')
+            exports.RuntimeClient = class {
+              constructor(...args) { this.args = args }
+              async call(method, params) {
+                writeFileSync(process.env.CALLS, JSON.stringify({ args: this.args, method, params }))
+                if (process.env.REFUSED === '1') throw new Error('tab_not_found')
+                return { result: {} }
+              }
+            }
+            """.write(to: cli.appendingPathComponent("runtime/client.js"), atomically: true, encoding: .utf8)
+        try! "exports.getDefaultUserDataPath = () => '/data'"
+            .write(to: cli.appendingPathComponent("runtime/profile/metadata.js"), atomically: true, encoding: .utf8)
+        let script = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("orca-reveal.mjs").path
+        func reveal(refused: Bool) -> String? {
+            run("/usr/bin/env", [
+                "CALLS=\(calls)", "REFUSED=\(refused ? 1 : 0)", "node", script, cli.path, "r1::/work", "c1",
+            ])
+        }
+
+        expect(reveal(refused: false) != nil, true, "taken:")
+        expect(try? String(contentsOfFile: calls, encoding: .utf8),
+               #"{"args":["/data",null,null,null],"method":"session.tabs.activate","params":"#
+                   + #"{"worktree":"id:r1::/work","tabId":"agent-session:c1","navigation":"host","intent":"user"}}"#)
+        expect(reveal(refused: true), nil, "refused:")
+    }
+}
+
 func orcaTests() {
     test("the Orca terminals in front are the picked pane of the picked tab, in the workspace shown") {
         func pane(_ handle: String, _ leaf: String) -> [String: Any] {

@@ -26,6 +26,7 @@ final class Controller: NSObject, NSApplicationDelegate {
 
     private let transcripts = Transcripts()
     private let orcaIcons = OrcaIcons()
+    let orcaChats = OrcaChats()
     private var sessions: [Session] = []
     /// When each session the person has seen last changed, by its pid.
     private var seen: [Int32: Date] = [:]
@@ -158,6 +159,7 @@ final class Controller: NSObject, NSApplicationDelegate {
             // done with its turn, but going on by itself: at work, as it waits for nobody
             if session.phase == .idle && Mark.of(session)?.goesOnByItself == true { session.phase = .busy }
             session.isSeen = seen[session.pid] == session.updated
+            if case .orcaChat(let id) = places[session.pid]?.place { session = session.named(by: orcaChats.chat(id)) }
             return session
         }
     }
@@ -238,7 +240,10 @@ final class Controller: NSObject, NSApplicationDelegate {
         var rows: [Row] = (groups[tabs[tab]] ?? []).map { session in
             let place = places[session.pid]?.place ?? .nowhere
             var icon: NSImage?
-            if hasOrcaIcons, case .orca = place { icon = orcaIcons.icon(of: session.cwd) }
+            switch place {
+            case .orca, .orcaChat: if hasOrcaIcons { icon = orcaIcons.icon(of: session.cwd) }
+            default: break
+            }
             return .session(session, ago: ago(session.updated, from: now), place: place,
                             message: size == .large ? transcripts.message(of: session) : "", icon: icon)
         }

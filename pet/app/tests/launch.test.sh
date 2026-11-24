@@ -33,7 +33,7 @@ export HOME="$tmp/home"
 dir="$HOME/Library/Application Support/claude-pet"
 mkdir -p "$HOME" "$tmp/bin" "$tmp/src"
 : >"$tmp/log"
-for file in main.swift Controller.swift Text.swift Info.plist; do echo "$file" >"$tmp/src/$file"; done
+for file in main.swift Controller.swift Text.swift Info.plist orca-reveal.mjs; do echo "$file" >"$tmp/src/$file"; done
 cp "$here/launch.sh" "$tmp/src/launch.sh"
 launch() { sh "$tmp/src/launch.sh" "$@"; }
 
@@ -64,6 +64,8 @@ export LOG="$tmp/log" PATH="$tmp/bin:$PATH"
 launch open
 expect "$(count swiftc)" 1 "first launch compiles:"
 expect "$(count open)" 1 "first launch opens:"
+script="$dir/Pet.app/Contents/Resources/orca-reveal.mjs"
+expect "$(cat "$script")" orca-reveal.mjs "the script it runs in Orca is in the app:"
 touch "$tmp/src/Controller.swift"
 launch open
 expect "$(count swiftc)" 1 "same sources, newer date:"
@@ -76,6 +78,12 @@ touch -t 200001010000 "$tmp/src/Controller.swift"
 launch open
 expect "$(count swiftc)" 2 "other sources, old date:"
 expect "$(count pkill)" $((closed + 1)) "the old pet is closed:"
+
+# another script for Orca builds the app again, with it
+echo changed >"$tmp/src/orca-reveal.mjs"
+launch open
+expect "$(count swiftc)" 3 "another script:"
+expect "$(cat "$script")" changed "the app has it:"
 
 # closing it keeps it closed for the sessions that start, until someone opens it
 launch quit

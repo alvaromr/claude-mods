@@ -370,5 +370,89 @@
     "from": "if !folder.isEmpty,",
     "to": "if true,",
     "why": "git is not asked of a session with no folder"
+  },
+  {
+    "file": "app/Places.swift",
+    "from": "    if let chat = orcaChatID(in: environment) { return .orcaChat(chat) }\n",
+    "to": "",
+    "why": "an Orca chat's row opens its tab in Orca, rather than the bot whose chat it may be"
+  },
+  {
+    "file": "app/Orca.swift",
+    "from": "ORCA_AGENT_SESSION_ID=[A-Za-z0-9_-]",
+    "to": "ORCA_AGENT_SESSION_ID=[A-Za-z0-9_./-]",
+    "why": "an id Orca's CLI cannot take is no chat's"
+  },
+  {
+    "file": "app/Orca.swift",
+    "from": "agent[\"kind\"] as? String == \"chat\"",
+    "to": "true",
+    "why": "a terminal of Orca's agent list is no chat"
+  },
+  {
+    "file": "app/Orca.swift",
+    "from": "as? String, chats[id] == nil,",
+    "to": "as? String,",
+    "why": "a chat open in two places is where Orca lists it first"
+  },
+  {
+    "file": "app/Orca.swift",
+    "from": "repo.isEmpty ? agent[\"workspace\"] as? String ?? \"\" : repo",
+    "to": "repo",
+    "why": "a chat in a folder workspace, as a bot's, goes by the workspace's name"
+  },
+  {
+    "file": "app/Orca.swift",
+    "from": "!chat.title.isEmpty && chat.title",
+    "to": "chat.title",
+    "why": "a chat Orca gives no title keeps its own name"
+  },
+  {
+    "file": "app/Orca.swift",
+    "from": " && chat.title != chat.project",
+    "to": "",
+    "why": "a bot's chat, which Orca titles by the bot's name, keeps its own name"
+  },
+  {
+    "file": "app/Orca.swift",
+    "from": "if !chat.project.isEmpty { named.project = chat.project }",
+    "to": "named.project = chat.project",
+    "why": "a chat Orca gives no project keeps its own"
+  },
+  {
+    "file": "app/Orca.swift",
+    "from": "chat.worktree, chat.id,",
+    "to": "chat.id, chat.worktree,",
+    "why": "the script is told the chat's workspace, then its id"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "worktree: `id:${worktreeId}`",
+    "to": "worktree: worktreeId",
+    "why": "the chat's workspace is named as Orca takes a workspace by its id"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "tabId: `agent-session:${chatId}`",
+    "to": "tabId: chatId",
+    "why": "a chat's tab is Orca's agent session of the chat's id"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "navigation: 'host'",
+    "to": "navigation: 'caller'",
+    "why": "the chat is shown in Orca's own window"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "undefined, null, null)",
+    "to": "undefined)",
+    "why": "the script asks this machine's Orca, not one it is paired with"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "process.exit(0)",
+    "to": "process.exit(1)",
+    "why": "a chat Orca shows is a row that took the person there"
   }
 ]

@@ -40,8 +40,9 @@ enum Phase { case busy, idle, blocked }
 struct Session: Equatable {
     let pid: Int32
     let id: String
-    let name: String
-    let project: String
+    /// Both as Claude Code says, or as Orca shows the chat the session is (see `named(by:)`).
+    var name: String
+    var project: String
     /// The folder it works in, which its project is worked out from (see `project(of:)`).
     var cwd = ""
     var phase: Phase
