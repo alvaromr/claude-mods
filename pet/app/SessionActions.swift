@@ -8,11 +8,12 @@ extension Controller {
         switch places[session.pid]?.place ?? .nowhere {
         case .orca, .orcaChat:
             guard let orca = NSWorkspace.shared.urlForApplication(withBundleIdentifier: orcaBundleID),
-                  let command = orcaCommand(for: places[session.pid]?.place ?? .nowhere, orca: orca) else {
+                  let command = orcaCommand(for: session, orca: orca) else {
                 return refuse(session)
             }
             DispatchQueue.global(qos: .userInitiated).async { [self] in
-                if run(command[0], Array(command.dropFirst())) == nil {
+                // a chat waits for Orca to show its workspace, which takes it up to 3 s
+                if run(command[0], Array(command.dropFirst()), timeout: 10) == nil {
                     DispatchQueue.main.async { self.refuse(session) }
                 } else {
                     NSWorkspace.shared.openApplication(at: orca, configuration: NSWorkspace.OpenConfiguration())
@@ -50,18 +51,18 @@ extension Controller {
         guard isEndable(session), kill(session.pid, SIGTERM) == 0 else { return NSSound.beep() }
     }
 
-    /// The command that brings the Orca tab forward: Orca's CLI switches to a terminal; a chat, which
-    /// it does not take, is shown where Orca's agent list last said it is. None for a chat Orca does
-    /// not list.
-    private func orcaCommand(for place: Place, orca: URL) -> [String]? {
-        switch place {
+    /// The command that brings the session's Orca tab forward: Orca's CLI switches to a terminal; a
+    /// chat, which it does not take, is shown where Orca's agent list last said it is. None for a chat
+    /// Orca does not list.
+    private func orcaCommand(for session: Session, orca: URL) -> [String]? {
+        switch places[session.pid]?.place ?? .nowhere {
         case .orca(let handle):
             let cli = orca.appendingPathComponent("Contents/Resources/bin/orca").path
             return [cli, "terminal", "switch", "--terminal", handle, "--json"]
         case .orcaChat(let id):
             guard let chat = orcaChats.chat(id),
                   let script = Bundle.main.url(forResource: "orca-reveal", withExtension: "mjs") else { return nil }
-            return ["/usr/bin/env"] + revealCommand(chat, orca: orca, script: script)
+            return ["/usr/bin/env"] + revealCommand(chat, bot: session.botID, orca: orca, script: script)
         case .bot, .desktop, .app, .nowhere:
             return nil
         }

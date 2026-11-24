@@ -79,12 +79,13 @@ final class OrcaChats {
 }
 
 /// The command, for `/usr/bin/env`, that brings the chat's tab forward in Orca, the app at `orca`:
-/// the script that asks Orca's runtime for it (orca-reveal.mjs), run by Orca's own Node.
-func revealCommand(_ chat: OrcaChat, orca: URL, script: URL) -> [String] {
+/// the script that asks Orca's runtime for it (orca-reveal.mjs), run by Orca's own Node. A bot's
+/// chat is told its bot, whose link shows the bot's folder.
+func revealCommand(_ chat: OrcaChat, bot: String, orca: URL, script: URL) -> [String] {
     [
         "ELECTRON_RUN_AS_NODE=1", orca.appendingPathComponent("Contents/MacOS/Orca").path, script.path,
         orca.appendingPathComponent("Contents/Resources/app.asar.unpacked/out/cli").path, chat.worktree, chat.id,
-    ]
+    ] + (bot.isEmpty ? [] : [bot])
 }
 
 /// The Orca bot whose own folder this is, as the bot.json Orca keeps there says: its id, which

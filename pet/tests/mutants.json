@@ -438,9 +438,15 @@
     "why": "the script is told the chat's workspace, then its id"
   },
   {
+    "file": "app/Orca.swift",
+    "from": " + (bot.isEmpty ? [] : [bot])",
+    "to": "",
+    "why": "a bot's chat is told its bot"
+  },
+  {
     "file": "app/orca-reveal.mjs",
-    "from": "worktree: `id:${worktreeId}`",
-    "to": "worktree: worktreeId",
+    "from": "worktree: `id:${worktreeId}`,\n    tabId",
+    "to": "worktree: worktreeId,\n    tabId",
     "why": "the chat's workspace is named as Orca takes a workspace by its id"
   },
   {
@@ -451,9 +457,63 @@
   },
   {
     "file": "app/orca-reveal.mjs",
-    "from": "navigation: 'host'",
-    "to": "navigation: 'caller'",
+    "from": "navigation: 'host',\n    intent",
+    "to": "navigation: 'caller',\n    intent",
     "why": "the chat is shown in Orca's own window"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "if (!(await isShown())) {",
+    "to": "if (true) {",
+    "why": "a workspace Orca shows is not shown again"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "worktree.worktreeId === worktreeId && worktree.isActive === true",
+    "to": "worktree.worktreeId === worktreeId",
+    "why": "only the workspace Orca shows is shown"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "if (!worktreeId.startsWith('folder:')) {",
+    "to": "if (true) {",
+    "why": "a folder is not shown as a repo's workspace"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "{ worktree: `id:${worktreeId}`, navigation: 'host' }",
+    "to": "{ worktree: `id:${worktreeId}` }",
+    "why": "a repo's workspace is shown in Orca's own window"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "} else if (botId) {",
+    "to": "} else if (true) {",
+    "why": "a folder no bot has is not shown by a link"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "[`orca://bot/${botId}`]",
+    "to": "[`orca://bot/`]",
+    "why": "a bot's folder is shown by the bot's link"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "if (waited >= 3000) throw",
+    "to": "if (false) throw",
+    "why": "a workspace Orca does not show is waited for no longer than 3 s"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "await setTimeout(100)",
+    "to": "await Promise.resolve()",
+    "why": "Orca's window is given a moment to show the workspace"
+  },
+  {
+    "file": "app/orca-reveal.mjs",
+    "from": "process.exit(1)",
+    "to": "process.exit(0)",
+    "why": "a chat Orca does not take is a row that took the person nowhere"
   },
   {
     "file": "app/orca-reveal.mjs",

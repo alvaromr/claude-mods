@@ -158,46 +158,119 @@ func orcaOpenTests() {
 
     test("Orca's own Node brings a chat's tab forward, by the script that asks Orca's runtime for it") {
         let chat = OrcaChat(id: "c1", worktree: "r1::/work", title: "", project: "")
-        expect(revealCommand(chat, orca: URL(fileURLWithPath: "/Applications/Orca.app"),
-                             script: URL(fileURLWithPath: "/pet/orca-reveal.mjs")), [
+        let orca = URL(fileURLWithPath: "/Applications/Orca.app"), script = URL(fileURLWithPath: "/pet/orca-reveal.mjs")
+        let command = [
             "ELECTRON_RUN_AS_NODE=1", "/Applications/Orca.app/Contents/MacOS/Orca", "/pet/orca-reveal.mjs",
             "/Applications/Orca.app/Contents/Resources/app.asar.unpacked/out/cli", "r1::/work", "c1",
-        ])
+        ]
+        expect(revealCommand(chat, bot: "", orca: orca, script: script), command)
+        expect(revealCommand(chat, bot: "b1", orca: orca, script: script), command + ["b1"], "a bot's chat:")
     }
 }
 
-func orcaRevealTests() {
-    test("the script asks this machine's Orca to activate the chat's tab, and fails when Orca does not take it") {
-        // a stand-in for Orca's CLI, whose runtime client writes down what it was asked
-        let cli = home.appendingPathComponent("orca-cli"), calls = home.appendingPathComponent("reveal.json").path
-        try! FileManager.default.createDirectory(at: cli.appendingPathComponent("runtime/profile"),
-                                                 withIntermediateDirectories: true)
-        try! """
-            const { writeFileSync } = require('node:fs')
-            exports.RuntimeClient = class {
-              constructor(...args) { this.args = args }
-              async call(method, params) {
-                writeFileSync(process.env.CALLS, JSON.stringify({ args: this.args, method, params }))
-                if (process.env.REFUSED === '1') throw new Error('tab_not_found')
-                return { result: {} }
-              }
-            }
-            """.write(to: cli.appendingPathComponent("runtime/client.js"), atomically: true, encoding: .utf8)
-        try! "exports.getDefaultUserDataPath = () => '/data'"
-            .write(to: cli.appendingPathComponent("runtime/profile/metadata.js"), atomically: true, encoding: .utf8)
-        let script = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("orca-reveal.mjs").path
-        func reveal(refused: Bool) -> String? {
-            run("/usr/bin/env", [
-                "CALLS=\(calls)", "REFUSED=\(refused ? 1 : 0)", "node", script, cli.path, "r1::/work", "c1",
-            ])
-        }
+/// Where the stand-ins the reveal script runs against are: Orca's CLI, a folder with `open`, the calls
+/// they write down and the workspace Orca shows.
+private let standIns = (
+    cli: home.appendingPathComponent("orca-cli"), stubs: home.appendingPathComponent("orca-stubs"),
+    calls: home.appendingPathComponent("reveal.jsonl").path, shown: home.appendingPathComponent("shown").path
+)
 
-        expect(reveal(refused: false) != nil, true, "taken:")
-        expect(try? String(contentsOfFile: calls, encoding: .utf8),
-               #"{"args":["/data",null,null,null],"method":"session.tabs.activate","params":"#
-                   + #"{"worktree":"id:r1::/work","tabId":"agent-session:c1","navigation":"host","intent":"user"}}"#)
-        expect(reveal(refused: true), nil, "refused:")
+/// A stand-in for Orca's CLI, whose runtime client writes down what it was asked, and shows the
+/// workspace it is told to, a moment later, when Orca obeys; and one for `open`, which opens a bot's
+/// link as Orca does.
+private func writeStandIns() {
+    let (cli, stubs) = (standIns.cli, standIns.stubs)
+    for folder in [cli.appendingPathComponent("runtime/profile"), stubs] {
+        try! FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+    }
+    try! """
+        const { appendFileSync, readFileSync, writeFileSync } = require('node:fs')
+        const { CALLS, SHOWN, OBEYED, REFUSED } = process.env
+        const call = value => appendFileSync(CALLS, JSON.stringify(value) + '\\n')
+        let showing = null
+        exports.RuntimeClient = class {
+          constructor(...args) { call(args) }
+          async call(method, params) {
+            call({ method, params })
+            if (method === 'worktree.ps') {
+              if (showing && Date.now() >= showing.at) writeFileSync(SHOWN, showing.worktree)
+              const shown = readFileSync(SHOWN, 'utf8')
+              const worktrees = ['r1::/other', 'r1::/work', 'folder:f1']
+              return { result: { worktrees: worktrees.map(id => ({ worktreeId: id, isActive: id === shown })) } }
+            }
+            if (method === 'worktree.activate' && OBEYED === '1') {
+              showing = { worktree: params.worktree.slice(3), at: Date.now() + 300 }
+            }
+            if (method === 'session.tabs.activate' && REFUSED === '1') throw new Error('tab_not_found')
+            return { result: {} }
+          }
+        }
+        """.write(to: cli.appendingPathComponent("runtime/client.js"), atomically: true, encoding: .utf8)
+    try! "exports.getDefaultUserDataPath = () => '/data'"
+        .write(to: cli.appendingPathComponent("runtime/profile/metadata.js"), atomically: true, encoding: .utf8)
+    try! """
+        #!/bin/sh
+        printf '"open %s"\\n' "$1" >>"$CALLS"
+        [ "$OBEYED" != 1 ] || printf folder:f1 >"$SHOWN"
+        """.write(to: stubs.appendingPathComponent("open"), atomically: true, encoding: .utf8)
+    _ = run("/bin/chmod", ["+x", stubs.appendingPathComponent("open").path])
+}
+
+/// Whether the reveal script took the person to chat c1 of the workspace, with Orca showing the
+/// other, and the calls it made, each on a line: the client's arguments first.
+private func reveal(_ worktree: String, bot: String = "", showing: String, obeyed: Bool = true,
+                    refused: Bool = false) -> (taken: Bool, calls: [String]) {
+    let script = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        .appendingPathComponent("orca-reveal.mjs").path
+    try? FileManager.default.removeItem(atPath: standIns.calls)
+    try! showing.write(toFile: standIns.shown, atomically: true, encoding: .utf8)
+    let path = standIns.stubs.path + ":" + (ProcessInfo.processInfo.environment["PATH"] ?? "")
+    let taken = run("/usr/bin/env", [
+        "PATH=\(path)", "CALLS=\(standIns.calls)", "SHOWN=\(standIns.shown)", "OBEYED=\(obeyed ? 1 : 0)",
+        "REFUSED=\(refused ? 1 : 0)", "node", script, standIns.cli.path, worktree, "c1",
+    ] + (bot.isEmpty ? [] : [bot]), timeout: 10) != nil
+    let lines = (try? String(contentsOfFile: standIns.calls, encoding: .utf8)) ?? ""
+    return (taken, lines.split(separator: "\n").map(String.init))
+}
+
+func orcaRevealTests() {
+    writeStandIns()
+    let client = #"["/data",null,null,null]"#, asked = #"{"method":"worktree.ps","params":{}}"#
+    func activated(_ worktree: String) -> String {
+        #"{"method":"session.tabs.activate","params":{"worktree":"id:\#(worktree)","tabId":"agent-session:c1","#
+            + #""navigation":"host","intent":"user"}}"#
+    }
+
+    test("the script activates the chat's tab in the workspace Orca shows, and fails when Orca does not take it") {
+        let shownAlready = reveal("r1::/work", showing: "r1::/work")
+        expect(shownAlready.taken, true, "taken:")
+        expect(shownAlready.calls, [client, asked, activated("r1::/work")])
+        expect(reveal("r1::/work", showing: "r1::/work", refused: true).taken, false, "refused:")
+    }
+
+    test("the script shows a repo's workspace first, waits for Orca to show it, and fails when it does not") {
+        let other = reveal("r1::/work", showing: "r1::/other")
+        expect(other.taken, true, "taken:")
+        expect(other.calls.filter { $0 != asked }, [
+            client, #"{"method":"worktree.activate","params":{"worktree":"id:r1::/work","navigation":"host"}}"#,
+            activated("r1::/work"),
+        ])
+        expect(other.calls.dropFirst().first, asked, "asked first:")
+        let began = Date()
+        let unshown = reveal("r1::/work", showing: "r1::/other", obeyed: false)
+        expect(unshown.taken, false, "not shown:")
+        expect(unshown.calls.contains(activated("r1::/work")), false, "a tab activated where Orca does not show it:")
+        expect(Date().timeIntervalSince(began) < 6, true, "it gave up waiting:")
+    }
+
+    test("the script shows a bot's folder by the bot's link, and fails for a folder no bot has") {
+        let bot = reveal("folder:f1", bot: "b1", showing: "r1::/other")
+        expect(bot.taken, true, "taken:")
+        expect(bot.calls, [client, asked, #""open orca://bot/b1""#, asked, activated("folder:f1")])
+        let folder = reveal("folder:f1", showing: "r1::/other")
+        expect(folder.taken, false, "a folder no bot has:")
+        expect(folder.calls, [client, asked])
+        expect(reveal("folder:f1", showing: "folder:f1").taken, true, "a folder Orca shows:")
     }
 }
 
