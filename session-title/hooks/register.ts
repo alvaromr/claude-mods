@@ -98,7 +98,8 @@ export const register: Register = on => {
     const text = typed(e)
     const before = await read($, prompts)
 
-    if (text === undefined || isFull(before.length)) {
+    // A prompt said again, as Orca repeats a brief, counts once.
+    if (text === undefined || isFull(before.length) || before.includes(text)) {
       return answer
     }
 

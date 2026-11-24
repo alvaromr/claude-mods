@@ -120,6 +120,22 @@ test('titles from the person’s first prompt, and again from the first three', 
   expect(await titled('empecemos con otra cosa distinta')).toBe('otro-tema-distinto')
 })
 
+test('the same prompt said again, as Orca repeats a brief, counts once', async ($, on) => {
+  const it = world(on)
+  const prompt = (text: string) =>
+    $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
+
+  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBeUndefined()
+  expect((await prompt('y ahora mira también la del gas')).sessionTitle).toBeUndefined()
+  expect(it.asked).toHaveLength(1)
+
+  expect((await prompt('dime cuál de las tarifas me conviene')).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect(it.asked[1]).toBe(
+    '1. compara estas dos facturas de la luz\n2. y ahora mira también la del gas\n3. dime cuál de las tarifas me conviene',
+  )
+})
+
 test('a prompt that starts with a path or a tag is titled; only a slash command, or what the engine wraps, is not', async ($, on) => {
   const it = world(on)
   const prompt = (text: string) =>
@@ -204,9 +220,10 @@ test('a model it cannot ask gives no title, says why in the debug log, and is as
 
 test('never replaces a ticket, a name the person gave or another hook’s title', async ($, on) => {
   const it = world(on)
+  // Each prompt its own, so none is left out as said before.
   const prompt = (title: string) =>
     $.classic.UserPromptSubmit({
-      prompt: 'compara estas dos facturas de la luz',
+      prompt: `compara estas dos facturas de la luz, en ${title}`,
       source: 'user',
       session_id: 'abc',
       session_title: title,
@@ -345,18 +362,13 @@ test('a file of the sessions’ folder that is not metadata says nothing of the 
 
 test('with no metadata for the session, only a name it was born without is replaced', async ($, on) => {
   const it = world(on)
-  const prompt = (title: string) =>
-    $.classic.UserPromptSubmit({
-      prompt: 'compara estas dos facturas de la luz',
-      source: 'user',
-      session_id: 'abc',
-      session_title: title,
-    })
+  const prompt = (text: string, title: string) =>
+    $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: title })
 
   it.hasMeta = false
-  expect((await prompt('a-name-someone-gave')).sessionTitle).toBeUndefined()
+  expect((await prompt('compara estas dos facturas de la luz', 'a-name-someone-gave')).sessionTitle).toBeUndefined()
   expect(it.asked).toEqual([])
-  expect((await prompt('')).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect((await prompt('y ahora mira también la del gas', '')).sessionTitle).toBe('comparar-facturas-de-luz')
 })
 
 test('a session that ends for another reason than a /clear does not carry its title over', async ($, on) => {

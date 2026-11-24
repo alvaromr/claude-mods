@@ -8,17 +8,30 @@ const EXCERPT = 400
 const IS_COMMAND = /^\/[\w:.-]+(?:\s|$)/
 // What the engine wraps around what it echoes of a command or a shell line, and of what it injects.
 const IS_WRAPPED = /^<(?:command-|local-command-|bash-|task-notification|system-reminder)/
+// What Orca writes in a worker's prompt box: a message waiting, one relayed from another terminal, a note of its own.
+const IS_ORCA_NOTICE = /^(?:You have \d+ orchestration messages?|──── From: |\[Orca: )/
+// Orca's brief to a worker: its own instructions, then, after this line, the task.
+const TASK = /^=== TASK ===$/m
+
+/** What a prompt asks: all of it, or of Orca's brief to a worker, the task after its marker. */
+const taskOf = (prompt: string) => {
+  const marker = TASK.exec(prompt)
+
+  return marker === null ? prompt : prompt.slice(marker.index + marker[0].length)
+}
 
 /**
- * What the person typed, less the marks of what they attached; nothing for a
- * command, a prompt nobody typed or one too short to say anything.
+ * What the person typed, less the marks of what they attached or pasted; nothing for a
+ * command, a prompt nobody typed, Orca's notice or one too short to say anything.
  */
 export const typed = (e: { prompt: string; source?: string }) => {
-  const text = e.prompt
+  const text = taskOf(e.prompt)
     .replace(/\[(?:Image|Pasted text) #\d+[^\]]*\]/g, ' ')
+    .replace(/<\/?pasted_content[^>]*>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
-  const isTheirs = (e.source ?? 'user') === 'user' && !IS_COMMAND.test(text) && !IS_WRAPPED.test(text)
+  const isTheirs =
+    (e.source ?? 'user') === 'user' && !IS_COMMAND.test(text) && !IS_WRAPPED.test(text) && !IS_ORCA_NOTICE.test(text)
 
   return isTheirs && text.length >= SHORTEST ? text.slice(0, EXCERPT) : undefined
 }

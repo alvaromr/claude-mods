@@ -55,6 +55,48 @@
   },
   {
     "file": "hooks/prompts.ts",
+    "from": "const text = taskOf(e.prompt)",
+    "to": "const text = e.prompt",
+    "why": "Orca's brief to a worker is titled from its task alone"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "const TASK = /^=== TASK ===$/m",
+    "to": "const TASK = /=== TASK ===/",
+    "why": "only a line of its own marks the task, not the marker quoted"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": ".replace(/<\\/?pasted_content[^>]*>/g, ' ')",
+    "to": "",
+    "why": "what Claude Code wraps around a paste is not words"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "You have \\d+ orchestration messages?|",
+    "to": "",
+    "why": "Orca's note of a message waiting is not the person's prompt"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "|──── From: |",
+    "to": "|──── Fwd: |",
+    "why": "a message Orca relays from another terminal is not the person's prompt"
+  },
+  {
+    "file": "hooks/prompts.ts",
+    "from": "|\\[Orca: )/",
+    "to": ")/",
+    "why": "Orca's own note is not the person's prompt"
+  },
+  {
+    "file": "hooks/register.ts",
+    "from": " || before.includes(text)",
+    "to": "",
+    "why": "a prompt said again counts once"
+  },
+  {
+    "file": "hooks/prompts.ts",
     "from": "(e.source ?? 'user') === 'user' && ",
     "to": "",
     "why": "a prompt nobody typed makes no title"
