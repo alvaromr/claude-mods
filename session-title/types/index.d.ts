@@ -1,4 +1,4 @@
-/** A session's title as this mod writes one, `comparar-facturas-luz`. */
+/** A session's title as this mod writes one, `Comparar facturas de luz`. */
 export type Title = string
 
 declare module 'claude-code' {

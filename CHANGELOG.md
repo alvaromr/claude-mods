@@ -6,6 +6,12 @@ entry names its mod.
 
 ## [Unreleased]
 
+### Changed
+
+- `session-title`: a title is a short phrase in Spanish, «Comparar facturas de luz», as Claude Code's own titles
+  are: in sentence case, with its accents and spaces, not words joined by dashes. It is still at most 60
+  characters, now cut after a whole word.
+
 ### Fixed
 
 - `pet`: a session in a git worktree goes by the project the worktree was made from, not by the worktree's folder.

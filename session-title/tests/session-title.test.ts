@@ -107,13 +107,13 @@ test('titles from the person’s first prompt, and again from the first three', 
   expect((await prompt('a notification nobody typed, long enough', 'system')).sessionTitle).toBeUndefined()
   expect(it.asked).toEqual([])
 
-  expect(await titled('[Image #1] compara   estas dos facturas de la luz')).toBe('comparar-facturas-de-luz')
+  expect(await titled('[Image #1] compara   estas dos facturas de la luz')).toBe('Comparar facturas de luz')
   expect(it.asked).toEqual(['1. compara estas dos facturas de la luz'])
 
   // The second prompt changes nothing; the third titles it again, to stay.
   it.reply = 'Tarifas eléctricas: ¿cuál conviene?'
   expect(await titled('y ahora mira también la del gas')).toBeUndefined()
-  expect(await titled('dime cuál de las tarifas me conviene')).toBe('tarifas-electricas-cual-conviene')
+  expect(await titled('dime cuál de las tarifas me conviene')).toBe('Tarifas eléctricas: ¿cuál conviene?')
   expect(it.asked[1]).toBe(
     '1. compara estas dos facturas de la luz\n2. y ahora mira también la del gas\n3. dime cuál de las tarifas me conviene',
   )
@@ -125,7 +125,7 @@ test('titles from the person’s first prompt, and again from the first three', 
   await $.classic.SessionEnd({ reason: 'clear', session_id: 'abc' })
   await $.classic.SessionStart({ source: 'clear', session_id: 'abc' })
   it.reply = 'Otro tema distinto'
-  expect(await titled('empecemos con otra cosa distinta')).toBe('otro-tema-distinto')
+  expect(await titled('empecemos con otra cosa distinta')).toBe('Otro tema distinto')
 })
 
 test('a session with nobody at the prompt, a `-p` run or the SDK, is not titled', async ($, on) => {
@@ -145,12 +145,12 @@ test('the same prompt said again, as Orca repeats a brief, counts once', async (
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
-  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('Comparar facturas de luz')
   expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBeUndefined()
   expect((await prompt('y ahora mira también la del gas')).sessionTitle).toBeUndefined()
   expect(it.asked).toHaveLength(1)
 
-  expect((await prompt('dime cuál de las tarifas me conviene')).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect((await prompt('dime cuál de las tarifas me conviene')).sessionTitle).toBe('Comparar facturas de luz')
   expect(it.asked[1]).toBe(
     '1. compara estas dos facturas de la luz\n2. y ahora mira también la del gas\n3. dime cuál de las tarifas me conviene',
   )
@@ -166,9 +166,9 @@ test('a prompt that starts with a path or a tag is titled; only a slash command,
   expect((await prompt('<command-name>/clear</command-name> and more text')).sessionTitle).toBeUndefined()
   expect(it.asked).toEqual([])
 
-  expect((await prompt('<div> no centra el texto en la página')).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect((await prompt('<div> no centra el texto en la página')).sessionTitle).toBe('Comparar facturas de luz')
   expect((await prompt('/Users/me/facturas/luz.csv no se importa bien')).sessionTitle).toBeUndefined()
-  expect((await prompt('y el tercero, para que se vuelva a titular')).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect((await prompt('y el tercero, para que se vuelva a titular')).sessionTitle).toBe('Comparar facturas de luz')
   expect(it.asked).toEqual([
     '1. <div> no centra el texto en la página',
     '1. <div> no centra el texto en la página\n2. /Users/me/facturas/luz.csv no se importa bien\n3. y el tercero, para que se vuelva a titular',
@@ -203,7 +203,7 @@ test('another session’s metadata, half written or empty, does not stop the tit
     session_title: it.name,
   })
 
-  expect(answer.sessionTitle).toBe('comparar-facturas-de-luz')
+  expect(answer.sessionTitle).toBe('Comparar facturas de luz')
 })
 
 test('tries again at the next prompt when the model gave no title', async ($, on) => {
@@ -218,7 +218,7 @@ test('tries again at the next prompt when the model gave no title', async ($, on
   expect((await prompt('y ahora mira también la del gas')).sessionTitle).toBeUndefined()
 
   it.reply = 'Facturas de luz y gas'
-  expect((await prompt('dime cuál de las tarifas me conviene')).sessionTitle).toBe('facturas-de-luz-y-gas')
+  expect((await prompt('dime cuál de las tarifas me conviene')).sessionTitle).toBe('Facturas de luz y gas')
 })
 
 test('a model it cannot ask gives no title, says why in the debug log, and is asked again', async ($, on) => {
@@ -235,7 +235,7 @@ test('a model it cannot ask gives no title, says why in the debug log, and is as
   ])
 
   it.refusal = null
-  expect((await prompt('y ahora mira también la del gas')).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect((await prompt('y ahora mira también la del gas')).sessionTitle).toBe('Comparar facturas de luz')
 })
 
 test('never replaces a ticket, a name the person gave or another hook’s title', async ($, on) => {
@@ -301,21 +301,19 @@ test('does not title from what the engine echoes or injects', async ($, on) => {
   expect(it.asked).toEqual([])
 })
 
-test('a title is made of the reply’s first line, at most sixty characters, with no dash at its ends', async ($, on) => {
+test('a title is a phrase from the reply’s first line, at most sixty characters, cut after a whole word', async ($, on) => {
   const it = await world($, on)
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
-  it.reply = '\n\nComparar facturas\nuna segunda línea que no cuenta'
-  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('comparar-facturas')
+  it.reply = '\n\n«comparar facturas.»\nuna segunda línea que no cuenta'
+  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('Comparar facturas')
 
-  // Cut at sixty, where a dash falls.
-  const long = Array.from({ length: 10 }, () => 'abcdefghi').join(' ')
-
-  it.reply = long
+  // Six words of nine letters are fifty-nine characters; a seventh would pass sixty.
+  it.reply = Array.from({ length: 10 }, () => 'abcdefghi').join(' ')
   expect((await prompt('y ahora mira también la del gas')).sessionTitle).toBeUndefined()
   expect((await prompt('dime cuál de las tarifas me conviene')).sessionTitle).toBe(
-    Array.from({ length: 6 }, () => 'abcdefghi').join('-'),
+    ['Abcdefghi', ...Array.from({ length: 5 }, () => 'abcdefghi')].join(' '),
   )
 })
 
@@ -331,7 +329,7 @@ test('a title that starts like a ticket but says more is given', async ($, on) =
     session_title: it.name,
   })
 
-  expect(answer.sessionTitle).toBe('abc-12-arreglar-facturas')
+  expect(answer.sessionTitle).toBe('ABC-12 arreglar facturas')
 })
 
 test('a ticket name is never replaced, even one the session was born with', async ($, on) => {
@@ -362,7 +360,7 @@ test('only the session’s own metadata, in a file of metadata, says where its n
 
   // Another live session, named by its person, listed before this one.
   it.others = [JSON.stringify({ sessionId: 'zzz', name: 'theirs', nameSource: 'user' })]
-  expect((await prompt()).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect((await prompt()).sessionTitle).toBe('Comparar facturas de luz')
 })
 
 test('a file of the sessions’ folder that is not metadata says nothing of the session', async ($, on) => {
@@ -377,7 +375,7 @@ test('a file of the sessions’ folder that is not metadata says nothing of the 
     session_title: it.name,
   })
 
-  expect(answer.sessionTitle).toBe('comparar-facturas-de-luz')
+  expect(answer.sessionTitle).toBe('Comparar facturas de luz')
 })
 
 test('with no metadata for the session, only a name it was born without is replaced', async ($, on) => {
@@ -388,7 +386,7 @@ test('with no metadata for the session, only a name it was born without is repla
   it.hasMeta = false
   expect((await prompt('compara estas dos facturas de la luz', 'a-name-someone-gave')).sessionTitle).toBeUndefined()
   expect(it.asked).toEqual([])
-  expect((await prompt('y ahora mira también la del gas', '')).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect((await prompt('y ahora mira también la del gas', '')).sessionTitle).toBe('Comparar facturas de luz')
 })
 
 test('a session that ends for another reason than a /clear does not carry its title over', async ($, on) => {
@@ -396,8 +394,8 @@ test('a session that ends for another reason than a /clear does not carry its ti
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
-  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('comparar-facturas-de-luz')
-  Object.assign(it, { name: 'comparar-facturas-de-luz', nameSource: 'hook' })
+  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('Comparar facturas de luz')
+  Object.assign(it, { name: 'Comparar facturas de luz', nameSource: 'hook' })
 
   await $.classic.SessionEnd({ reason: 'other', session_id: 'abc' })
   await $.classic.SessionStart({ source: 'clear', session_id: 'abc' })
@@ -410,8 +408,8 @@ test('a title given before a /clear does not cross a later fresh start', async (
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
-  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('comparar-facturas-de-luz')
-  Object.assign(it, { name: 'comparar-facturas-de-luz', nameSource: 'hook' })
+  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('Comparar facturas de luz')
+  Object.assign(it, { name: 'Comparar facturas de luz', nameSource: 'hook' })
 
   await $.classic.SessionEnd({ reason: 'clear', session_id: 'abc' })
   await $.classic.SessionStart({ source: 'startup', session_id: 'abc' })
@@ -424,7 +422,7 @@ test('a resumed session keeps the prompts it has said', async ($, on) => {
   const prompt = (text: string) =>
     $.classic.UserPromptSubmit({ prompt: text, source: 'user', session_id: 'abc', session_title: it.name })
 
-  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('comparar-facturas-de-luz')
+  expect((await prompt('compara estas dos facturas de la luz')).sessionTitle).toBe('Comparar facturas de luz')
   await $.classic.SessionStart({ source: 'resume', session_id: 'abc' })
 
   // The session is titled, so the second prompt asks for nothing.

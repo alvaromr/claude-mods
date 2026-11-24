@@ -5,7 +5,7 @@ import { reasonOf } from './failure'
 import { completes, isFull, numbered, typed } from './prompts'
 import { folderOf, isNameOurs, isNameOursUnlisted, metaOf, metadataFiles } from './sessions'
 import { TEXT } from './text'
-import { isTicket, slug } from './title'
+import { isTicket, titleOf } from './title'
 
 // The title given before a /clear, on its way to the new conversation. A /clear
 // drops `$.state` and keeps the session's name, so the title crosses it here:
@@ -40,7 +40,7 @@ const titleFor = async ($: EngineInterface, said: readonly string[]) => {
     })
     .catch(orElse($, 'asking for a title', undefined))
 
-  return reply?.isAnswered === true ? slug(reply.text) : undefined
+  return reply?.isAnswered === true ? titleOf(reply.text) : undefined
 }
 
 // Whether the session's name is still the one it was born with, or the one this

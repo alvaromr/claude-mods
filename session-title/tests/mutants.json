@@ -109,21 +109,69 @@
   },
   {
     "file": "hooks/title.ts",
-    "from": ".normalize('NFD')",
-    "to": ".normalize('NFC')",
-    "why": "a title loses its accents"
+    "from": "[^\\p{L}\\p{M}",
+    "to": "[^a-zA-Z\\p{M}",
+    "why": "a title keeps its accents"
   },
   {
     "file": "hooks/title.ts",
-    "from": ".slice(0, 60)",
-    "to": ".slice(0, 600)",
+    "from": "\\p{L}\\p{M}\\p{N}",
+    "to": "\\p{L}\\p{N}",
+    "why": "a title keeps the accents of a reply written decomposed"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "\\p{M}\\p{N} ,.:¿?¡!()",
+    "to": "\\p{M} ,.:()",
+    "why": "a title keeps the digits and the punctuation of a phrase"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "const STRAY = /[^",
+    "to": "const STRAY = /[^\\p{Cc}\\p{Cf}*«»",
+    "why": "a title holds no control, bidi or zero-width character"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": ".replace(/ +/g, ' ')",
+    "to": "",
+    "why": "a title's words are parted by one space"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": ".replace(/\\p{L}/u, letter => letter.toUpperCase())",
+    "to": "",
+    "why": "a title is in sentence case"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "const LONGEST = 60",
+    "to": "const LONGEST = 600",
     "why": "a title is at most sixty characters"
   },
   {
     "file": "hooks/title.ts",
-    "from": ".replace(/^-+|-+$/g, '')",
-    "to": "",
-    "why": "a title has no dashes at its ends"
+    "from": "space > 0 ? space : LONGEST",
+    "to": "LONGEST",
+    "why": "a title is cut after a whole word"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "space > 0 ? space : LONGEST",
+    "to": "Math.max(space, 0)",
+    "why": "a word longer than a title is cut where it reaches sixty characters"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "  const made = fitted(words)\n    .replace(ENDS, '')\n",
+    "to": "  const made = fitted(words)\n",
+    "why": "a title, cut or not, neither starts nor ends with a mark"
+  },
+  {
+    "file": "hooks/title.ts",
+    "from": "isTicket(made.toUpperCase())",
+    "to": "isTicket(made)",
+    "why": "a title that reads as a ticket in capitals is not given"
   },
   {
     "file": "hooks/title.ts",
