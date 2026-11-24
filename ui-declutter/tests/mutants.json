@@ -1177,42 +1177,6 @@
   },
   {
     "file": "hooks/register.tsx",
-    "from": "hasJq && (await read($, isOn))",
-    "to": "await read($, isOn)",
-    "why": "without jq every row is the engine's"
-  },
-  {
-    "file": "hooks/register.tsx",
-    "from": "hasJq && (await read($, isOn))",
-    "to": "hasJq",
-    "why": "off, every row is the engine's"
-  },
-  {
-    "file": "hooks/notices.ts",
-    "from": "(exitCode === 0 ? undefined : TEXT.needsJq)",
-    "to": "(exitCode === 0 ? TEXT.needsJq : undefined)",
-    "why": "a missing jq is told to the person"
-  },
-  {
-    "file": "hooks/notices.ts",
-    "from": "(failure: unknown) => TEXT.cannotCheckJq(",
-    "to": "(failure: unknown) => undefined && TEXT.cannotCheckJq(",
-    "why": "a check for jq that cannot run is told"
-  },
-  {
-    "file": "hooks/register.tsx",
-    "from": "if (missing !== undefined && hasJq) {",
-    "to": "if (missing !== undefined) {",
-    "why": "a missing jq is told once"
-  },
-  {
-    "file": "hooks/register.tsx",
-    "from": "    hasJq = false\n    $.ui.status(missing)",
-    "to": "    hasJq = true\n    $.ui.status(missing)",
-    "why": "without jq the rows are not drawn"
-  },
-  {
-    "file": "hooks/register.tsx",
     "from": "await note($, e.tool_use_id, { startedAt: await $.clock.now() })",
     "to": "await note($, e.tool_use_id, {})",
     "why": "a tool's start is noted for the timeline"
@@ -1288,12 +1252,6 @@
     "from": "if (e.surface !== 'terminal') {\n      return slotted(beneath, [])",
     "to": "if (false) {\n      return slotted(beneath, [])",
     "why": "the footer button is drawn on the terminal only"
-  },
-  {
-    "file": "hooks/register.tsx",
-    "from": "if (!hasStarted) {\n      hasStarted = true\n      $.clock.after(0, () => void start($))\n    }",
-    "to": "",
-    "why": "a resumed session that draws before its start loads the settings"
   },
   {
     "file": "hooks/register.tsx",
@@ -1381,8 +1339,8 @@
   },
   {
     "file": "hooks/register.tsx",
-    "from": "await loadSettings($)\n\n  // A check that cannot run",
-    "to": "\n  // A check that cannot run",
+    "from": "await loadSettings($)\n\n    return next(e)",
+    "to": "return next(e)",
     "why": "a session starts with the settings saved for it"
   },
   {
@@ -1638,24 +1596,6 @@
     "why": "a result the transcript never holds is read again only a few times"
   },
   {
-    "file": "hooks/transcript.ts",
-    "from": "for (const line of isTruncated ? lines.slice(0, -1) : lines) {",
-    "to": "for (const line of lines) {",
-    "why": "the last result of a cut output is left out"
-  },
-  {
-    "file": "hooks/register.tsx",
-    "from": "if (exitCode === 0) {\n    for (const",
-    "to": "if (true) {\n    for (const",
-    "why": "a failed jq reads no result"
-  },
-  {
-    "file": "hooks/register.tsx",
-    "from": "(await $.env.get('CLAUDE_CONFIG_DIR')) ?? `${await $.env.get('HOME')}/.claude`",
-    "to": "`${await $.env.get('HOME')}/.claude`",
-    "why": "the transcript is read from the configured folder"
-  },
-  {
     "file": "hooks/register.tsx",
     "from": "const wanted = unknownOf(pending, results)",
     "to": "const wanted = [...pending]",
@@ -1705,20 +1645,20 @@
   },
   {
     "file": "hooks/register.tsx",
-    "from": "      e.surface !== 'terminal' ||\n      !(await isDrawing($)) ||\n      (await isGone($, id, e.props.isRunning))",
-    "to": "      !(await isDrawing($)) ||\n      (await isGone($, id, e.props.isRunning))",
+    "from": "      e.surface !== 'terminal' ||\n      !(await read($, isOn)) ||\n      (await isGone($, id, e.props.isRunning))",
+    "to": "      !(await read($, isOn)) ||\n      (await isGone($, id, e.props.isRunning))",
     "why": "a tool row is the engine's off the terminal"
   },
   {
     "file": "hooks/register.tsx",
-    "from": "      e.surface !== 'terminal' ||\n      !(await isDrawing($)) ||\n      (await isGone($, id, e.props.isRunning))",
+    "from": "      e.surface !== 'terminal' ||\n      !(await read($, isOn)) ||\n      (await isGone($, id, e.props.isRunning))",
     "to": "      e.surface !== 'terminal' ||\n      (await isGone($, id, e.props.isRunning))",
     "why": "a tool row is the engine's while the mod is off"
   },
   {
     "file": "hooks/register.tsx",
-    "from": "      e.surface !== 'terminal' ||\n      !(await isDrawing($)) ||\n      (await isGone($, id, e.props.isRunning))",
-    "to": "      e.surface !== 'terminal' ||\n      !(await isDrawing($))",
+    "from": "      e.surface !== 'terminal' ||\n      !(await read($, isOn)) ||\n      (await isGone($, id, e.props.isRunning))",
+    "to": "      e.surface !== 'terminal' ||\n      !(await read($, isOn))",
     "why": "a row the conversation no longer holds is the engine's"
   },
   {
@@ -1933,7 +1873,7 @@
   },
   {
     "file": "hooks/register.tsx",
-    "from": "if (isCall && (await isDrawing($))) {",
+    "from": "if (isCall && (await read($, isOn))) {",
     "to": "if (isCall) {",
     "why": "a mod that is off does not redraw rows"
   },
@@ -2041,33 +1981,51 @@
   },
   {
     "file": "hooks/transcript.ts",
-    "from": "`${pluginRoot}/scripts/transcript.sh`,",
-    "to": "`${pluginRoot}/scripts/transcripts.sh`,",
-    "why": "the results are read by the plugin's own script"
+    "from": "found.size < wanted.size",
+    "to": "true",
+    "why": "the transcript is read no further back than the last result wanted"
   },
   {
     "file": "hooks/transcript.ts",
-    "from": "  root,\n  session,\n]",
-    "to": "  session,\n  root,\n]",
-    "why": "the results are read from the session's own transcript under the config folder"
+    "from": "    for (const row of rows.reverse()) {",
+    "to": "    for (const row of rows) {",
+    "why": "where a call has two results, the later one is kept"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "let bytes = joined(await read(start, end - start), tail)",
+    "to": "let bytes = await read(start, end - start)",
+    "why": "a row a chunk cuts is joined with its other part"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "bytes = bytes.subarray(0, bytes.lastIndexOf(NEWLINE) + 1)",
+    "to": "bytes = bytes.subarray(0, bytes.length)",
+    "why": "a last row not written whole yet is left out"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "isUnfinished = bytes.length === 0",
+    "to": "isUnfinished = false",
+    "why": "a last row not written whole yet, longer than a chunk, is left out"
+  },
+  {
+    "file": "hooks/transcript.ts",
+    "from": "export const CHUNK = 4 * 1024 * 1024",
+    "to": "export const CHUNK = 5 * 1024 * 1024",
+    "why": "a read asks for no more than the 4 MiB the engine answers"
   },
   {
     "file": "hooks/register.tsx",
-    "from": "await $.session.id(), $.plugin.root)",
-    "to": "await $.session.id(), '')",
-    "why": "the script is the plugin's own, wherever it is installed"
+    "from": "if (transcriptPath === '') {",
+    "to": "if (false) {",
+    "why": "a session with no transcript file here reads no file"
   },
   {
-    "file": "hooks/transcript.ts",
-    "from": "  JSON.stringify(wanted),",
-    "to": "  JSON.stringify([]),",
-    "why": "jq is told which results are wanted"
-  },
-  {
-    "file": "hooks/transcript.ts",
-    "from": "const lines = stdout.split('\\n').filter(Boolean)",
-    "to": "const lines = stdout.split('\\n')",
-    "why": "a blank line is no result"
+    "file": "hooks/register.tsx",
+    "from": "{ as: 'bytes', offset, length }",
+    "to": "{ as: 'bytes' }",
+    "why": "the transcript is read by ranges, not whole"
   },
   {
     "file": "hooks/transcript.ts",

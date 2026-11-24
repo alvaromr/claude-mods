@@ -23,7 +23,7 @@ const cached = (tokens = 470_259): TurnUsage => ({
 })
 const UNCACHED: TurnUsage = { ...cached(), cache_read_input_tokens: 0, cache_creation_input_tokens: 0 }
 
-// What every classic event says of the session, its transcript's place included.
+// What every classic event says of the session.
 const SESSION = { session_id: 'abc', cwd: '/repo', transcript_path: '/home/me/.claude/projects/repo/abc.jsonl' }
 const NOW = 1_700_000_000_000
 const EVERY_MS = 15_000
@@ -42,23 +42,15 @@ const ON_CREDITS: readonly SessionRateLimit[] = [
   { kind: 'seven_day', percentUsed: 12.5 },
 ]
 
-/** A line of a transcript: a response and the cache write the API reported for it. */
-const response = (wrote: { hour?: number; fiveMinutes?: number }, isSidechain = false) =>
-  JSON.stringify({
-    type: 'assistant',
-    isSidechain,
-    message: {
-      usage: {
-        cache_creation: {
-          ephemeral_1h_input_tokens: wrote.hour ?? 0,
-          ephemeral_5m_input_tokens: wrote.fiveMinutes ?? 0,
-        },
-      },
-    },
-  })
+/** A response that wrote the cache, the API telling how much of the write lives an hour and how much five minutes. */
+const wrote = (parts: { hour?: number; fiveMinutes?: number }): TurnUsage => ({
+  ...cached(),
+  ephemeral_1h_input_tokens: parts.hour ?? 0,
+  ephemeral_5m_input_tokens: parts.fiveMinutes ?? 0,
+})
 
 // A session as the mod reads it (an account on a subscription within its plan,
-// so by the rules the cache lives an hour; no transcript yet) and the band
+// so by the rules the cache lives an hour; no response yet) and the band
 // above the prompt with what the engine draws there. The model, the speed and
 // the cache's part of the row are hidden, so the desktop app's band, which holds the mod's
 // row too, draws the warning alone; `cacheTtl` is the pane's choice of lifetime.
@@ -83,9 +75,6 @@ const stage = (
     answeredInMs: 0,
     rateLimits: WITHIN_PLAN,
     settings: {} as Record<string, unknown>,
-    transcript: null as string | null,
-    /** How many times the transcript was read. */
-    reads: 0,
     start: () => $.session.start({ cwd: '/repo', surface, isInteractive: true }),
     /** A request of the main conversation, or of that subagent, read to its end. */
     step: async (agentId?: string) => {
@@ -97,7 +86,6 @@ const stage = (
         next = await stream.next()
       }
     },
-    stop: () => $.classic.Stop({ ...SESSION, stop_hook_active: false }),
     /** The texts of the band, drawn with those props over the usual ones. */
     drawn: async (props: Partial<typeof PROPS> = {}) => {
       const ui = await $.ui.mount({
@@ -118,14 +106,8 @@ const stage = (
     value: { startedAt: 0, context: { window: 1_000_000 }, rateLimits: [...it.rateLimits] },
   }))
   on('settings.read', () => ({ value: it.settings }))
-  on('fs.read', () => {
-    it.reads++
-
-    return it.transcript === null ? { deny: 'no such file' } : { value: it.transcript }
-  })
   on('session.start', (_, e) => ({ cwd: e.cwd }))
   on('classic.SessionStart', () => ({}))
-  on('classic.Stop', () => ({}))
   on('turn.step', async function* (_, e) {
     await it.clock.advance(it.answeredInMs)
 
@@ -260,17 +242,6 @@ test('in the desktop app a survey up keeps the band free of the row, and in the 
   expect(await row('terminal')).toBe(false)
 })
 
-test('a turn that ends with no cache to name a lifetime for does not read the transcript', async ($, on) => {
-  const it = stage($, on)
-
-  await it.start()
-  await it.stop()
-  expect(it.reads).toBe(0)
-  await it.step()
-  await it.stop()
-  expect(it.reads).toBe(1)
-})
-
 test('only a request of the main conversation that meets the cache starts its lifetime over', async ($, on) => {
   const it = stage($, on)
 
@@ -310,7 +281,7 @@ type Setup = {
   rateLimits?: readonly SessionRateLimit[]
 }
 
-// What settles the cache's lifetime while no transcript names it, each over the
+// What settles the cache's lifetime while no response names it, each over the
 // ones before it.
 const LIFETIMES: readonly (readonly [said: string, setup: Setup, lifetimeMs: number])[] = [
   ['a subscription within its plan', {}, HOUR_MS],
@@ -357,66 +328,73 @@ for (const [said, setup, lifetimeMs] of LIFETIMES) {
   })
 }
 
-// A transcript whose last write of the main conversation lives five minutes:
-// what follows it is a subagent's write, a response that only read, a prompt
-// that quotes the field and a line cut short.
-const FIVE_MINUTE_WRITES = [
-  response({ hour: 900 }),
-  response({ fiveMinutes: 250 }),
-  response({ hour: 900 }, true),
-  response({}),
-  JSON.stringify({ type: 'user', message: { content: '"cache_creation":{"ephemeral_1h_input_tokens":900}' } }),
-  '{"type":"assistant","message":{"usage":{"cache_creation":{"ephemeral_1h_inp',
-].join('\n')
+// What the API says of a response's cache write counts before the rules, wherever
+// they would put the lifetime.
+const WRITTEN: readonly (readonly [
+  said: string,
+  usage: TurnUsage,
+  rateLimits: readonly SessionRateLimit[],
+  ms: number,
+])[] = [
+  ['five minutes on a subscription within its plan', wrote({ fiveMinutes: 250 }), WITHIN_PLAN, FIVE_MINUTES_MS],
+  ['an hour on usage credits', wrote({ hour: 250 }), ON_CREDITS, HOUR_MS],
+  ['an hour when it wrote for both', wrote({ hour: 1, fiveMinutes: 249 }), ON_CREDITS, HOUR_MS],
+]
 
-test('the lifetime is the one the API said it wrote, once the transcript holds it', async ($, on) => {
+for (const [said, usage, rateLimits, lifetimeMs] of WRITTEN) {
+  test(`the lifetime is the one the API said it wrote: ${said}`, async ($, on) => {
+    const it = stage($, on)
+
+    it.rateLimits = rateLimits
+    it.usage = usage
+    await it.start()
+    await it.step()
+    await it.clock.advance(lifetimeMs - EVERY_MS)
+    expect(await it.drawn()).toEqual(['engine'])
+    await it.clock.advance(EVERY_MS)
+    expect(await it.drawn()).toEqual(COLD)
+  })
+}
+
+test('a response that wrote nothing keeps the lifetime the cache has, and one that writes another changes it', async ($, on) => {
   const it = stage($, on)
 
   await it.start()
+  it.usage = wrote({ fiveMinutes: 250 })
   await it.step()
-  it.transcript = FIVE_MINUTE_WRITES
-  await it.stop()
+  // A response that only read the cache, or told no lifetime, says nothing new.
+  it.usage = wrote({})
+  await it.step()
+  it.usage = cached()
+  await it.step()
   await it.clock.advance(FIVE_MINUTES_MS - EVERY_MS)
   expect(await it.drawn()).toEqual(['engine'])
   await it.clock.advance(EVERY_MS)
   expect(await it.drawn()).toEqual(COLD)
 
-  // And it holds for the requests that follow, whatever the rules give.
+  it.usage = wrote({ hour: 250 })
   await it.step()
-  await it.clock.advance(FIVE_MINUTES_MS)
-  expect(await it.drawn()).toEqual(COLD)
-
-  // A transcript with no write to tell by leaves the rules to say.
-  await it.step()
-  it.transcript = response({})
-  await it.stop()
   await it.clock.advance(HOUR_MS - EVERY_MS)
   expect(await it.drawn()).toEqual(['engine'])
 })
 
-test('a transcript it cannot read leaves the rules to say, and why in the debug log', async ($, on) => {
+test('a subagent’s write does not name the conversation’s lifetime', async ($, on) => {
   const it = stage($, on)
-  const logged: { text: string; to: string }[] = []
-  on('ui.log', (_, e) => (logged.push(e), { value: undefined }))
 
   await it.start()
   await it.step()
-  await it.stop()
+  it.usage = wrote({ fiveMinutes: 250 })
+  await it.step('a1')
   await it.clock.advance(HOUR_MS - EVERY_MS)
   expect(await it.drawn()).toEqual(['engine'])
-  expect(logged).toContainEqual({
-    text: 'reading the transcript failed: bar-context: $.fs.read: no such file',
-    to: 'debug',
-  })
 })
 
-test('the pane’s choice counts before the transcript', async ($, on) => {
+test('the pane’s choice counts before what the API said', async ($, on) => {
   const it = stage($, on, 'terminal', {}, '1h')
 
   await it.start()
+  it.usage = wrote({ fiveMinutes: 250 })
   await it.step()
-  it.transcript = FIVE_MINUTE_WRITES
-  await it.stop()
   await it.clock.advance(HOUR_MS - EVERY_MS)
   expect(await it.drawn()).toEqual(['engine'])
 })
@@ -434,11 +412,12 @@ test('a resumed conversation has the cache its last response left', async ($, on
   await it.clock.advance(10 * 60_000)
   expect(await it.drawn()).toEqual(LEFT)
 
-  // Six minutes into the five its transcript says it was written for.
-  it.transcript = FIVE_MINUTE_WRITES
+  // The next response tells what it wrote the cache for, which counts from then on.
   await begin({ seconds_since_last_response: 360 })
-  expect(await it.drawn()).toEqual([WARNING, 'engine'])
-  it.transcript = null
+  it.usage = wrote({ fiveMinutes: 250 })
+  await it.step()
+  await it.clock.advance(FIVE_MINUTES_MS)
+  expect(await it.drawn()).toEqual(COLD)
 
   // Claude Code's own word that it has lapsed counts before the sum.
   await begin({

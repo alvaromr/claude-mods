@@ -175,24 +175,6 @@
   },
   {
     "file": "hooks/prompt-cache.ts",
-    "from": "return entry.type === 'assistant' && entry.isSidechain !== true ? entry.message?.usage?.cache_creation : undefined",
-    "to": "return entry.isSidechain !== true ? entry.message?.usage?.cache_creation : undefined",
-    "why": "only a response of the transcript reports a cache write"
-  },
-  {
-    "file": "hooks/prompt-cache.ts",
-    "from": "return entry.type === 'assistant' && entry.isSidechain !== true ? entry.message?.usage?.cache_creation : undefined",
-    "to": "return entry.type === 'assistant' ? entry.message?.usage?.cache_creation : undefined",
-    "why": "a subagent's cache write is not the conversation's"
-  },
-  {
-    "file": "hooks/prompt-cache.ts",
-    "from": "  } catch {\n    return undefined\n  }",
-    "to": "  } catch (failure) {\n    throw failure\n  }",
-    "why": "a line still being written is skipped"
-  },
-  {
-    "file": "hooks/prompt-cache.ts",
     "from": "const isOn = (value: string | undefined) => /^(?:1|true|yes|on)$/i.test(value ?? '')",
     "to": "const isOn = (value: string | undefined) => /^(?:1|true|yes|on)$/.test(value ?? '')",
     "why": "a switch variable in capitals is on"
@@ -223,20 +205,20 @@
   },
   {
     "file": "hooks/prompt-cache.ts",
-    "from": "for (const line of transcript.split('\\n').reverse()) {",
-    "to": "for (const line of transcript.split('\\n')) {",
-    "why": "the last cache write is the one that counts"
+    "from": "ephemeral_1h_input_tokens > 0 ? '1h' : ephemeral_5m_input_tokens > 0 ? '5m' : undefined",
+    "to": "ephemeral_5m_input_tokens > 0 ? '5m' : ephemeral_1h_input_tokens > 0 ? '1h' : undefined",
+    "why": "a write of both lifetimes is an hour's"
   },
   {
     "file": "hooks/prompt-cache.ts",
-    "from": "if ((wrote?.ephemeral_1h_input_tokens ?? 0) > 0) {",
-    "to": "if ((wrote?.ephemeral_1h_input_tokens ?? 0) >= 0) {",
+    "from": "ephemeral_1h_input_tokens > 0 ? '1h' :",
+    "to": "ephemeral_1h_input_tokens >= 0 ? '1h' :",
     "why": "a write of no hour tokens is not an hour's"
   },
   {
     "file": "hooks/prompt-cache.ts",
-    "from": "if ((wrote?.ephemeral_5m_input_tokens ?? 0) > 0) {",
-    "to": "if ((wrote?.ephemeral_5m_input_tokens ?? 0) >= 0) {",
+    "from": "ephemeral_5m_input_tokens > 0 ? '5m' : undefined",
+    "to": "ephemeral_5m_input_tokens >= 0 ? '5m' : undefined",
     "why": "a write of no 5 minute tokens is not a 5 minute one"
   },
   {
@@ -553,6 +535,36 @@
   },
   {
     "file": "hooks/readout.ts",
+    "from": "if (s.showCost && cost !== null) {",
+    "to": "if (cost !== null) {",
+    "why": "the cost can be hidden"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "if (s.showCost && cost !== null) {",
+    "to": "if (s.showCost) {",
+    "why": "a session with no cost ledger shows no cost"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "parts.push([{ color: s.mutedColor, text: `$${cost.toFixed(2)}` }])",
+    "to": "parts.push([{ color: s.speedColor, text: `$${cost.toFixed(2)}` }])",
+    "why": "the cost is in the secondary text's color"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "text: `$${cost.toFixed(2)}`",
+    "to": "text: `$${cost.toFixed(0)}`",
+    "why": "the cost is told to the cent"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "showCost: false,",
+    "to": "showCost: true,",
+    "why": "the cost is hidden until asked for"
+  },
+  {
+    "file": "hooks/readout.ts",
     "from": "...(s.showAverage && rate.ms > 0",
     "to": "...(rate.ms > 0",
     "why": "the average speed can be hidden"
@@ -855,11 +867,11 @@
     "file": "hooks/register.tsx",
     "from": "  if (isTtl(cacheTtl)) {\n    return cacheTtl\n  }",
     "to": "",
-    "why": "the pane's lifetime counts before the transcript"
+    "why": "the pane's lifetime counts before what the API said"
   },
   {
     "file": "hooks/register.tsx",
-    "from": "return (transcript === undefined ? undefined : await written($, transcript)) ?? ruled($)",
+    "from": "return known ?? ruled($)",
     "to": "return ruled($)",
     "why": "the lifetime the API said it wrote counts before the rules"
   },
@@ -937,12 +949,6 @@
   },
   {
     "file": "hooks/register.tsx",
-    "from": "    hasStarted = false\n    orElse($, 'starting', undefined)(failure)",
-    "to": "    orElse($, 'starting', undefined)(failure)",
-    "why": "a start that fails is tried again by the next drawing"
-  },
-  {
-    "file": "hooks/register.tsx",
     "from": "    await $.ui.close({ id: PANE })\n\n    return\n  }\n\n  await $.ui.open({ id: PANE, title: TEXT.title })",
     "to": "    return\n  }\n\n  await $.ui.open({ id: PANE, title: TEXT.title })",
     "why": "the ⚙ closes the pane when it is up"
@@ -994,12 +1000,6 @@
     "from": "    $.ui.toast(TEXT.cannotSwitch(`/${what} ${value}`, reasonOf(failure)))",
     "to": "    void failure",
     "why": "a switch Claude Code refuses says so"
-  },
-  {
-    "file": "hooks/register.tsx",
-    "from": "  if (!hasStarted) {\n    hasStarted = true\n    $.clock.after(0, () => void start($))\n  }",
-    "to": "",
-    "why": "the first drawing starts a session that missed session.start"
   },
   {
     "file": "hooks/register.tsx",
@@ -1111,7 +1111,7 @@
   },
   {
     "file": "hooks/register.tsx",
-    "from": "<Button key=\"bar-context-settings\" plain dimColor label=\"⚙\" onPress={() => void togglePane($)} />",
+    "from": "<Button key=\"bar-context-settings\" plain dimColor label=\"⚙\" onPress={() => togglePane($)} />",
     "to": "<Button key=\"bar-context-settings\" plain dimColor label=\"⚙\" onPress={() => undefined} />",
     "why": "the ⚙ opens the pane"
   },
@@ -1159,8 +1159,8 @@
   },
   {
     "file": "hooks/register.tsx",
-    "from": "ago === undefined ? null : { at, tokens: e.context_tokens ?? null, ttl: await lifetime($, e.transcript_path) }",
-    "to": "{ at, tokens: e.context_tokens ?? null, ttl: await lifetime($, e.transcript_path) }",
+    "from": "ago === undefined ? null : { at, tokens: e.context_tokens ?? null, ttl: await lifetime($) }",
+    "to": "{ at, tokens: e.context_tokens ?? null, ttl: await lifetime($) }",
     "why": "a conversation with no response has no cache"
   },
   {
@@ -1243,9 +1243,27 @@
   },
   {
     "file": "hooks/register.tsx",
-    "from": "const ttl = (await read($, warm))?.ttl ?? (await lifetime($))",
-    "to": "const ttl = await lifetime($)",
+    "from": "const ttl = await lifetime($, writtenTtl(usage) ?? (await read($, warm))?.ttl)",
+    "to": "const ttl = await lifetime($, writtenTtl(usage))",
     "why": "a request keeps the lifetime the cache already has"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "const ttl = await lifetime($, writtenTtl(usage) ?? (await read($, warm))?.ttl)",
+    "to": "const ttl = await lifetime($, (await read($, warm))?.ttl)",
+    "why": "a response's own word on the lifetime it wrote counts before the one the cache has"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, cost, () => e.cost?.usd ?? null)",
+    "to": "await update($, cost, () => null)",
+    "why": "a measurement carries the session's cost"
+  },
+  {
+    "file": "hooks/register.tsx",
+    "from": "await update($, cost, () => usage.cost?.usd ?? null)",
+    "to": "await update($, cost, () => null)",
+    "why": "a start reads the cost the session has so far"
   },
   {
     "file": "hooks/register.tsx",
@@ -1264,18 +1282,6 @@
     "from": "    if (isMiss(before, usage)) {\n      await update($, miss, () => ({ at: answeredAt, cause }))\n    }",
     "to": "    await update($, miss, () => ({ at: answeredAt, cause }))",
     "why": "only a request that missed the cache is a miss"
-  },
-  {
-    "file": "hooks/register.tsx",
-    "from": "    if ((await read($, warm)) !== null) {\n      const ttl = await lifetime($, e.transcript_path)",
-    "to": "    if (true) {\n      const ttl = await lifetime($, e.transcript_path)",
-    "why": "a turn that met no cache leaves none"
-  },
-  {
-    "file": "hooks/register.tsx",
-    "from": "await update($, warm, left => rewarmed(left, { ttl }))",
-    "to": "await update($, warm, left => left)",
-    "why": "the turn's end sets the lifetime the transcript names"
   },
   {
     "file": "hooks/register.tsx",

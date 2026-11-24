@@ -20,6 +20,47 @@ const BASH = {
   bashEditDiff: { files: [], moreFiles: 0 },
 }
 
+// A call's result as the transcript file keeps it: a user's row, the result beside the message.
+const resultRow = (id: string, output: unknown) =>
+  `${JSON.stringify({
+    type: 'user',
+    message: { content: [{ type: 'tool_result', tool_use_id: id, content: 'ok' }] },
+    toolUseResult: output,
+  })}\n`
+
+/**
+ * The session's transcript file, read by ranges as `$.fs.read` does: `text` is
+ * what the file holds at each pass over it (`pass` counts from 1), `passes` how
+ * many there were, one `$.fs.stat` each, and `reads` the reads the mod asked.
+ */
+const transcript = (
+  on: On,
+  text: (pass: number) => string | Promise<string> = () => '',
+  path = '/cfg/projects/-repo/abc.jsonl',
+) => {
+  const file = {
+    passes: 0,
+    bytes: new Uint8Array() as Uint8Array,
+    reads: [] as { path: string; as: string; offset?: number }[],
+  }
+
+  on('session.info', () => ({ value: { transcriptPath: path } }))
+  on('fs.stat', async () => {
+    file.passes += 1
+    file.bytes = new TextEncoder().encode(await text(file.passes))
+
+    return { value: { kind: 'file' as const, size: file.bytes.length, mtimeMs: 0, isLink: false } }
+  })
+  on('fs.read', (_, e) => {
+    file.reads.push(e)
+
+    // The engine cuts the answer to the range asked.
+    return { value: { base64: btoa(Array.from(file.bytes, byte => String.fromCharCode(byte)).join('')) } }
+  })
+
+  return file
+}
+
 // The engine beneath: the footer's own row, then the slot rows another mod laid
 // (its buttons in slots 1 and 2), and each result drawn as the output it is handed.
 const stage = (on: On, hasSlots: boolean) => {
@@ -201,17 +242,7 @@ test('a run of edits is one line; pressed, each edit in order; one pressed, its 
     ],
   }))
   // The one result no row drawn holds, read from the transcript file.
-  mock.env(on, { HOME: '/Users/me' })
-  on('session.id', () => ({ value: 'abc' }))
-  on('process.run', () => ({
-    value: {
-      exitCode: 0,
-      stdout: `${JSON.stringify({ id: 'e2', output: EDIT })}\n`,
-      stderr: '',
-      isStdoutTruncated: false,
-      isStderrTruncated: false,
-    },
-  }))
+  transcript(on, () => resultRow('e2', EDIT))
   on('ui.render', { component: 'ToolUse' }, ($, e) => {
     const { Text } = $.ui.resolve(e)
 
@@ -280,10 +311,6 @@ const editRow = ($: Engine, id: string, isRunning = false) =>
       output: isRunning ? undefined : EDIT,
     },
   })
-const ran = (stdout: string, exitCode = 0) => ({
-  value: { exitCode, stdout, stderr: '', isStdoutTruncated: false, isStderrTruncated: false },
-})
-
 test('a result that cannot be read even off the drawing stays unknown, and why is in the debug log', async ($, on) => {
   const clock = mock.clock(on)
   const use = (id: string) => ({ type: 'tool_use', id, name: 'Edit', input: { file_path: '/repo/a.ts' } })
@@ -302,17 +329,16 @@ test('a result that cannot be read even off the drawing stays unknown, and why i
       },
     ],
   }))
-  mock.env(on, { HOME: '/Users/me' })
-  on('session.id', () => ({ value: 'abc' }))
-  // jq is there, but every read of the transcript is cut short.
-  on('process.run', (_, e) => (e.argv.includes('command -v jq') ? ran('/usr/bin/jq\n') : { deny: 'aborted' }))
+  on('session.info', () => ({ value: { transcriptPath: '/cfg/projects/-repo/abc.jsonl' } }))
+  // Every read of the transcript is cut short.
+  on('fs.stat', () => ({ deny: 'aborted' }))
 
   const row = await editRow($, 'e1')
 
   await clock.settle()
   expect((await row.find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +3 −1 ? ▸')
   expect(logged).toContainEqual({
-    text: 'reading the results from the transcript failed: ui-declutter: $.process.run: aborted',
+    text: 'reading the results from the transcript failed: ui-declutter: $.fs.stat: aborted',
     to: 'debug',
   })
 })
@@ -331,7 +357,6 @@ test("a row a compaction took out of the conversation is the engine's; one still
 test('a result read cut short is read again off the drawing, and the span drawn again', async ($, on) => {
   const clock = mock.clock(on)
   const use = (id: string) => ({ type: 'tool_use', id, name: 'Edit', input: { file_path: '/repo/a.ts' } })
-  let reads = 0
   stage(on, false)
   engineRows(on)
   on('session.cwd', () => ({ value: '/repo' }))
@@ -345,17 +370,13 @@ test('a result read cut short is read again off the drawing, and the span drawn 
       },
     ],
   }))
-  mock.env(on, { HOME: '/Users/me' })
-  on('session.id', () => ({ value: 'abc' }))
-  // The first read is cancelled, as when a draw takes the asking one's place.
-  on('process.run', () => {
-    reads += 1
-
-    if (reads === 1) {
+  transcript(on, pass => {
+    // The first read is cancelled, as when a draw takes the asking one's place.
+    if (pass === 1) {
       throw new Error('aborted')
     }
 
-    return ran(`${JSON.stringify({ id: 'e2', output: EDIT })}\n`)
+    return resultRow('e2', EDIT)
   })
 
   const first = await editRow($, 'e1')
@@ -366,7 +387,7 @@ test('a result read cut short is read again off the drawing, and the span drawn 
 })
 
 // A conversation of two edits, and the row of the first with its result handed to it.
-const twoEdits = (on: On, env: Record<string, string> = { HOME: '/Users/me' }) => {
+const twoEdits = (on: On) => {
   const use = (id: string) => ({ type: 'tool_use', id, name: 'Edit', input: { file_path: '/repo/a.ts' } })
 
   stage(on, false)
@@ -382,71 +403,44 @@ const twoEdits = (on: On, env: Record<string, string> = { HOME: '/Users/me' }) =
       },
     ],
   }))
-  mock.env(on, env)
-  on('session.id', () => ({ value: 'abc' }))
 }
 
-// What a pass over the transcript file finds: e2's result, and whether jq is there.
-const e2 = `${JSON.stringify({ id: 'e2', output: EDIT })}\n`
-const jq = (argv: readonly string[]) => argv.includes('command -v jq')
+// What a pass over the transcript file finds: e2's result.
+const e2 = resultRow('e2', EDIT)
 
-test('the last result of an output cut short is left out, and a read that failed gives none', async ($, on) => {
+test('a last row of the transcript not written whole yet gives no result', async ($, on) => {
   mock.clock(on)
   twoEdits(on)
-  on('process.run', (_, e) =>
-    jq(e.argv) ? ran('/usr/bin/jq\n') : { value: { ...ran(e2).value, isStdoutTruncated: true } },
-  )
+  transcript(on, () => e2.slice(0, -10))
 
   expect((await (await editRow($, 'e1')).find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +3 −1 ? ▸')
 })
 
-test('a read of the transcript that failed gives no result, whatever it printed', async ($, on) => {
+test('a session with no transcript file on this machine gives no result, and reads no file', async ($, on) => {
   mock.clock(on)
   twoEdits(on)
-  on('process.run', (_, e) => (jq(e.argv) ? ran('/usr/bin/jq\n') : ran(e2, 1)))
+
+  const file = transcript(on, () => e2, '')
 
   expect((await (await editRow($, 'e1')).find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +3 −1 ? ▸')
+  expect(file.passes).toBe(0)
+  expect(file.reads).toEqual([])
 })
 
-test("the transcript is read from the engine's configured folder, else from the home's", async ($, on) => {
-  const roots: string[] = []
-
-  mock.clock(on)
-  twoEdits(on, { HOME: '/Users/me', CLAUDE_CONFIG_DIR: '/cfg' })
-  on('process.run', (_, e) => (jq(e.argv) ? ran('/usr/bin/jq\n') : (roots.push(e.argv[3] ?? ''), ran(e2))))
-  await editRow($, 'e1')
-  expect(roots).toEqual(['/cfg'])
-})
-
-test("the transcript is read by the plugin's script, given the ids, the folder and the session", async ($, on) => {
-  const argvs: (readonly string[])[] = []
-
-  mock.clock(on)
-  twoEdits(on, { HOME: '/Users/me', CLAUDE_CONFIG_DIR: '/cfg' })
-  on('process.run', (_, e) => (jq(e.argv) ? ran('/usr/bin/jq\n') : (argvs.push(e.argv), ran(e2))))
-  await editRow($, 'e1')
-  expect(argvs).toHaveLength(1)
-  expect(argvs[0]?.[0]).toBe('sh')
-  expect(argvs[0]?.[1]?.endsWith('/ui-declutter/scripts/transcript.sh')).toBe(true)
-  expect(argvs[0]?.slice(2)).toEqual(['["e2"]', '/cfg', 'abc'])
-})
-
-test("the transcript is read from the home's folder where none is configured", async ($, on) => {
-  const roots: string[] = []
-
+test('the transcript is read in bytes, at the path the session names, wherever the config folder is', async ($, on) => {
   mock.clock(on)
   twoEdits(on)
-  on('process.run', (_, e) => (jq(e.argv) ? ran('/usr/bin/jq\n') : (roots.push(e.argv[3] ?? ''), ran(e2))))
-  await editRow($, 'e1')
-  expect(roots).toEqual(['/Users/me/.claude'])
+
+  const file = transcript(on, () => e2, '/elsewhere/sessions/abc.jsonl')
+
+  expect((await (await editRow($, 'e1')).find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +6 −2 ▸')
+  expect(file.reads).toEqual([{ path: '/elsewhere/sessions/abc.jsonl', as: 'bytes', offset: 0, length: e2.length }])
 })
 
 test('a result that arrives replaces the one that was found nowhere, and the rows are drawn again', async ($, on) => {
-  let reads = 0
-
   mock.clock(on)
   twoEdits(on)
-  on('process.run', (_, e) => (jq(e.argv) ? ran('/usr/bin/jq\n') : ((reads += 1), ran(reads < 2 ? '' : e2))))
+  transcript(on, pass => (pass < 2 ? '' : e2))
 
   const first = await editRow($, 'e1')
 
@@ -480,9 +474,7 @@ test("a new tool call redraws the rows, unless the mod is off, when they are the
   })
   on('session.cwd', () => ({ value: '/repo' }))
   on('session.messages', () => ({ value: messages as never }))
-  mock.env(on, { HOME: '/Users/me' })
-  on('session.id', () => ({ value: 'abc' }))
-  on('process.run', (_, e) => (jq(e.argv) ? ran('/usr/bin/jq\n') : ran('')))
+  transcript(on)
 
   const call = (id: string) =>
     $.session.append({
@@ -528,7 +520,6 @@ test("a new tool call redraws the rows, unless the mod is off, when they are the
 
 test('a new conversation forgets the reads the last had queued', async ($, on) => {
   const use = (id: string) => ({ type: 'tool_use', id, name: 'Edit', input: { file_path: '/repo/a.ts' } })
-  const passes: string[][] = []
   let release = () => {}
   const held = new Promise<void>(resolve => (release = resolve))
   const clock = mock.clock(on)
@@ -547,22 +538,15 @@ test('a new conversation forgets the reads the last had queued', async ($, on) =
       ]),
     ],
   }))
-  mock.env(on, { HOME: '/Users/me' })
-  on('session.id', () => ({ value: 'abc' }))
   on('session.root', () => ({ value: '/repo' }))
   on('session.start', (_, e) => ({ cwd: e.cwd }))
-  on('process.run', async (_, e) => {
-    if (jq(e.argv)) {
-      return ran('/usr/bin/jq\n')
-    }
 
-    passes.push(JSON.parse(e.argv[2] ?? '[]') as string[])
-
-    if (passes.length === 1) {
+  const file = transcript(on, async pass => {
+    if (pass === 1) {
       await held
     }
 
-    return ran('')
+    return ''
   })
 
   const row = (id: string) =>
@@ -593,25 +577,27 @@ test('a new conversation forgets the reads the last had queued', async ($, on) =
   release()
   await first
   await queued
-  expect(passes).toEqual([['e1']])
+  // Only the pass under way ran: e2, which asked behind it, was forgotten.
+  expect(file.passes).toBe(1)
 })
 
 test('a new conversation reads again the results the last found nowhere, as often as the first did', async ($, on) => {
   const clock = mock.clock(on)
-  let reads = 0
 
   mock.store(on)
   twoEdits(on)
   on('session.root', () => ({ value: '/repo' }))
   on('session.start', (_, e) => ({ cwd: e.cwd }))
-  on('process.run', (_, e) => (jq(e.argv) ? ran('/usr/bin/jq\n') : ((reads += 1), ran(''))))
+
+  const file = transcript(on)
+
   await editRow($, 'e1')
 
   for (let turn = 0; turn < 3; turn++) {
     await clock.advance(2000)
   }
 
-  expect(reads).toBe(3)
+  expect(file.passes).toBe(3)
   await $.session.start({ cwd: '/repo', surface: 'terminal', isInteractive: true })
   await editRow($, 'e1')
 
@@ -619,21 +605,21 @@ test('a new conversation reads again the results the last found nowhere, as ofte
     await clock.advance(2000)
   }
 
-  expect(reads).toBe(6)
+  expect(file.passes).toBe(6)
 })
 
 test('a new conversation forgets the results the last read', async ($, on) => {
-  let lines = e2
+  let text = e2
 
   mock.clock(on)
   mock.store(on)
   twoEdits(on)
   on('session.root', () => ({ value: '/repo' }))
   on('session.start', (_, e) => ({ cwd: e.cwd }))
-  on('process.run', (_, e) => (jq(e.argv) ? ran('/usr/bin/jq\n') : ran(lines)))
+  transcript(on, () => text)
   expect((await (await editRow($, 'e1')).find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +6 −2 ▸')
 
-  lines = ''
+  text = ''
   await $.session.start({ cwd: '/repo', surface: 'terminal', isInteractive: true })
   expect((await (await editRow($, 'e1')).find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +3 −1 ? ▸')
 })
@@ -641,7 +627,6 @@ test('a new conversation forgets the results the last read', async ($, on) => {
 test('a result known by the time its read comes is not read, and the conversation is read once for all the draws', async ($, on) => {
   const use = (id: string) => ({ type: 'tool_use', id, name: 'Edit', input: { file_path: '/repo/a.ts' } })
   const ids = ['e1', 'e2', 'e3']
-  const passes: string[][] = []
   let release = () => {}
   let reads = 0
   const held = new Promise<void>(resolve => (release = resolve))
@@ -680,18 +665,17 @@ test('a result known by the time its read comes is not read, and the conversatio
       }
     ),
   )
-  mock.env(on, { HOME: '/Users/me' })
-  on('session.id', () => ({ value: 'abc' }))
-  on('process.run', async (_, e) => {
-    const wanted = JSON.parse(e.argv[2] ?? '[]') as string[]
-
-    passes.push(wanted)
-
-    if (passes.length === 1) {
+  // The file holds another result for e2 than the row brings: read, it would show.
+  const other = {
+    ...EDIT,
+    structuredPatch: [{ oldStart: 1, oldLines: 2, newStart: 1, newLines: 1, lines: ['-a', '-b', '+c'] }],
+  }
+  const file = transcript(on, async pass => {
+    if (pass === 1) {
       await held
     }
 
-    return ran(wanted.map(id => JSON.stringify({ id, output: EDIT })).join('\n'))
+    return resultRow('e1', EDIT) + resultRow('e2', other) + resultRow('e3', EDIT)
   })
 
   const turns = () => clock.settle()
@@ -707,9 +691,10 @@ test('a result known by the time its read comes is not read, and the conversatio
   release()
   await first
   await second
-  await row('e3')
+  expect((await (await row('e3')).find({ key: 'view' }))?.text).toBe('1 cambio · a.ts +3 −1 ▸')
+  expect((await (await row('e2')).find({ key: 'view' }))?.text).toBe('1 cambio · a.ts +3 −1 ▸')
   expect(reads).toBe(1)
-  expect(passes).toEqual([['e1'], ['e3']])
+  expect(file.passes).toBe(2)
 })
 
 test('the agents of the conversation that stand in for WebFetch draw as one, though no row said so', async ($, on) => {
@@ -762,9 +747,7 @@ test('a read of the conversation that was cut short is not kept: the next draw r
           ],
         },
   )
-  mock.env(on, { HOME: '/Users/me' })
-  on('session.id', () => ({ value: 'abc' }))
-  on('process.run', () => ran(''))
+  transcript(on)
 
   // The first read cut short, the draw reads again within itself: the two edits are one span.
   expect((await (await editRow($, 'e1')).find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +3 −1 ? ▸')
@@ -785,33 +768,27 @@ test('a result keeps its diff where the diffs are not hidden; only where they ar
 
 test('a result the transcript file did not hold yet is read again a little later, twice at most', async ($, on) => {
   const clock = mock.clock(on)
-  let reads = 0
   twoEdits(on)
-  on('process.run', () => {
-    reads += 1
 
-    // The second read finds it: the file was written in between.
-    return ran(reads < 2 ? '' : `${JSON.stringify({ id: 'e2', output: EDIT })}\n`)
-  })
-
+  // The second read finds it: the file was written in between.
+  const file = transcript(on, pass => (pass < 2 ? '' : e2))
   const first = await editRow($, 'e1')
 
   expect((await first.find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +3 −1 ? ▸')
   await clock.advance(2000)
   expect((await first.find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +6 −2 ▸')
-  expect(reads).toBe(2)
+  expect(file.passes).toBe(2)
 })
 
 test('a result found nowhere is read again twice, then given up', async ($, on) => {
   const clock = mock.clock(on)
-  let reads = 0
   twoEdits(on)
-  on('process.run', () => ((reads += 1), ran('')))
 
+  const file = transcript(on)
   const first = await editRow($, 'e1')
 
   for (const asked of [1, 2, 3, 3]) {
-    expect(reads).toBe(asked)
+    expect(file.passes).toBe(asked)
     await clock.advance(2000)
   }
 
@@ -821,7 +798,6 @@ test('a result found nowhere is read again twice, then given up', async ($, on) 
 test('the results the draws that came together ask for are read in one pass, those that came while one ran', async ($, on) => {
   const use = (id: string) => ({ type: 'tool_use', id, name: 'Edit', input: { file_path: '/repo/a.ts' } })
   const ids = ['e1', 'e2', 'e3']
-  const passes: string[][] = []
   let release = () => {}
   const held = new Promise<void>(resolve => (release = resolve))
   stage(on, false)
@@ -837,19 +813,13 @@ test('the results the draws that came together ask for are read in one pass, tho
       ]),
     ],
   }))
-  mock.env(on, { HOME: '/Users/me' })
-  on('session.id', () => ({ value: 'abc' }))
-  on('process.run', async (_, e) => {
-    const wanted = JSON.parse(e.argv[2] ?? '[]') as string[]
-
-    passes.push(wanted)
-
+  const file = transcript(on, async pass => {
     // The first read is under way while the others ask.
-    if (passes.length === 1) {
+    if (pass === 1) {
       await held
     }
 
-    return ran(wanted.map(id => JSON.stringify({ id, output: EDIT })).join('\n'))
+    return ids.map(id => resultRow(id, EDIT)).join('')
   })
 
   const rows = Promise.all(
@@ -881,8 +851,7 @@ test('the results the draws that came together ask for are read in one pass, tho
     expect((await row.find({ key: 'view' }))?.text).toBe('1 cambio · a.ts +3 −1 ▸')
   }
 
-  expect(passes.length).toBeLessThan(ids.length)
-  expect(passes.flat().sort()).toEqual(ids)
+  expect(file.passes).toBeLessThan(ids.length)
 })
 
 test('a diff too long for a drawing is cut at a line, its header counting the lines kept, without joining them anew for each', async ($, on) => {
@@ -893,7 +862,7 @@ test('a diff too long for a drawing is cut at a line, its header counting the li
   }
   mock.clock(on)
   twoEdits(on)
-  on('process.run', () => ran(''))
+  transcript(on)
 
   const ui = await $.ui.mount({
     plugin: 'ui-declutter',
@@ -926,27 +895,4 @@ test('a diff too long for a drawing is cut at a line, its header counting the li
   expect(source.split('\n')).toHaveLength(kept + 2)
   // Joining the lines kept anew for each one took a second; once, a few milliseconds.
   expect(elapsed).toBeLessThan(400)
-})
-
-// Last: without jq the mod stays aside for the rest of the module's life.
-test("without jq every row is the engine's, a line under the prompt says why and the button's dot is gray", async ($, on) => {
-  const clock = mock.clock(on)
-  const lines: (string | undefined)[] = []
-  stage(on, false)
-  engineRows(on)
-  mock.store(on)
-  on('session.cwd', () => ({ value: '/repo' }))
-  on('ui.status', (_, e) => (lines.push(e.text), { value: undefined }))
-  on('session.root', () => ({ value: '/repo' }))
-  on('session.start', (_, e) => ({ cwd: e.cwd }))
-  on('process.run', () => ran('', 1))
-
-  const ui = await footer($)
-
-  await clock.settle()
-  // A start again finds no jq again, and says it no more.
-  await $.session.start({ cwd: '/repo', surface: 'terminal', isInteractive: true })
-  expect(lines).toEqual([expect.stringContaining('jq')])
-  expect((await ui.find({ type: 'Text', text: '○' }))?.props.color).toBe('inactive')
-  expect((await (await editRow($, 'e1')).find({ type: 'Text' }))?.text).toBe('Edit(e1)')
 })

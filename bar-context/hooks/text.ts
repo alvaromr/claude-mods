@@ -40,6 +40,7 @@ export const TEXT = {
   showTokens: 'Tokens del contexto sobre el total (37k/200k)',
   showSpeed: 'Velocidad de la última respuesta (tok/s)',
   showAverage: 'Velocidad media de la sesión (ø)',
+  showCost: 'Coste estimado de la sesión ($0.42)',
   showCache: 'Tiempo que le queda a la caché',
   showCacheTokens: 'Tokens que se volverían a cachear',
   showMiss: 'Fallo de caché (⚠ miss) y su causa',

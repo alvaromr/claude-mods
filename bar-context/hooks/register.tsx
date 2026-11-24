@@ -52,6 +52,7 @@ const warm = atom({ plugin: 'bar-context', key: 'warm' } as const, null)
 const miss = atom({ plugin: 'bar-context', key: 'miss' } as const, null)
 const fill = atom({ plugin: 'bar-context', key: 'fill' } as const, null)
 const speed = atom({ plugin: 'bar-context', key: 'speed' } as const, { last: null, tokens: 0, ms: 0 })
+const cost = atom({ plugin: 'bar-context', key: 'cost' } as const, null)
 const model = atom({ plugin: 'bar-context', key: 'model' } as const, { name: null, effort: null })
 const picker = atom({ plugin: 'bar-context', key: 'picker' } as const, null)
 const settings = atom({ plugin: 'bar-context', key: 'settings' } as const, DEFAULTS)
@@ -156,12 +157,6 @@ const forgetProject = async ($: EngineInterface) => {
   await loadSettings($)
 }
 
-// The lifetime of the last cache write the API reported, which the session's
-// transcript keeps response by response; undefined where the transcript cannot
-// be read or holds no write.
-const written = async ($: EngineInterface, transcript: string): Promise<Ttl | undefined> =>
-  writtenTtl(await $.fs.read(transcript).catch(orElse($, 'reading the transcript', '')))
-
 // The lifetime Claude Code asks for by its own rules, then the account's.
 const ruled = async ($: EngineInterface): Promise<Ttl> => {
   const claudeSettings = await $.settings
@@ -184,15 +179,15 @@ const ruled = async ($: EngineInterface): Promise<Ttl> => {
 }
 
 // How long the cache lives: the pane's choice, else what the API said it
-// wrote where a transcript is at hand, else what the rules give.
-const lifetime = async ($: EngineInterface, transcript?: string): Promise<Ttl> => {
+// wrote (`known`, where a response told), else what the rules give.
+const lifetime = async ($: EngineInterface, known?: Ttl): Promise<Ttl> => {
   const { cacheTtl } = await read($, settings)
 
   if (isTtl(cacheTtl)) {
     return cacheTtl
   }
 
-  return (transcript === undefined ? undefined : await written($, transcript)) ?? ruled($)
+  return known ?? ruled($)
 }
 
 const nameModel = async ($: EngineInterface, id?: string) => {
@@ -200,14 +195,16 @@ const nameModel = async ($: EngineInterface, id?: string) => {
   await update($, model, current => modelNamed(current, known))
 }
 
-// The window as the engine has it now. Until the first response of a resumed
-// session it has no fill, and at the start the one the resume told is kept;
-// after a compaction none is right, and the call drops it.
+// The window as the engine has it now, and what the session has cost. Until
+// the first response of a resumed session the window has no fill, and at the
+// start the one the resume told is kept; after a compaction none is right, and
+// the call drops it.
 const measure = async ($: EngineInterface, moment: 'start' | 'compaction') => {
   const usage = await $.session.usage().catch(orElse($, "reading the session's usage", undefined))
 
   if (usage !== undefined) {
     await update($, fill, current => fillAfter(current, usage.context, moment === 'start'))
+    await update($, cost, () => usage.cost?.usd ?? null)
   }
 }
 
@@ -294,7 +291,7 @@ const drawn = async ($: EngineInterface, { Box, Button, Text }: Pick<Elements, '
   const s = await read($, settings)
   const window = await read($, fill)
   const cache = { warm: await read($, warm), miss: await read($, miss), now: await $.clock.now() }
-  const parts = runsOf(s, window, cache, await read($, speed))
+  const parts = runsOf(s, window, cache, await read($, speed), await read($, cost))
   const full = compactShare(s, window)
   const shown = await read($, model)
   const choosing = await read($, picker)
@@ -390,8 +387,10 @@ export const register: Register = on => {
 
   // A measurement with no fill keeps the one a resume told until a response
   // reports one: what starts a conversation over drops it (classic.SessionStart).
+  // The cost is the ledger's total, which the measurement carries as it grows.
   on('session.measure', async ($, e, next) => {
     await update($, fill, current => fillAfter(current, e.context, true))
+    await update($, cost, () => e.cost?.usd ?? null)
 
     return next(e)
   })
@@ -411,8 +410,7 @@ export const register: Register = on => {
     const ago = isResumed ? e.seconds_since_last_response : undefined
     const now = await $.clock.now()
     const at = resumedAt(now, ago, e.prompt_cache_likely_expired === true)
-    const left =
-      ago === undefined ? null : { at, tokens: e.context_tokens ?? null, ttl: await lifetime($, e.transcript_path) }
+    const left = ago === undefined ? null : { at, tokens: e.context_tokens ?? null, ttl: await lifetime($) }
 
     await update($, warm, () => left)
     // A miss of the conversation before is no news of this one.
@@ -463,7 +461,8 @@ export const register: Register = on => {
     const tokens = cachedTokens(usage)
 
     if (tokens !== null) {
-      const ttl = (await read($, warm))?.ttl ?? (await lifetime($))
+      // What this response says it wrote, else the lifetime the cache already has.
+      const ttl = await lifetime($, writtenTtl(usage) ?? (await read($, warm))?.ttl)
 
       await update($, warm, () => ({ at: answeredAt, tokens, ttl, model: e.model }))
     }
@@ -474,18 +473,6 @@ export const register: Register = on => {
 
     return response
   })
-
-  // Once the turn has ended the transcript holds what the API said it wrote,
-  // and the lifetime is the one it names.
-  on('classic.Stop', async ($, e, next) => {
-    if ((await read($, warm)) !== null) {
-      const ttl = await lifetime($, e.transcript_path)
-
-      await update($, warm, left => rewarmed(left, { ttl }))
-    }
-
-    return next(e)
-  }).catch(($, e, next) => next(e))
 
   on('ui.render', { component: 'SessionMode' }, async ($, e, next) => {
     const beneath = await next(e)

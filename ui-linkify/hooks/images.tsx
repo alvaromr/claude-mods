@@ -13,7 +13,7 @@ import {
 import type { Pasted } from './image-sources'
 import { altOf, bandRoom, cells, isLarger, pictureOf, resendAt, roomIn, shrunk, thumbnailSize } from './pictures'
 import type { Picture } from './pictures'
-import { isAfterPause, marked, staggerOf } from './resend'
+import { focusAfter, focusPosted, isAfterPause, marked, staggerOf, UNKNOWN_FOCUS } from './resend'
 import { orElse, shown } from './settings'
 
 // Every pasted image of the session by its number, null for one that cannot be
@@ -76,13 +76,18 @@ const fromConversation = async ($: EngineInterface) => {
 // memory; too large to read here, so jq picks out the wanted ones
 // (scripts/transcript.sh).
 const fromTranscript = async ($: EngineInterface, wanted: number[]) => {
-  const root = (await $.env.get('CLAUDE_CONFIG_DIR')) ?? `${await $.env.get('HOME')}/.claude`
+  const { transcriptPath } = await $.session.info()
+
+  // Empty in a session that keeps no transcript on this machine.
+  if (transcriptPath === '') {
+    return
+  }
+
   const { exitCode, stdout, isStdoutTruncated } = await $.process.run([
     'sh',
     `${$.plugin.root}/scripts/transcript.sh`,
     JSON.stringify(wanted),
-    root,
-    await $.session.id(),
+    transcriptPath,
   ])
 
   if (exitCode === 0) {
@@ -313,19 +318,27 @@ const sendAgain = async ($: EngineInterface, { requestId, key, png }: Drawn) => 
   }
 }
 
+const sendAllAgain = ($: EngineInterface) => {
+  ;[...onScreen.values()].forEach((drawn, i) =>
+    $.clock.after(staggerOf(i), () => sendAgain($, drawn).catch(orElse($, 'sending a picture again', undefined))),
+  )
+}
+
+// The window's focus, as the surface module under the prompt posts it (window-focus.ts).
+let focus = UNKNOWN_FOCUS
+
 // The time of the last key typed: see isAfterPause.
 let typedAt: number | undefined
 
+// The sign of a return for a terminal that reports no focus.
 const sendAllAgainAfterPause = async ($: EngineInterface) => {
   const now = await $.clock.now()
   const isBack = isAfterPause(typedAt, now)
 
   typedAt = now
 
-  if (isBack) {
-    ;[...onScreen.values()].forEach((drawn, i) =>
-      $.clock.after(staggerOf(i), () => sendAgain($, drawn).catch(orElse($, 'sending a picture again', undefined))),
-    )
+  if (isBack && !focus.isReported) {
+    sendAllAgain($)
   }
 }
 
@@ -421,19 +434,26 @@ export const registerImages = (on: On) => {
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const s = await shown($)
 
-    if (e.surface !== 'terminal' || e.props.hasSurvey || drawsPictures === false || !s.draft) {
-      return next(e)
-    }
-
-    const numbers = numbersIn((await $.prompt.read()).text)
-    const found = numbers.length > 0 ? readyPictures($, numbers, BOX_TRIES) : []
-
-    if (found.length === 0) {
+    if (e.surface !== 'terminal' || drawsPictures === false || !(s.images || s.draft)) {
       return next(e)
     }
 
     const drawn = await next(e)
-    const { Box, Image } = $.ui.resolve(e)
+    const { Box, Client, Image } = $.ui.resolve(e)
+    // Of no size, so it takes no room: it only tells when the window gains or loses the focus.
+    const watcher = <Client key="window-focus" module="./window-focus.ts" width={0} height={0} />
+    const numbers = e.props.hasSurvey || !s.draft ? [] : numbersIn((await $.prompt.read()).text)
+    const found = numbers.length > 0 ? readyPictures($, numbers, BOX_TRIES) : []
+
+    if (found.length === 0) {
+      return (
+        <Box flexDirection="column">
+          {drawn}
+          {watcher}
+        </Box>
+      )
+    }
+
     const { room, rowRoom } = bandRoom(
       s,
       { bodyColumns: e.props.bodyColumns, maxRows: e.props.maxRows, isFullscreen: e.viewport?.isFullscreen === true },
@@ -443,6 +463,7 @@ export const registerImages = (on: On) => {
     return (
       <Box flexDirection="column">
         {drawn}
+        {watcher}
         <Box flexDirection="row" columnGap={1}>
           {found.map(picture => {
             const key = `draft-image-${picture.n}`
@@ -462,6 +483,23 @@ export const registerImages = (on: On) => {
         </Box>
       </Box>
     )
+  })
+
+  // The window gaining the focus back is the person back: see resend.ts.
+  on('ui.message', { element: 'window-focus' }, async ($, e, next) => {
+    const isFocused = focusPosted(e.data)
+
+    if (isFocused !== undefined) {
+      const after = focusAfter(focus, isFocused)
+
+      focus = after.focus
+
+      if (after.isBack) {
+        sendAllAgain($)
+      }
+    }
+
+    return next(e)
   })
 
   // Pasting an image puts its token in the box; sending or clearing it empties it.

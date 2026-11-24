@@ -318,12 +318,6 @@
     "why": "a start drops the folder an earlier cd took the session to"
   },
   {
-    "file": "hooks/register.tsx",
-    "from": "    hasStarted = false\n",
-    "to": "",
-    "why": "a start that fails is tried again at the next drawing"
-  },
-  {
     "file": "hooks/preferences.ts",
     "from": "typeof given[key] === typeof value ? given[key] : value",
     "to": "given[key]",

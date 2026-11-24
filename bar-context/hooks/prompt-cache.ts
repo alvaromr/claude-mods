@@ -7,24 +7,9 @@ type Tokens = {
   input_tokens?: number
   cache_read_input_tokens?: number
   cache_creation_input_tokens?: number
-}
-
-// The cache write a line of the transcript reports, when the line is a response
-// of the main conversation; none for a line still being written, which is not JSON yet.
-type Entry = {
-  type?: unknown
-  isSidechain?: unknown
-  message?: { usage?: { cache_creation?: { ephemeral_1h_input_tokens?: number; ephemeral_5m_input_tokens?: number } } }
-}
-
-const writeOf = (line: string) => {
-  try {
-    const entry = JSON.parse(line) as Entry
-
-    return entry.type === 'assistant' && entry.isSidechain !== true ? entry.message?.usage?.cache_creation : undefined
-  } catch {
-    return undefined
-  }
+  /** The part of the write kept five minutes and the part kept an hour: both told, or neither. */
+  ephemeral_5m_input_tokens?: number
+  ephemeral_1h_input_tokens?: number
 }
 
 const isOn = (value: string | undefined) => /^(?:1|true|yes|on)$/i.test(value ?? '')
@@ -32,24 +17,13 @@ const isOn = (value: string | undefined) => /^(?:1|true|yes|on)$/i.test(value ??
 export const isTtl = (value: unknown): value is Ttl => value === '5m' || value === '1h'
 
 /**
- * The lifetime of the last cache write the API reported, which the session's
- * transcript keeps response by response; undefined where it holds no write.
+ * The lifetime of the cache write a response reports, an hour when it wrote
+ * both; undefined where it wrote none or named no lifetime.
  */
-export const writtenTtl = (transcript: string): Ttl | undefined => {
-  for (const line of transcript.split('\n').reverse()) {
-    const wrote = line.includes('"cache_creation"') ? writeOf(line) : undefined
-
-    if ((wrote?.ephemeral_1h_input_tokens ?? 0) > 0) {
-      return '1h'
-    }
-
-    if ((wrote?.ephemeral_5m_input_tokens ?? 0) > 0) {
-      return '5m'
-    }
-  }
-
-  return undefined
-}
+export const writtenTtl = ({
+  ephemeral_1h_input_tokens = 0,
+  ephemeral_5m_input_tokens = 0,
+}: Tokens): Ttl | undefined => (ephemeral_1h_input_tokens > 0 ? '1h' : ephemeral_5m_input_tokens > 0 ? '5m' : undefined)
 
 /**
  * The lifetime Claude Code asks for by its own rules, the first that says

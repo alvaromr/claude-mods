@@ -1321,9 +1321,6 @@ test('a new conversation in the same process forgets what was read of the last: 
   mock.store(on)
   on('session.root', () => ({ value: '/repo' }))
   on('session.start', (_, e) => ({ cwd: e.cwd }))
-  on('process.run', () => ({
-    value: { exitCode: 0, stdout: '', stderr: '', isStdoutTruncated: false, isStderrTruncated: false },
-  }))
 
   let messages = [said('mira'), asked('b1'), answered('b1'), asked('b2'), answered('b2')]
 
@@ -1344,9 +1341,6 @@ test('a new conversation forgets the web-fetch agents of the last', async ($, on
   mock.store(on)
   on('session.root', () => ({ value: '/repo' }))
   on('session.start', (_, e) => ({ cwd: e.cwd }))
-  on('process.run', () => ({
-    value: { exitCode: 0, stdout: '', stderr: '', isStdoutTruncated: false, isStderrTruncated: false },
-  }))
 
   const fetch = { subagent_type: 'web-fetch', prompt: 'Read https://example.com' }
   const agent = (input: object) =>

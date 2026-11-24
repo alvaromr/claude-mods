@@ -1381,15 +1381,15 @@
   },
   {
     "file": "hooks/images.tsx",
-    "from": "    root,\n    await $.session.id(),\n  ])",
-    "to": "    await $.session.id(),\n    root,\n  ])",
-    "why": "the images are read from the session's own transcript under the config folder"
+    "from": "    JSON.stringify(wanted),\n    transcriptPath,",
+    "to": "    JSON.stringify([]),\n    transcriptPath,",
+    "why": "the script is told which images are wanted"
   },
   {
     "file": "hooks/images.tsx",
-    "from": "    JSON.stringify(wanted),\n    root,",
-    "to": "    JSON.stringify([]),\n    root,",
-    "why": "the script is told which images are wanted"
+    "from": "  if (transcriptPath === '') {",
+    "to": "  if (false) {",
+    "why": "a session that keeps no transcript has none read"
   },
   {
     "file": "hooks/image-sources.ts",
@@ -1609,14 +1609,14 @@
   },
   {
     "file": "hooks/images.tsx",
-    "from": "if (e.surface !== 'terminal' || e.props.hasSurvey || drawsPictures === false || !s.draft) {",
-    "to": "if (e.surface !== 'terminal' || drawsPictures === false || !s.draft) {",
+    "from": "const numbers = e.props.hasSurvey || !s.draft ? [] :",
+    "to": "const numbers = !s.draft ? [] :",
     "why": "a survey up keeps the band free of the pictures"
   },
   {
     "file": "hooks/images.tsx",
-    "from": "if (e.surface !== 'terminal' || e.props.hasSurvey || drawsPictures === false || !s.draft) {",
-    "to": "if (e.surface !== 'terminal' || e.props.hasSurvey || drawsPictures === false) {",
+    "from": "const numbers = e.props.hasSurvey || !s.draft ? [] :",
+    "to": "const numbers = e.props.hasSurvey ? [] :",
     "why": "the draft switch in the pane turns the box's pictures off"
   },
   {
@@ -1816,5 +1816,59 @@
     "from": "originals.set(n, path)",
     "to": "originals.set(n, null)",
     "why": "every original the folder lists is noted"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "      if (after.isBack) {\n        sendAllAgain($)\n      }",
+    "to": "",
+    "why": "the window getting the focus back sends the pictures again"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "      focus = after.focus\n",
+    "to": "",
+    "why": "the focus the window reported is kept"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  if (isBack && !focus.isReported) {",
+    "to": "  if (isBack) {",
+    "why": "a terminal that reports the focus is not asked a return by a pause too"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "  if (isBack && !focus.isReported) {",
+    "to": "  if (false) {",
+    "why": "a terminal that reports no focus keeps the pause as the sign of a return"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "<Client key=\"window-focus\" module=\"./window-focus.ts\" width={0} height={0} />",
+    "to": "<Client key=\"window-focus\" module=\"./window-focus.ts\" width={1} height={1} />",
+    "why": "the watcher of the window's focus takes no room"
+  },
+  {
+    "file": "hooks/images.tsx",
+    "from": "drawsPictures === false || !(s.images || s.draft)",
+    "to": "drawsPictures === false",
+    "why": "nothing watches the window where no picture is drawn"
+  },
+  {
+    "file": "hooks/resend.ts",
+    "from": "isReported: focus.isReported || !isFocused",
+    "to": "isReported: focus.isReported",
+    "why": "a window seen losing the focus reports it"
+  },
+  {
+    "file": "hooks/resend.ts",
+    "from": "isBack: !focus.isFocused && isFocused",
+    "to": "isBack: isFocused",
+    "why": "only the focus regained after it was lost is a return"
+  },
+  {
+    "file": "hooks/window-focus.ts",
+    "from": "surface.post({ isFocused: surface.isWindowFocused })",
+    "to": "surface.post({ isFocused: true })",
+    "why": "the surface module posts the window's own focus"
   }
 ]

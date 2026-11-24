@@ -38,6 +38,13 @@ test('a tool other than Bash, Monitor and an MCP one sends nothing, whatever its
   expect(outwardOf('Write', { command: 'git push' }, [])).toBeUndefined()
 })
 
+test('a built-in tool that publishes or deletes is named, one that does not is not', () => {
+  expect(outwardOf('Artifact', { action: 'delete', url: 'u' }, [])).toBe('Artifact delete')
+  expect(outwardOf('PublishPlugin', { path: 'p' }, [])).toBe('PublishPlugin')
+  expect(outwardOf('Artifact', { action: 'list' }, [])).toBeUndefined()
+  expect(outwardOf('Artifact', undefined, [])).toBeUndefined()
+})
+
 test('an MCP tool is read by its name, never by its input', () => {
   expect(outwardOf('mcp__a__send_message', {}, [])).toBe('mcp__a__send_message')
   expect(outwardOf('mcp__a__get_thing', { command: 'git push' }, [])).toBeUndefined()

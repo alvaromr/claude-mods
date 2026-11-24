@@ -44,6 +44,8 @@ const stage = (
     answer: { ms: 0, tokens: 0, read: 0, write: 0 },
     /** The window's fill as the engine has it; none before a response of this session. */
     fill: { tokens: 38_000, window: 200_000, percent: 19 } as { tokens?: number; window: number; percent?: number },
+    /** What the session has cost in dollars; none where the engine keeps no ledger. */
+    cost: undefined as number | undefined,
     /** A request of the main conversation to that model, read to its end. */
     step: async (model = 'claude-opus-5-5') => {
       const stream = $.turn.step({ turnId: 't1', index: 0, model, effort: 'xhigh', messageCount: 1 })
@@ -86,6 +88,7 @@ const stage = (
         { kind: 'five_hour', percentUsed: 10 },
         { kind: 'seven_day', percentUsed: 10 },
       ],
+      ...(it.cost === undefined ? {} : { cost: { usd: it.cost } }),
     },
   }))
   on('turn.step', async function* (_, e) {
@@ -809,6 +812,47 @@ test('a response that put out nothing, or took no time, says no speed', async ($
   it.answer = { ms: 0, tokens: 500, read: 0, write: 0 }
   await it.step()
   expect((await texts(footer))[1]).not.toContain('⚡')
+  await footer.unmount()
+})
+
+test('the session’s cost is off until the pane turns it on, then follows the ledger in the muted color', async ($, on) => {
+  const it = stage($, on)
+
+  it.cost = 0.4
+  await it.start()
+
+  const footer = await $.ui.mount({ ...FOOTER, surface: 'terminal' })
+  const pane = await $.ui.mount({ ...PANE, surface: 'terminal' })
+
+  expect((await texts(footer))[1]).toBe('Opus 5.5 high · Context ▰▱▱▱▱▱▱▱▱▱ 19%')
+  expect((await pane.find({ key: 'showCost' }))?.text).toBe('□ Coste estimado de la sesión ($0.42)')
+
+  await pane.press({ key: 'showCost' })
+  expect((await texts(footer))[1]).toBe('Opus 5.5 high · Context ▰▱▱▱▱▱▱▱▱▱ 19% · $0.40')
+  expect((await footer.find({ type: 'Text', text: /^\$0\.40$/ }))?.props.color).toBe('#8a8a8a')
+
+  // The ledger's total as each measurement tells it.
+  await $.session.measure({ context: it.fill, rateLimits: [], cost: { usd: 12.345 }, changed: ['cost'] })
+  expect((await texts(footer))[1]).toMatch(/ · \$12\.35$/)
+  await $.session.measure({ context: it.fill, rateLimits: [], cost: { usd: 0 }, changed: ['cost'] })
+  expect((await texts(footer))[1]).toMatch(/ · \$0\.00$/)
+
+  // An engine with no ledger has none to show.
+  await $.session.measure({ context: it.fill, rateLimits: [], changed: ['context'] })
+  expect((await texts(footer))[1]).toBe('Opus 5.5 high · Context ▰▱▱▱▱▱▱▱▱▱ 19%')
+  await pane.unmount()
+  await footer.unmount()
+})
+
+test('a session that starts with its cost on shows what the engine has spent so far', async ($, on) => {
+  const it = stage($, on, false, { settings: { showCost: true } })
+
+  it.cost = 1.5
+  await it.start()
+
+  const footer = await $.ui.mount({ ...FOOTER, surface: 'terminal' })
+
+  expect((await texts(footer))[1]).toBe('Opus 5.5 high · Context ▰▱▱▱▱▱▱▱▱▱ 19% · $1.50')
   await footer.unmount()
 })
 

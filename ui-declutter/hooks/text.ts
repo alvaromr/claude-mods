@@ -3,9 +3,6 @@
 export const TEXT = {
   title: 'Limpieza',
   levels: { hidden: 'Ocultar', summary: 'Agrupar', full: 'Normal' },
-  needsJq: 'declutter necesita jq: hasta instalarlo, Claude Code dibuja las herramientas como siempre',
-  cannotCheckJq: (why: string) =>
-    `declutter no pudo comprobar si hay jq (${why}): Claude Code dibuja las herramientas como siempre`,
   reasons: {
     rejected: 'rechazado',
     denied: 'denegado',

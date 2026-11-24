@@ -1,6 +1,6 @@
 #!/bin/sh
 # The tests of scripts/transcript.sh, which runs the real jq on transcript files
-# of a config folder of its own.
+# in a folder of its own.
 set -eu
 
 script=$(cd "$(dirname "$0")/../scripts" && pwd)/transcript.sh
@@ -15,12 +15,10 @@ expect() { # expect <got> <wanted> <what>
 	fi
 }
 
-mkdir -p "$tmp/projects/-repo" "$tmp/projects/-other"
 # A message that pasted images 1 and 2, one that pasted 3 with no media type and
 # 4 with no data, one with an id and no image block, then rows that paste none:
-# another kind, no ids and ids that are no array. The same session in another
-# project folder, and another session.
-cat >"$tmp/projects/-repo/s1.jsonl" <<'EOF'
+# another kind, no ids and ids that are no array. And another transcript.
+cat >"$tmp/s1.jsonl" <<'EOF'
 {"type":"user","imagePasteIds":[1,2],"message":{"content":[{"type":"text","text":"look"},{"type":"image","source":{"media_type":"image/png","data":"AAA"}},{"type":"image","source":{"media_type":"image/jpeg","data":"BBB"}}]}}
 {"type":"user","imagePasteIds":[3,4],"message":{"content":[{"type":"image","source":{"data":"CCC"}},{"type":"image","source":{"media_type":"image/png"}}]}}
 {"type":"user","imagePasteIds":[5],"message":{"content":[{"type":"text","text":"no image"}]}}
@@ -28,10 +26,9 @@ cat >"$tmp/projects/-repo/s1.jsonl" <<'EOF'
 {"type":"user","message":{"content":[{"type":"image","source":{"media_type":"image/png","data":"EEE"}}]}}
 {"type":"user","imagePasteIds":7,"message":{"content":[{"type":"image","source":{"media_type":"image/png","data":"FFF"}}]}}
 EOF
-printf '%s\n' '{"type":"user","imagePasteIds":[8],"message":{"content":[{"type":"image","source":{"media_type":"image/png","data":"GGG"}}]}}' >"$tmp/projects/-other/s1.jsonl"
-printf '%s\n' '{"type":"user","imagePasteIds":[9],"message":{"content":[{"type":"image","source":{"media_type":"image/png","data":"HHH"}}]}}' >"$tmp/projects/-repo/s2.jsonl"
+printf '%s\n' '{"type":"user","imagePasteIds":[9],"message":{"content":[{"type":"image","source":{"media_type":"image/png","data":"HHH"}}]}}' >"$tmp/s2.jsonl"
 
-read_ids() { sh "$script" "$1" "$tmp" "${2:-s1}"; } # read_ids <wanted> [<session>]
+read_ids() { sh "$script" "$1" "$tmp/${2:-s1}.jsonl"; } # read_ids <wanted> [<transcript>]
 
 expect "$(read_ids '[1]')" "1 image/png AAA" "a wanted image is a number, its type and its data"
 expect "$(read_ids '[2]')" "2 image/jpeg BBB" "an image is the one at its id's place"
@@ -42,9 +39,8 @@ expect "$(read_ids '[4]')" "4 image/png " "an image with no data has it empty"
 expect "$(read_ids '[5]')" "5  " "an id with no image block has both empty"
 expect "$(read_ids '[1]' | wc -l | tr -d ' ')" 1 "an unwanted image is skipped"
 expect "$(read_ids '[6,7]')" "" "rows that are no user's, have no ids, or whose ids are no array, are ignored"
-expect "$(read_ids '[8]')" "8 image/png GGG" "the session's file is found in any project folder"
-expect "$(read_ids '[9]')" "" "the file of another session is not read"
-expect "$(read_ids '[9]' s2)" "9 image/png HHH" "the session asked for is the one read"
+expect "$(read_ids '[9]')" "" "another transcript is not read"
+expect "$(read_ids '[9]' s2)" "9 image/png HHH" "the transcript asked for is the one read"
 expect "$(read_ids '[99]')" "" "an id the transcript does not hold gives nothing"
 expect "$(read_ids '[]')" "" "no wanted id gives nothing"
 

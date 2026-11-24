@@ -199,15 +199,34 @@ test('the speed leaves out the average when hidden or with no time behind it, an
   expect(runsOf(DEFAULTS, null, NO_CACHE, NO_SPEED)).toEqual([])
 })
 
-test('the parts come in the order window, cache, speed, each a row of its own', () => {
+test('the cost shows the dollars to the cent in the muted color, only when asked for', () => {
+  const costly = { ...DEFAULTS, showCost: true }
+
+  expect(runsOf(costly, null, NO_CACHE, NO_SPEED, 0.42)).toEqual([[{ color: MUTED, text: '$0.42' }]])
+  expect(runsOf(costly, null, NO_CACHE, NO_SPEED, 0)).toEqual([[{ color: MUTED, text: '$0.00' }]])
+  expect(runsOf(costly, null, NO_CACHE, NO_SPEED, 1234.5)).toEqual([[{ color: MUTED, text: '$1234.50' }]])
+  expect(runsOf(costly, null, NO_CACHE, NO_SPEED, 0.005)).toEqual([[{ color: MUTED, text: '$0.01' }]])
+  expect(runsOf(DEFAULTS, null, NO_CACHE, NO_SPEED, 0.42)).toEqual([])
+})
+
+test('the cost is in the color set for the secondary text, and is left out where the engine tells none', () => {
+  const costly = { ...DEFAULTS, showCost: true, mutedColor: '#00ff00' }
+
+  expect(runsOf(costly, null, NO_CACHE, NO_SPEED, 2)).toEqual([[{ color: '#00ff00', text: '$2.00' }]])
+  expect(runsOf(costly, null, NO_CACHE, NO_SPEED, null)).toEqual([])
+  expect(runsOf(costly, null, NO_CACHE, NO_SPEED)).toEqual([])
+})
+
+test('the parts come in the order window, cache, speed, cost, each a row of its own', () => {
   const runs = runsOf(
-    DEFAULTS,
+    { ...DEFAULTS, showCost: true },
     { percent: 90, window: 200_000 },
     { warm: { at: 0, tokens: null, ttl: '1h' }, miss: null, now: MINUTE },
     { last: 5, tokens: 5, ms: 1000 },
+    3,
   )
 
-  expect(runs.map(([first]) => first?.text.split(' ')[0])).toEqual(['Context', 'Cache', '⚡'])
+  expect(runs.map(([first]) => first?.text.split(' ')[0])).toEqual(['Context', 'Cache', '⚡', '$3.00'])
 })
 
 test('the labels are the ones set', () => {

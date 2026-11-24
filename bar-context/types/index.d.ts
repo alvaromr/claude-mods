@@ -57,6 +57,8 @@ export type Preferences = {
   showSpeed: boolean
   /** `(ø 84)`, the session's. */
   showAverage: boolean
+  /** `$0.42`, the session's cost as the engine estimates it. */
+  showCost: boolean
   /** `Cache 59m`, how long the prompt cache has left, or `Cache fría`. */
   showCache: boolean
   /** `(261k)`, the tokens the next request writes again once it has lapsed. */
@@ -111,6 +113,8 @@ declare module 'claude-code' {
       miss: Miss | null
       fill: Fill | null
       speed: Speed
+      /** What the session has cost in US dollars, as the engine estimates it; null where it keeps no ledger. */
+      cost: number | null
       model: Model
       /** Which of the row's two clicks has its options open. */
       picker: Picker | null

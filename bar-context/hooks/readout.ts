@@ -29,11 +29,17 @@ const until = (seconds: number) => {
 /**
  * The row's parts after the model and its effort, which are buttons of their
  * own: the context window as a bar and its share in the tier's color, the
- * prompt cache's time left and its last miss, and the output speed, each part
- * as the settings say, as runs of one color; parts with nothing to show are
+ * prompt cache's time left and its last miss, the output speed and the
+ * session's estimated cost in dollars, each part as the settings say, as runs of one color; parts with nothing to show are
  * left out.
  */
-export const runsOf = (s: Preferences, window: Fill | null, cache: Cache, rate: Speed): Run[][] => {
+export const runsOf = (
+  s: Preferences,
+  window: Fill | null,
+  cache: Cache,
+  rate: Speed,
+  cost: number | null = null,
+): Run[][] => {
   const parts: Run[][] = []
 
   if (s.showContext && window?.percent !== undefined) {
@@ -100,6 +106,10 @@ export const runsOf = (s: Preferences, window: Fill | null, cache: Cache, rate: 
         ? [{ color: s.mutedColor, text: ` (ø ${Math.floor((rate.tokens * 1000) / rate.ms)})` }]
         : []),
     ])
+  }
+
+  if (s.showCost && cost !== null) {
+    parts.push([{ color: s.mutedColor, text: `$${cost.toFixed(2)}` }])
   }
 
   // Neighbours of one look drawn as one Text, so the tree stays small.

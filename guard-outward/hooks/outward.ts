@@ -1,4 +1,5 @@
 import { bashOutward } from './bash'
+import { builtinOutward } from './builtin'
 import { mcpOutward } from './mcp'
 
 /** The commands the person listed, each as its first words: `mycli send`. */
@@ -14,7 +15,9 @@ export const outwardOf = (tool: string, input: unknown, listed: readonly (readon
 
   return tool.startsWith('mcp__')
     ? mcpOutward(tool)
-    : (tool === 'Bash' || tool === 'Monitor') && typeof command === 'string'
-      ? bashOutward(command, listed)
-      : undefined
+    : tool === 'Bash' || tool === 'Monitor'
+      ? typeof command === 'string'
+        ? bashOutward(command, listed)
+        : undefined
+      : builtinOutward(tool, input)
 }

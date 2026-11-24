@@ -39,6 +39,14 @@ test('what was never saved, or is no object, gives the defaults', () => {
   expect(loaded(Object.assign(() => 0, { showBar: false }))).toEqual(DEFAULTS)
 })
 
+test('the cost is a part the pane lists, off until it is turned on', () => {
+  expect(DEFAULTS.showCost).toBe(false)
+  expect(PARTS.map(([key]) => key)).toContain('showCost')
+  // A save from before the cost existed leaves it off.
+  expect(loaded({ showSpeed: false }).showCost).toBe(false)
+  expect(loaded({ showCost: true }).showCost).toBe(true)
+})
+
 test('the pane bounds its counts as the settings can hold', () => {
   expect(COUNTS.map(([key, , min, max]) => [key, min, max])).toEqual([
     ['midFrom', 0, 100],

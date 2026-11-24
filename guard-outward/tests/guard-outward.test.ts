@@ -336,6 +336,34 @@ test('asks before an MCP tool that is not a read', async ($, on) => {
   }
 })
 
+test('asks before a built-in tool that publishes, sends or deletes', async ($, on) => {
+  on('tool.check', () => ({ decision: 'allow' }))
+
+  const calls = [
+    ['Artifact', { action: 'delete', url: 'u' }, 'Artifact delete'],
+    ['PublishPlugin', { path: 'p' }, 'PublishPlugin'],
+    ['RemoteTrigger', { action: 'run', trigger_id: 't' }, 'RemoteTrigger run'],
+    ['SendFile', { to: 'peer', files: ['a'] }, 'SendFile'],
+    ['SendMessage', { to: 'bridge:s', message: 'hi' }, 'SendMessage bridge'],
+  ] as const
+
+  for (const [tool, input, what] of calls) {
+    const verdict = await $.tool.check({ tool, input })
+
+    expect(verdict.decision, tool).toBe('ask')
+    expect(verdict.reason, tool).toContain(`\`${what}\``)
+  }
+
+  for (const [tool, input] of [
+    ['Artifact', { action: 'publish', file_path: 'a.html' }],
+    ['RemoteTrigger', { action: 'list' }],
+    ['SendMessage', { to: 'worker', message: 'hi' }],
+    ['SendFeedback', { type: 'bug', title: 't', details: 'd' }],
+  ] as const) {
+    expect((await $.tool.check({ tool, input })).decision, tool).toBe('allow')
+  }
+})
+
 // Each verb the name is read by, as the leading verb or after a joiner.
 const READ_VERBS = ['get', 'list', 'search', 'query', 'read', 'fetch', 'lookup', 'find', 'view', 'show']
 const WRITE_VERBS = [

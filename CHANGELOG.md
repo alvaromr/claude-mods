@@ -6,7 +6,28 @@ entry names its mod.
 
 ## [Unreleased]
 
+### Added
+
+- `bar-context`: a «Coste estimado de la sesión» part, off by default and turned on in the settings pane, shows the
+  session's estimated cost in dollars (`$0.42`) at the row's end, in the secondary text's color.
+- `guard-outward`: also asks before the built-in tools that publish, send or delete: deleting an artifact, replying
+  to its comments, publishing a plugin, running remote triggers, and sending files to other sessions.
+
+### Changed
+
+- `ui-declutter`: no longer needs `jq`; it reads the results of rows not drawn yet straight from the session's
+  transcript, from its end, so recent results show at once even in very large sessions, and the «needs jq» notice
+  under the prompt is gone.
+- `ui-linkify`: pictures a terminal dropped when it redrew its screen are sent again the moment the window gets the
+  focus back, instead of at the next key typed; a terminal that reports no focus keeps the old behaviour.
+
 ### Fixed
+
+- `bar-context`: the prompt cache's lifetime (5 minutes or 1 hour) is read from the usage each response reports, so
+  it is right in long sessions too: the transcript it read before could not be read above 4 MiB, and the row fell
+  back to guessing from the account's plan and settings.
+- `ui-declutter`, `ui-linkify`: the session's transcript is found wherever Claude Code keeps it, a custom config
+  folder too, instead of at a guessed path.
 
 - `bar-context`, `bar-git`, `bar-limits`, `bar-path`, `ui-colorify`, `ui-companion`, `ui-declutter`, `ui-linkify`,
   `ui-mods`: a click on the footer's button that opens a mod's pane opens it again on a terminal narrower than 144

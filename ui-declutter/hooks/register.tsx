@@ -28,7 +28,7 @@ import {
   timesOf,
 } from './layout'
 import type { CallLine, FileLine } from './layout'
-import { jqNotice, jqUnchecked, messageOf } from './notices'
+import { messageOf } from './notices'
 import { rowToggled, isSpanOpen, toggled, withFull, withoutSpans } from './opened'
 import { outcomeOf, unified, withoutBashEdit } from './outcome'
 import type { Outcome } from './outcome'
@@ -51,7 +51,7 @@ import { lineOf, padOf } from './summary'
 import { TEXT } from './text'
 import { beforesOf, barRuns, clockOf, endTiming, isLive, rowsOf, timeOf, verdictTiming } from './timeline'
 import type { Row, Time } from './timeline'
-import { foundFor, isKept, lostIn, resultsFrom, retriable, transcriptCommand, unknownOf } from './transcript'
+import { foundFor, isKept, lostIn, resultsIn, retriable, unknownOf } from './transcript'
 
 // A web-fetch agent stands in for WebFetch where a session lacks it, and the
 // engine draws it as one: it is that tool, its result too, which names no input.
@@ -157,31 +157,6 @@ const forgetProject = async ($: EngineInterface) => {
   await loadSettings($)
 }
 
-// Without jq the results of the rows not drawn yet cannot be read: every row
-// is the engine's, as with the mod off. Unknown until the start looks.
-let hasJq = true
-
-// Run by session.start, which every fresh load of this mod raises, a reload's
-// too; a drawing before it shows the defaults, as drawing writes no state.
-const start = async ($: EngineInterface) => {
-  await loadSettings($)
-
-  // A check that cannot run tells nothing of jq, and the rows would need it.
-  const missing = await $.process
-    .run(['/bin/sh', '-c', 'command -v jq'])
-    .then(({ exitCode }) => jqNotice(exitCode))
-    .catch(jqUnchecked)
-
-  if (missing !== undefined && hasJq) {
-    hasJq = false
-    $.ui.status(missing)
-    await update($, revision, n => n + 1)
-  }
-}
-
-// Whether the mod draws the tool rows: on, and able to.
-const isDrawing = async ($: EngineInterface) => hasJq && (await read($, isOn))
-
 const timings = { plugin: 'ui-declutter', key: 'timings' } as const
 const opened = atom({ plugin: 'ui-declutter', key: 'opened' } as const, [])
 const revision = atom({ plugin: 'ui-declutter', key: 'revision' } as const, 0)
@@ -220,16 +195,24 @@ const keep = (id: string | undefined, output: unknown) => {
 }
 
 const fromTranscript = async ($: EngineInterface, wanted: string[]) => {
-  const root = (await $.env.get('CLAUDE_CONFIG_DIR')) ?? `${await $.env.get('HOME')}/.claude`
-  const { exitCode, stdout, isStdoutTruncated } = await $.process.run(
-    transcriptCommand(wanted, root, await $.session.id(), $.plugin.root),
+  const { transcriptPath } = await $.session.info()
+
+  // A session that keeps no transcript file here holds none of the results.
+  if (transcriptPath === '') {
+    return
+  }
+
+  const { size } = await $.fs.stat(transcriptPath)
+  const found = await resultsIn(
+    async (offset, length) =>
+      Uint8Array.from(atob((await $.fs.read(transcriptPath, { as: 'bytes', offset, length })).base64), char =>
+        char.charCodeAt(0),
+      ),
+    size,
+    new Set(wanted),
   )
 
-  if (exitCode === 0) {
-    for (const { id, output } of resultsFrom(stdout, isStdoutTruncated)) {
-      keep(id, output)
-    }
-  }
+  found.forEach((output, id) => results.set(id, outcomeOf(output)))
 }
 
 // Reads the pending ids. One found nowhere is null, and read again a little
@@ -659,7 +642,9 @@ export const register: Register = on => {
     pending.clear()
     misses.clear()
 
-    await start($)
+    // Run by session.start, which every fresh load of this mod raises, a reload's
+    // too; a drawing before it shows the defaults, as drawing writes no state.
+    await loadSettings($)
 
     return next(e)
   })
@@ -713,7 +698,7 @@ export const register: Register = on => {
       return slotted(beneath, [])
     }
 
-    const isActive = await isDrawing($)
+    const isActive = await read($, isOn)
     const { Box, Button, Text } = $.ui.resolve(e)
 
     // As the companion's: its dot green while it draws, gray while it leaves Claude Code's.
@@ -850,7 +835,7 @@ export const register: Register = on => {
       kind === undefined ||
       isEngineRow(id, e.props.isExpanded, unfolded, unfoldedHere) ||
       e.surface !== 'terminal' ||
-      !(await isDrawing($)) ||
+      !(await read($, isOn)) ||
       (await isGone($, id, e.props.isRunning))
     ) {
       return next(e)
@@ -904,7 +889,7 @@ export const register: Register = on => {
 
     const id = noticeId(task.id)
 
-    if (!(await isDrawing($)) || (await isGone($, id, false)) || (await read($, commands)) === 'full') {
+    if (!(await read($, isOn)) || (await isGone($, id, false)) || (await read($, commands)) === 'full') {
       return next(e)
     }
 
@@ -944,7 +929,7 @@ export const register: Register = on => {
     if (
       e.props.isExpanded === true ||
       e.surface !== 'terminal' ||
-      !(await isDrawing($)) ||
+      !(await read($, isOn)) ||
       (await isGone($, e.props.tool_use_id, false))
     ) {
       return next(e)
@@ -992,7 +977,7 @@ export const register: Register = on => {
 
     if (
       e.surface !== 'terminal' ||
-      !(await isDrawing($)) ||
+      !(await read($, isOn)) ||
       (await isGone(
         $,
         ids[0] ?? '',
@@ -1044,7 +1029,7 @@ export const register: Register = on => {
     forgetScan()
     lostIn(resultIds, results).forEach(id => results.delete(id))
 
-    if (isCall && (await isDrawing($))) {
+    if (isCall && (await read($, isOn))) {
       await update($, revision, n => n + 1)
     }
 

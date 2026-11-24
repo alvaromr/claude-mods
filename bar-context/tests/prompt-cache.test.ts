@@ -18,43 +18,26 @@ import {
 const MINUTE = 60_000
 const HOUR = 60 * MINUTE
 
-const written = (cacheCreation: object, extra: object = {}) =>
-  JSON.stringify({ type: 'assistant', message: { usage: { cache_creation: cacheCreation } }, ...extra })
-
 test('only 5m and 1h are lifetimes the cache has', () => {
   expect(['5m', '1h'].every(isTtl)).toBe(true)
   expect(['2h', '', 5, null, undefined].some(isTtl)).toBe(false)
 })
 
-test('the lifetime written is the one of the last write the transcript reports', () => {
-  const transcript = [
-    written({ ephemeral_1h_input_tokens: 900, ephemeral_5m_input_tokens: 0 }),
-    JSON.stringify({ type: 'user', message: { content: 'hi' } }),
-    written({ ephemeral_1h_input_tokens: 0, ephemeral_5m_input_tokens: 40 }),
-    '',
-  ].join('\n')
-
-  expect(writtenTtl(transcript)).toBe('5m')
-  expect(writtenTtl(transcript.split('\n').slice(0, 2).join('\n'))).toBe('1h')
+test('the lifetime written is the one of the part of the write a response reports', () => {
+  expect(writtenTtl({ ephemeral_1h_input_tokens: 900, ephemeral_5m_input_tokens: 0 })).toBe('1h')
+  expect(writtenTtl({ ephemeral_1h_input_tokens: 0, ephemeral_5m_input_tokens: 40 })).toBe('5m')
+  expect(writtenTtl({ ephemeral_5m_input_tokens: 40 })).toBe('5m')
+  expect(writtenTtl({ ephemeral_1h_input_tokens: 1 })).toBe('1h')
 })
 
 test('a write of 1h wins over one of 5m in the same response', () => {
-  expect(writtenTtl(written({ ephemeral_1h_input_tokens: 1, ephemeral_5m_input_tokens: 1 }))).toBe('1h')
+  expect(writtenTtl({ ephemeral_1h_input_tokens: 1, ephemeral_5m_input_tokens: 1 })).toBe('1h')
 })
 
-test('no lifetime is written by a subagent, a line cut short, a response that wrote nothing or an empty transcript', () => {
-  const sidechain = written({ ephemeral_1h_input_tokens: 5 }, { isSidechain: true })
-  const cut = written({ ephemeral_1h_input_tokens: 5 }).slice(0, -8)
-  const nothing = written({ ephemeral_1h_input_tokens: 0, ephemeral_5m_input_tokens: 0 })
-  const prompt = written({ ephemeral_1h_input_tokens: 5 }, { type: 'user' })
-
-  expect([sidechain, cut, nothing, prompt, ''].map(writtenTtl)).toEqual([
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-  ])
+test('no lifetime is written by a response that wrote none or named none', () => {
+  expect(writtenTtl({ ephemeral_1h_input_tokens: 0, ephemeral_5m_input_tokens: 0 })).toBeUndefined()
+  expect(writtenTtl({ input_tokens: 9, cache_read_input_tokens: 100, cache_creation_input_tokens: 5 })).toBeUndefined()
+  expect(writtenTtl({})).toBeUndefined()
 })
 
 test('the lifetime Claude Code is told by its variables and settings follows their order', () => {

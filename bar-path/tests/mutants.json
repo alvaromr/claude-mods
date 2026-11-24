@@ -181,15 +181,9 @@
   },
   {
     "file": "hooks/register.tsx",
-    "from": "  hasStarted = true\n  moved = undefined\n",
-    "to": "  hasStarted = true\n",
+    "from": "const start = async ($: EngineInterface) => {\n  moved = undefined\n",
+    "to": "const start = async ($: EngineInterface) => {\n",
     "why": "a new session does not keep an earlier cd"
-  },
-  {
-    "file": "hooks/register.tsx",
-    "from": "    hasStarted = false\n",
-    "to": "",
-    "why": "a start that fails is tried again at the next drawing"
   },
   {
     "file": "hooks/register.tsx",

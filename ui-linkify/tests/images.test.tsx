@@ -249,8 +249,8 @@ test('reads an image a compaction took out of memory from the transcript file', 
   const clock = mock.clock(on)
   conversation(on)
   engineRow(on)
-  mock.env(on, { HOME: '/Users/me' })
   on('session.id', () => ({ value: 'abc' }))
+  on('session.info', () => ({ value: { transcriptPath: '/Users/me/.claude/projects/-repo/abc.jsonl' } }))
   on('process.run', ($, e) => {
     runs.push(e.argv)
 
@@ -267,7 +267,7 @@ test('reads an image a compaction took out of memory from the transcript file', 
   expect(runs).toHaveLength(2)
   expect(runs[1]?.[0]).toBe('sh')
   expect(runs[1]?.[1]?.endsWith('/ui-linkify/scripts/transcript.sh')).toBe(true)
-  expect(runs[1]?.slice(2)).toEqual(['[3]', '/Users/me/.claude', 'abc'])
+  expect(runs[1]?.slice(2)).toEqual(['[3]', '/Users/me/.claude/projects/-repo/abc.jsonl'])
 
   // Drawn again, as on a scroll: no second read.
   await ui.unmount()
@@ -281,8 +281,8 @@ test('an image neither its files nor the transcript can give is left out, and wh
   const clock = mock.clock(on)
   conversation(on)
   engineRow(on)
-  mock.env(on, { HOME: '/Users/me' })
   on('session.id', () => ({ value: 'abc' }))
+  on('session.info', () => ({ value: { transcriptPath: '/Users/me/.claude/projects/-repo/abc.jsonl' } }))
   on('ui.log', (_, e) => (logged.push(e), { value: undefined }))
   on('process.run', () => ({ deny: 'no shell' }))
 
@@ -295,6 +295,24 @@ test('an image neither its files nor the transcript can give is left out, and wh
     { text: 'reading the pasted files failed: ui-linkify: $.process.run: no shell', to: 'debug' },
     { text: 'reading the transcript failed: ui-linkify: $.process.run: no shell', to: 'debug' },
   ])
+})
+
+test('a session that keeps no transcript on this machine has none read', async ($, on) => {
+  const runs: (readonly string[])[] = []
+  const clock = mock.clock(on)
+  conversation(on)
+  engineRow(on)
+  on('session.id', () => ({ value: 'abc' }))
+  on('session.info', () => ({ value: { transcriptPath: '' } }))
+  on('process.run', (_, e) => (runs.push(e.argv), ran('')))
+
+  const ui = await said($, 'antes de compactar [Image #5]', 'terminal')
+  await clock.settle()
+
+  expect(await ui.find({ key: 'image-5' })).toBeUndefined()
+  // Only the temp folder was looked at.
+  expect(runs.filter(argv => argv.join(' ').includes('transcript.sh'))).toEqual([])
+  expect(runs).toHaveLength(1)
 })
 
 test('draws a prompt drawn before its message was kept once it is', async ($, on) => {
@@ -565,6 +583,99 @@ test('the first key typed after a pause sends every picture drawn again, one at 
   expect(sent).toEqual(['image-1', 'image-1'])
 })
 
+test('a window that loses the focus and gets it back sends every picture drawn again, and the first key after a pause no longer does', async ($, on) => {
+  const sent: string[] = []
+  const clock = mock.clock(on, { now: 1_700_000_000_000 })
+  conversation(on)
+  engineRow(on)
+  on('ui.blit', ($, e) => ('key' in e && sent.push(e.key), { value: {} }))
+  on('prompt.edit', ($, e) => ({ text: e.text + e.inputText, cursor: e.cursor + e.inputText.length }))
+  on('prompt.read', () => ({ value: { text: '', cursor: 0 } }))
+  on('ui.render', { component: 'AbovePrompt' }, ($, e) => $.ui.resolve(e).Text({ children: 'band' }))
+
+  await said($, 'mira esto [Image #1]', 'terminal')
+  await said($, 'otra vez [Image #1]', 'terminal')
+
+  const band = await $.ui.mount({
+    plugin: 'ui-linkify',
+    surface: 'terminal',
+    component: 'AbovePrompt',
+    props: BOX,
+  })
+
+  await clock.settle()
+  await clock.advance(200)
+  sent.length = 0
+
+  const edit = () =>
+    ($.prompt as unknown as { edit: (e: PromptEditInput) => Promise<PromptEditResult> }).edit({
+      origin: { kind: 'composer' },
+      text: '',
+      cursor: 0,
+      start: 0,
+      end: 0,
+      inputText: 'a',
+    })
+
+  // Focused to begin with: nothing is a return.
+  await clock.advance(10_000)
+  await clock.settle()
+  expect(sent).toEqual([])
+
+  await band.setWindowFocused(false)
+  await clock.settle()
+  expect(sent).toEqual([])
+
+  await band.setWindowFocused(true)
+  await clock.settle()
+  expect(sent).toEqual(['image-1'])
+
+  await clock.advance(50)
+  expect(sent).toEqual(['image-1', 'image-1'])
+
+  // The terminal has shown it reports the focus: a key after a pause says nothing.
+  sent.length = 0
+  await edit()
+  await clock.advance(10_000)
+  await edit()
+  await clock.settle()
+  await clock.advance(50)
+  expect(sent).toEqual([])
+})
+
+test('the watcher of the window’s focus is of no size and on the terminal alone', async ($, on) => {
+  const clock = mock.clock(on)
+  on('prompt.read', () => ({ value: { text: '', cursor: 0 } }))
+  on('ui.render', { component: 'AbovePrompt' }, ($, e) => $.ui.resolve(e).Text({ children: 'band' }))
+
+  const band = (surface: 'terminal' | 'desktop') =>
+    $.ui.mount({ plugin: 'ui-linkify', surface, component: 'AbovePrompt', props: BOX })
+
+  const terminal = await band('terminal')
+
+  await clock.settle()
+  expect(JSON.stringify(await terminal.drawn())).toMatch(/"key":"window-focus"[^}]*"width":0,"height":0/)
+  await terminal.unmount()
+
+  const desktop = await band('desktop')
+
+  await clock.settle()
+  expect(JSON.stringify(await desktop.drawn())).not.toContain('window-focus')
+})
+
+test('with the pictures under a prompt and the box’s both turned off, nothing watches the window', async ($, on) => {
+  const clock = mock.clock(on)
+  const begin = jira(on, { images: false, draft: false })
+  on('prompt.read', () => ({ value: { text: '', cursor: 0 } }))
+  on('ui.render', { component: 'AbovePrompt' }, ($, e) => $.ui.resolve(e).Text({ children: 'band' }))
+  await begin($)
+
+  const ui = await $.ui.mount({ plugin: 'ui-linkify', surface: 'terminal', component: 'AbovePrompt', props: BOX })
+
+  await clock.settle()
+  expect(JSON.stringify(await ui.drawn())).not.toContain('window-focus')
+})
+
 test('a picture whose file was not there is looked up again a while later, by a row that looks once', async ($, on) => {
   const clock = mock.clock(on)
   let listing = ''
@@ -727,7 +838,7 @@ test('the transcript gives no image where its read fails, nor from the line it c
   on('session.messages', () => ({ value: [] }))
   engineRow(on)
   on('session.id', () => ({ value: 'abc' }))
-  mock.env(on, { HOME: '/Users/me' })
+  on('session.info', () => ({ value: { transcriptPath: '/Users/me/.claude/projects/-repo/abc.jsonl' } }))
   on('process.run', (_, e) => (e.argv.join(' ').includes('transcript.sh') ? transcript : ran('')))
 
   transcript = ran(`35 image/png ${PNG}\n`, 1)
