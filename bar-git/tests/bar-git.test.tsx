@@ -353,7 +353,20 @@ test('⚙ opens the pane, which hides parts, renames a button and changes what i
     },
   } as const
 
-  on('ui.open', ($, e) => (open.add(e.id), { value: { isPlaced: true } }))
+  // As on a terminal too narrow for a pane nobody asked for: an open is placed
+  // only while the press that asked for it is still running.
+  let pressing = 0
+  on('ui.press', { plugin: '*' }, async (_, e, next) => {
+    pressing++
+    try {
+      return await next(e)
+    } finally {
+      pressing--
+    }
+  })
+  on('ui.open', ($, e) =>
+    pressing > 0 ? (open.add(e.id), { value: { isPlaced: true } }) : { value: { isPlaced: false, reason: 'unasked' } },
+  )
   on('ui.close', ($, e) => (open.delete(e.id), { value: undefined }))
   on('ui.panes', () => ({
     value: [...open].map(id => ({ id, title: id, isShown: true, isFocused: false, isPlaced: true })),
@@ -615,7 +628,7 @@ test('a save or a forget the store refuses says so, and the pane does not mark i
   await pane.unmount()
 })
 
-test('a start that fails says why in the debug log, and the next drawing starts again', async ($, on) => {
+test('a start that fails says why in the debug log, and the next start fills the row in', async ($, on) => {
   const it = stage($, on)
   const clock = mock.clock(on)
 
@@ -625,9 +638,13 @@ test('a start that fails says why in the debug log, and the next drawing starts 
 
   it.isStateDown = false
 
+  // Drawing writes no state, so it starts nothing: the row waits, empty.
   const ui = await it.footer()
 
   await clock.settle()
+  expect(await buttons(ui)).toEqual([])
+
+  await it.start()
   expect(await buttons(ui)).toEqual(['commit', 'integrar', '⚙'])
   await ui.unmount()
 })
@@ -665,12 +682,15 @@ test('changes pressed together all land', async ($, on) => {
   await ui.unmount()
 })
 
-test('a resumed session drawn before session.start reached the mod: the row fills in', async ($, on) => {
+test('a resumed session drawn before session.start reached the mod: the row fills in at the start', async ($, on) => {
   const it = stage($, on)
   const clock = mock.clock(on)
   const ui = await it.footer()
 
   await clock.settle()
+  expect(await buttons(ui)).toEqual([])
+
+  await it.start()
   expect(await buttons(ui)).toEqual(['commit', 'integrar', '⚙'])
   await ui.unmount()
 })
@@ -907,7 +927,20 @@ test('the ⚙ button opens the pane while another pane is open', async ($, on) =
   const it = stage($, on)
   const open = new Set(['other'])
 
-  on('ui.open', ($, e) => (open.add(e.id), { value: { isPlaced: true } }))
+  // As on a terminal too narrow for a pane nobody asked for: an open is placed
+  // only while the press that asked for it is still running.
+  let pressing = 0
+  on('ui.press', { plugin: '*' }, async (_, e, next) => {
+    pressing++
+    try {
+      return await next(e)
+    } finally {
+      pressing--
+    }
+  })
+  on('ui.open', ($, e) =>
+    pressing > 0 ? (open.add(e.id), { value: { isPlaced: true } }) : { value: { isPlaced: false, reason: 'unasked' } },
+  )
   on('ui.close', ($, e) => (open.delete(e.id), { value: undefined }))
   on('ui.panes', () => ({
     value: [...open].map(id => ({ id, title: id, isShown: true, isFocused: false, isPlaced: true })),

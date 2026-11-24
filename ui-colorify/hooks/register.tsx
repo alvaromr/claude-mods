@@ -229,7 +229,7 @@ export const register: Register = on => {
       : slotted(
           beneath,
           <Box key="slot:1.5:ui-colorify">
-            <Button key="colorify" plain dimColor onPress={() => void togglePane($)}>
+            <Button key="colorify" plain dimColor onPress={() => togglePane($)}>
               <Text color={s.on ? 'success' : 'inactive'}>{s.on ? '●' : '○'}</Text> colorify
             </Button>
           </Box>,

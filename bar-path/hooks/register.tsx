@@ -31,8 +31,6 @@ const origin = atom({ plugin: 'bar-path', key: 'origin' } as const, {
   hasProject: false,
 })
 
-let hasStarted = false
-
 /** A call that failed gives `fallback`, the mod showing less, and its cause goes to the debug log. */
 const orElse =
   <T,>($: EngineInterface, doing: string, fallback: T) =>
@@ -152,19 +150,17 @@ const locate = async ($: EngineInterface) => {
   await update($, place, () => placeOf(cwd, home))
 }
 
-// The settings and the folder read again. Run by session.start, and by the
-// first drawing where a resumed session drew before session.start reached
-// this mod. A start that fails says why in the debug log and lets the next
-// drawing try again.
+// The settings and the folder read again. Run by session.start, which every
+// fresh load of this mod raises, a reload's too; a drawing before it shows the
+// defaults, as drawing writes no state. A start that fails says why in the
+// debug log.
 const start = async ($: EngineInterface) => {
-  hasStarted = true
   moved = undefined
 
   try {
     await loadSettings($)
     await locate($)
   } catch (failure) {
-    hasStarted = false
     orElse($, 'starting', undefined)(failure)
   }
 }
@@ -215,12 +211,6 @@ export const register: Register = on => {
   // in. A long path gives way at its start, so the project's folder stays;
   // no zsh arrow, which told the last command's status there and here tells nothing.
   on('ui.render', { component: 'SessionMode' }, async ($, e, next) => {
-    // Drawing writes no state: the start runs on a timer of its own.
-    if (!hasStarted) {
-      hasStarted = true
-      $.clock.after(0, () => void start($))
-    }
-
     const beneath = await next(e)
     const found = await read($, place)
 
@@ -251,7 +241,7 @@ export const register: Register = on => {
             </Text>
           </Link>
           <Text> </Text>
-          <Button key="bar-path-settings" plain dimColor label="⚙" onPress={() => void togglePane($)} />
+          <Button key="bar-path-settings" plain dimColor label="⚙" onPress={() => togglePane($)} />
         </Box>
       </Box>,
     )

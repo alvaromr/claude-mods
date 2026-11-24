@@ -303,7 +303,7 @@ const drawn = async ($: Engine, { Box, Button, Text }: Pick<Elements, 'Box' | 'B
         )
       )}
       <Box flexShrink={0}>
-        <Button key="bar-limits-settings" plain dimColor label="⚙" onPress={() => void togglePane($)} />
+        <Button key="bar-limits-settings" plain dimColor label="⚙" onPress={() => togglePane($)} />
       </Box>
     </Box>
   )

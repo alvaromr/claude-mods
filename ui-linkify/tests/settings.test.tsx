@@ -26,7 +26,22 @@ const stage = (on: On) => {
 
   on('fs.exists', ($, e) => ({ value: e.path === '/etc/hosts' }))
   on('ui.toast', (_, e) => (it.toasts.push(e.text), { value: undefined }))
-  on('ui.open', (_, e) => (it.open.add(e.id), it.titles.push(e.title), { value: { isPlaced: true } }))
+  // As on a terminal too narrow for a pane nobody asked for: an open is placed
+  // only while the press that asked for it is still running.
+  let pressing = 0
+  on('ui.press', { plugin: '*' }, async (_, e, next) => {
+    pressing++
+    try {
+      return await next(e)
+    } finally {
+      pressing--
+    }
+  })
+  on('ui.open', (_, e) =>
+    pressing > 0
+      ? (it.open.add(e.id), it.titles.push(e.title), { value: { isPlaced: true } })
+      : { value: { isPlaced: false, reason: 'unasked' } },
+  )
   on('ui.close', (_, e) => (it.open.delete(e.id), { value: undefined }))
   on('ui.panes', () => ({
     value: [...it.open].map(id => ({ id, title: id, isShown: true, isFocused: false, isPlaced: true })),

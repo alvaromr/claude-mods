@@ -3,6 +3,18 @@ import type { Engine } from 'claude-code/testing'
 import type { ModelCompleteInput, On, SessionMessage } from 'claude-code'
 
 const SURFACES = ['terminal', 'desktop'] as const
+
+// As on a terminal too narrow for a pane nobody asked for: an open is placed
+// only while the press or the command that asked for it is still running.
+let requests = 0
+const requested = async <T,>(run: () => Promise<T>) => {
+  requests++
+  try {
+    return await run()
+  } finally {
+    requests--
+  }
+}
 const USAGE = {
   input_tokens: 0,
   output_tokens: 0,
@@ -102,7 +114,9 @@ const stage = ($: Engine, on: On, given: { isUp?: boolean; stored?: Record<strin
     return { value: undefined }
   })
   on('ui.panes', () => ({ value: given.isUp === true ? UP : [] }))
+  on('ui.press', { plugin: '*' }, (_, e, next) => requested(async () => next(e)))
   on('ui.open', (_, e) => {
+    if (requests === 0) return { value: { isPlaced: false, reason: 'unasked' } }
     opened.push(`${e.id}: ${e.title}`)
 
     return { value: { isPlaced: true } }
@@ -1054,12 +1068,14 @@ test("a mode's alert never shows, shows while minimized, or always, the pane ope
 test('the command turns it on and off', async ($, on) => {
   const world = stage($, on)
   const run = () =>
-    $.command.run({
-      command: 'consejero',
-      args: '',
-      origin: { kind: 'composer' },
-      presentation: { isFullscreen: true, columns: 160 },
-    })
+    requested(() =>
+      $.command.run({
+        command: 'consejero',
+        args: '',
+        origin: { kind: 'composer' },
+        presentation: { isFullscreen: true, columns: 160 },
+      }),
+    )
 
   await world.start()
   await run()

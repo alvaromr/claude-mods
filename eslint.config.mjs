@@ -14,8 +14,13 @@ export default defineConfig(
   {
     rules: {
       // Checking a promise passed as an argument never ends on a call to `on`,
-      // whose overloads span every engine event, so that one check is off.
-      '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: { arguments: false } }],
+      // whose overloads span every engine event, so that one check is off. Nor
+      // on a Button's `onPress`, which takes a promise: the press lasts until it
+      // settles, so a pane it opens counts as asked for.
+      '@typescript-eslint/no-misused-promises': [
+        'error',
+        { checksVoidReturn: { arguments: false, attributes: false } },
+      ],
       // A number reads the same in any text it is put in.
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
     },

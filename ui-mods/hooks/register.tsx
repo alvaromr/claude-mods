@@ -156,7 +156,7 @@ const togglePane = async ($: Engine) => {
 // does not fit, of the band above the prompt.
 const drawn = ($: Engine, { Box, Button }: Pick<ReturnType<EngineInterface['ui']['resolve']>, 'Box' | 'Button'>) => (
   <Box key="slot:1.1:ui-mods">
-    <Button key="mods" plain dimColor label="mods" onPress={() => void togglePane($)} />
+    <Button key="mods" plain dimColor label="mods" onPress={() => togglePane($)} />
   </Box>
 )
 

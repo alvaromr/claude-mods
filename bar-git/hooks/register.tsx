@@ -91,27 +91,23 @@ const refresh = async ($: EngineInterface) => {
   }
 }
 
-let hasStarted = false
-
 // The tools that may change the repository, and how long they stay still
 // before it is read again.
 const CHANGERS = new Set(['Bash', 'Edit', 'Write', 'NotebookEdit'])
 const SETTLE_MS = 1000
 let settling: Timer | undefined
 
-// The settings and the repository read again. Run by session.start, and by
-// the first drawing where a resumed session drew before session.start reached
-// this mod. A start that fails says why in the debug log and lets the next
-// drawing try again.
+// The settings and the repository read again. Run by session.start, which
+// every fresh load of this mod raises, a reload's too; a drawing before it
+// shows the defaults, as drawing writes no state. A start that fails says why
+// in the debug log.
 const start = async ($: EngineInterface) => {
-  hasStarted = true
   moved = nextMove(moved, { kind: 'started' })
 
   try {
     await loadSettings($)
     await refresh($)
   } catch (failure) {
-    hasStarted = false
     orElse($, 'starting', undefined)(failure)
   }
 }
@@ -258,12 +254,6 @@ export const register: Register = on => {
   // beside it. The branch alone gives way: cut at the row's end so the counts
   // and buttons fit.
   on('ui.render', { component: 'SessionMode' }, async ($, e, next) => {
-    // Drawing writes no state: the start runs on a timer of its own.
-    if (!hasStarted) {
-      hasStarted = true
-      $.clock.after(0, () => void start($))
-    }
-
     const beneath = await next(e)
     const found = await read($, repo)
     const s = await read($, settings)
@@ -327,7 +317,7 @@ export const register: Register = on => {
             part,
           ])}
           {isTerminal && <Text> </Text>}
-          {isTerminal && <Button key="bar-git-settings" plain dimColor label="⚙" onPress={() => void togglePane($)} />}
+          {isTerminal && <Button key="bar-git-settings" plain dimColor label="⚙" onPress={() => togglePane($)} />}
         </Box>
       </Box>,
     )

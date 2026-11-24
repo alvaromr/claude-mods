@@ -41,7 +41,7 @@ const drawn = (
 
   return (
     <Box key="slot:1.4:ui-linkify">
-      <Button key="linkify" plain dimColor onPress={() => void togglePane($)}>
+      <Button key="linkify" plain dimColor onPress={() => togglePane($)}>
         <Text color={isOn ? 'success' : 'inactive'}>{isOn ? '●' : '○'}</Text> linkify
       </Button>
     </Box>

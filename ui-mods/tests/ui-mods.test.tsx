@@ -11,6 +11,20 @@ const MODS = {
 } as const
 const DONE = { exitCode: 0, stderr: '', isStdoutTruncated: false, isStderrTruncated: false }
 
+// As on a terminal too narrow for a pane nobody asked for: an open is placed
+// only while the press or the command that asked for it is still running.
+let asking = 0
+const asked = async <T,>(run: () => Promise<T>) => {
+  asking++
+  try {
+    return await run()
+  } finally {
+    asking--
+  }
+}
+// A command the person runs, which asks for the panes it opens.
+const command = ($: Engine, args: Parameters<Engine['command']['run']>[0]) => asked(() => $.command.run(args))
+
 const PANE = {
   plugin: 'ui-mods',
   component: 'Pane',
@@ -115,7 +129,10 @@ const stage = (on: On, author?: unknown, enabledPlugins: unknown = {}, isInTwoSc
   })
   on('settings.read', () => ({ value: { enabledPlugins } }))
   on('command.register', (_, e) => (registered.push(e.name), { value: { command: 'mods' } }))
-  on('ui.open', ($, e) => (open.add(e.id), { value: { isPlaced: true } }))
+  on('ui.press', { plugin: '*' }, (_, e, next) => asked(async () => next(e)))
+  on('ui.open', ($, e) =>
+    asking > 0 ? (open.add(e.id), { value: { isPlaced: true } }) : { value: { isPlaced: false, reason: 'unasked' } },
+  )
   on('ui.close', ($, e) => (open.delete(e.id), { value: undefined }))
   on('ui.panes', () => ({
     value: [...open].map(id => ({ id, title: id, isShown: true, isFocused: false, isPlaced: true })),
@@ -140,7 +157,7 @@ const stage = (on: On, author?: unknown, enabledPlugins: unknown = {}, isInTwoSc
 test('/mods opens the pane with the mods alone, switches one and reloads, then closes it', async ($, on) => {
   const { runs, filled, switched, open } = stage(on)
 
-  await $.command.run(MODS)
+  await command($, MODS)
   expect([...open]).toEqual(['mods'])
 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
@@ -167,13 +184,13 @@ test('/mods opens the pane with the mods alone, switches one and reloads, then c
   expect(runs).toEqual([])
   expect((await ui.find({ type: 'Text', text: /sin aplicar/ }))?.text).toBe('5 de 7 activos · 1 sin aplicar')
 
-  await $.command.run({ ...MODS, command: 'reload-plugins' })
+  await command($, { ...MODS, command: 'reload-plugins' })
   expect(runs).toEqual(['reload-plugins'])
   expect(await ui.find({ type: 'Text', text: /sin aplicar/ })).toBeUndefined()
   expect((await ui.find({ type: 'Button', key: 'reload' }))?.props.variant).toBe('secondary')
 
   await ui.unmount()
-  await $.command.run(MODS)
+  await command($, MODS)
   expect([...open]).toEqual([])
 })
 
@@ -182,7 +199,7 @@ test('a plugin whose hooks.json cannot be read is no mod, and why is in the debu
   const logged: { text: string; to: string }[] = []
   on('ui.log', (_, e) => (logged.push(e), { value: undefined }))
 
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
 
@@ -196,7 +213,7 @@ test('a plugin whose hooks.json cannot be read is no mod, and why is in the debu
 
 test('in the terminal the buttons run /reload-plugins and /restart themselves', async ($, on) => {
   const { runs, filled } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   await ui.press({ key: 'reload' })
@@ -208,7 +225,7 @@ test('in the terminal the buttons run /reload-plugins and /restart themselves', 
 
 test('a mod whose plugin.json names its author is listed under them, in its marketplace', async ($, on) => {
   stage(on, { name: 'someone-else' })
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
 
@@ -219,7 +236,7 @@ test('a mod whose plugin.json names its author is listed under them, in its mark
 
 test('a press on the name unfolds and folds its description; every surface draws the square', async ($, on) => {
   const { switched } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   for (const [surface, box] of [
     ['desktop', '■ '],
@@ -248,7 +265,7 @@ test('a press on the name unfolds and folds its description; every surface draws
 
 test('the row under the pointer is lit, and nothing once it leaves', async ($, on) => {
   stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
   const lit = async () =>
@@ -297,7 +314,7 @@ test("the footer's button goes before the companion's and opens and closes the p
 test('a list read before a switch was pressed does not undo it', async ($, on) => {
   const { list } = stage(on)
 
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
   const checkbox = async () => (await ui.find({ type: 'Text', text: /^[■□] $/, in: 'rows' }))?.text
@@ -305,7 +322,7 @@ test('a list read before a switch was pressed does not undo it', async ($, on) =
 
   expect(await checkbox()).toBe('■ ')
   list.held = new Promise(resolve => (release = resolve))
-  await $.command.run({ ...MODS, command: 'reload-plugins' })
+  await command($, { ...MODS, command: 'reload-plugins' })
   await ui.pointer({ type: 'down', x: 1, y: 2, button: 'left', in: 'rows' })
   release()
 
@@ -335,7 +352,7 @@ test('the built-in mods follow the installed ones, switched as settings hold, se
     'cc-plugin-diff@builtin': false,
     'cc-plugin-you-should-know@builtin': true,
   })
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const names = async () =>
@@ -379,7 +396,7 @@ const settle = async () => {
 
 test('quick switches reach the CLI one at a time, and the list is read back once the last has', async ($, on) => {
   const { switched, cli } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const press = (y: number) => ui.pointer({ type: 'down', x: 1, y, button: 'left', in: 'rows' })
@@ -407,7 +424,7 @@ test('quick switches reach the CLI one at a time, and the list is read back once
 
 test('a switch the CLI refuses is put back, its reason said, and the list read again', async ($, on) => {
   const { switched, cli } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
   const checkbox = async () => (await ui.find({ type: 'Text', text: /^[■□] $/, in: 'rows' }))?.text
@@ -426,13 +443,13 @@ test('a switch the CLI refuses is put back, its reason said, and the list read a
 
 test('a list read while a switch was pressed is read again, not left as it was', async ($, on) => {
   const { list, installed } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
   let release = () => {}
 
   list.held = new Promise(resolve => (release = resolve))
-  await $.command.run({ ...MODS, command: 'reload-plugins' })
+  await command($, { ...MODS, command: 'reload-plugins' })
   // Installed after the read began, which its answer does not hold.
   installed.push({ id: 'extra@market', scope: 'user', enabled: true, installPath: '/cache/extra' })
   await ui.pointer({ type: 'down', x: 1, y: 2, button: 'left', in: 'rows' })
@@ -447,7 +464,7 @@ test('a list read while a switch was pressed is read again, not left as it was',
 
 test('a plugin installed in two scopes is two rows, each switched in its own scope', async ($, on) => {
   const { switched, scopes } = stage(on, undefined, {}, true)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const boxes = async () =>
@@ -473,7 +490,7 @@ test('a plugin installed in two scopes is two rows, each switched in its own sco
 
 test('the switches are no longer pending by the time the reload runs', async ($, on) => {
   const { cli } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const unapplied = () => ui.find({ type: 'Text', text: /sin aplicar/ })
@@ -486,7 +503,7 @@ test('the switches are no longer pending by the time the reload runs', async ($,
   cli.during = async () => {
     during = await unapplied()
   }
-  await $.command.run({ ...MODS, command: 'reload-plugins' })
+  await command($, { ...MODS, command: 'reload-plugins' })
   expect(during).toBeUndefined()
   await ui.unmount()
 })
@@ -494,7 +511,7 @@ test('the switches are no longer pending by the time the reload runs', async ($,
 // The texts of the list, as the pane draws it for a mod whose plugin.json names `author`.
 const textsFor = async ($: Engine, on: On, author: unknown) => {
   stage(on, author)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const texts = (await ui.findAll({ type: 'Text', in: 'rows' })).map(text => text.text)
@@ -520,7 +537,7 @@ test('the installed mods are listed by their id, not as they were installed', as
   const { installed } = stage(on)
 
   installed.push({ id: 'extra@market', scope: 'user', enabled: true, installPath: '/cache/extra' })
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const names = (await ui.findAll({ type: 'Text', text: /^(pet|extra)$/, in: 'rows' })).map(text => text.text)
@@ -532,7 +549,7 @@ test('the installed mods are listed by their id, not as they were installed', as
 // The checkboxes of the built-in mods, as the pane draws them when settings hold `enabledPlugins`.
 const builtinBoxes = async ($: Engine, on: On, enabledPlugins: unknown) => {
   stage(on, undefined, enabledPlugins)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const boxes = (await ui.findAll({ type: 'Text', text: /^[■□] $/, in: 'rows' })).map(box => box.text)
@@ -561,7 +578,7 @@ test('settings that hold no switches leave the built-in mods on their defaults',
 
 test('a switch the CLI refuses says what it printed, whichever stream it was, or that it failed', async ($, on) => {
   const { cli } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
   const press = () => ui.pointer({ type: 'down', x: 1, y: 2, button: 'left', in: 'rows' })
@@ -581,13 +598,13 @@ test('a switch the CLI refuses says what it printed, whichever stream it was, or
 
 test('a list read that ends after the list read back from a switch does not leave the list older than it', async ($, on) => {
   const { list, installed } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
   let release = () => {}
 
   list.held = new Promise(resolve => (release = resolve))
-  await $.command.run({ ...MODS, command: 'reload-plugins' })
+  await command($, { ...MODS, command: 'reload-plugins' })
   await settle()
   // The first read waits on the promise it began with; the ones after it do not wait.
   list.held = Promise.resolve()
@@ -607,7 +624,7 @@ test('a list that cannot be read says why, and a good read takes it away', async
   const clock = mock.clock(on)
   const { list } = stage(on)
   list.fails = 'not logged in'
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const activos = async () => (await ui.find({ type: 'Text', text: /activos/ }))?.text
@@ -618,7 +635,7 @@ test('a list that cannot be read says why, and a good read takes it away', async
   expect(await ui.find({ type: 'Text', text: /Buscando/ })).toBeUndefined()
 
   list.fails = null
-  await $.command.run({ ...MODS, command: 'reload-plugins' })
+  await command($, { ...MODS, command: 'reload-plugins' })
   await clock.settle()
   await ui.redraw()
   expect(await ui.find({ type: 'Text', text: /logged in/ })).toBeUndefined()
@@ -631,7 +648,7 @@ test('the pane says it is searching until the list arrives', async ($, on) => {
   let release = () => {}
 
   list.held = new Promise(resolve => (release = resolve))
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
 
@@ -646,7 +663,7 @@ test('a plugin of a scope the CLI does not take is switched with no scope', asyn
   const { installed, scopes, switched } = stage(on)
 
   installed.forEach(plugin => plugin.id === 'pet@market' && (plugin.scope = 'managed'))
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
 
@@ -659,7 +676,7 @@ test('a plugin of a scope the CLI does not take is switched with no scope', asyn
 
 test('a switch is drawn at once, in its own scope’s row alone, before the CLI answers', async ($, on) => {
   const { cli } = stage(on, undefined, {}, true)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const boxes = async () =>
@@ -678,7 +695,7 @@ test('a switch is drawn at once, in its own scope’s row alone, before the CLI 
 
 test('refusals are said once: the next one does not repeat the last', async ($, on) => {
   const { cli } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
 
@@ -693,7 +710,7 @@ test('refusals are said once: the next one does not repeat the last', async ($, 
 
 test('the desktop app’s toast says what the command it leaves in the prompt box does, or to type it', async ($, on) => {
   const { toasts, meta } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
 
@@ -715,7 +732,7 @@ test('the desktop app’s toast says what the command it leaves in the prompt bo
 test('a reload that fails says why and keeps the switches as not applied yet', async ($, on) => {
   const clock = mock.clock(on)
   const { cli, toasts } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
 
@@ -733,7 +750,7 @@ test('a reload that fails says why and keeps the switches as not applied yet', a
 // meanwhile, given a press on the first row's checkbox.
 const failedReload = async ($: Engine, on: On, during?: (press: () => Promise<void>) => Promise<void>) => {
   const { cli } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const press = async () => {
@@ -747,7 +764,7 @@ const failedReload = async ($: Engine, on: On, during?: (press: () => Promise<vo
 
     throw new Error('recarga rechazada')
   }
-  await $.command.run({ ...MODS, command: 'reload-plugins' }).catch(() => undefined)
+  await command($, { ...MODS, command: 'reload-plugins' }).catch(() => undefined)
   await settle()
 
   return { ui, unapplied: async () => (await ui.find({ type: 'Text', text: /activos/ }))?.text }
@@ -778,13 +795,13 @@ test('a session starts with the pane down reading no list, and registers /mods',
 
 test('a reload reads the list again, a plugin installed since', async ($, on) => {
   const { installed } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
 
   await settle()
   installed.push({ id: 'extra@market', scope: 'user', enabled: true, installPath: '/cache/extra' })
-  await $.command.run({ ...MODS, command: 'reload-plugins' })
+  await command($, { ...MODS, command: 'reload-plugins' })
   await settle()
   expect((await ui.find({ type: 'Text', text: /^extra$/, in: 'rows' }))?.text).toBe('extra')
   await ui.unmount()
@@ -794,10 +811,10 @@ test('/mods says whether it opened the pane or closed it', async ($, on) => {
   const clock = mock.clock(on)
   stage(on)
 
-  expect(await $.command.run(MODS)).toEqual({ text: 'Panel de mods abierto.' })
+  expect(await command($, MODS)).toEqual({ text: 'Panel de mods abierto.' })
   // The list the opening reads must be read before the test ends.
   await clock.settle()
-  expect(await $.command.run(MODS)).toEqual({ text: 'Panel de mods cerrado.' })
+  expect(await command($, MODS)).toEqual({ text: 'Panel de mods cerrado.' })
 })
 
 // What the engine gives the band above the prompt.
@@ -840,7 +857,7 @@ test('the button is in the desktop app’s band and the terminal’s footer, and
 
 test('the row’s checkbox of a mod that cannot be switched off switches nothing, the others’ do', async ($, on) => {
   const { switched } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
 
@@ -900,7 +917,7 @@ test('the footer’s shared rows go in their numbers’ and places’ order, aft
 
 test('the row under the pointer is lit with the surface’s ground', async ($, on) => {
   stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   for (const [surface, ground] of [
     ['desktop', '#8080801f'],
@@ -919,7 +936,7 @@ test('the row under the pointer is lit with the surface’s ground', async ($, o
 
 test('the marketplace and the author count their mods', async ($, on) => {
   stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const counts = (await ui.findAll({ type: 'Text', text: /^\d+$/, in: 'rows' })).map(count => count.text)
@@ -931,7 +948,7 @@ test('the marketplace and the author count their mods', async ($, on) => {
 test('a description is wrapped to the room, one that is wider than it cut, and the room is at least 20', async ($, on) => {
   const { meta } = stage(on)
   meta.description = 'one two three four five six supercalifragilisticexpialidocious'
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const lines = async () =>
@@ -945,7 +962,7 @@ test('a description is wrapped to the room, one that is wider than it cut, and t
 
 test('only a press of the left button on the row acts, and a pointer that only moves does not', async ($, on) => {
   const { switched } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const checkbox = async () => (await ui.find({ type: 'Text', text: /^[■□] $/, in: 'rows' }))?.text
@@ -963,7 +980,7 @@ test('only a press of the left button on the row acts, and a pointer that only m
 
 test('a press on the left of a description unfolds, it does not switch its mod', async ($, on) => {
   const { switched } = stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const checkbox = async () => (await ui.find({ type: 'Text', text: /^[■□] $/, in: 'rows' }))?.text
@@ -979,7 +996,7 @@ test('a press on the left of a description unfolds, it does not switch its mod',
 
 test('a disabled mod is dimmed with an inactive checkbox, and an unfolded row shows an open arrow', async ($, on) => {
   stage(on)
-  await $.command.run(MODS)
+  await command($, MODS)
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   const name = async () => (await ui.find({ type: 'Text', text: /^pet$/, in: 'rows' }))?.props.dimColor

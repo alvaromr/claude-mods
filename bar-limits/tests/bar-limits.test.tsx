@@ -121,7 +121,20 @@ const stage = (on: On, isResumed = false, broken: 'unreadable' | 'unwritable' | 
 
     return { value: { status: endpoint.status, ok: endpoint.status === 200, headers: {}, text: JSON.stringify(usage) } }
   })
-  on('ui.open', ($, e) => (open.add(e.id), { value: { isPlaced: true } }))
+  // As on a terminal too narrow for a pane nobody asked for: an open is placed
+  // only while the press that asked for it is still running.
+  let pressing = 0
+  on('ui.press', { plugin: '*' }, async (_, e, next) => {
+    pressing++
+    try {
+      return await next(e)
+    } finally {
+      pressing--
+    }
+  })
+  on('ui.open', ($, e) =>
+    pressing > 0 ? (open.add(e.id), { value: { isPlaced: true } }) : { value: { isPlaced: false, reason: 'unasked' } },
+  )
   on('ui.close', ($, e) => (open.delete(e.id), { value: undefined }))
   on('ui.panes', () => ({
     value: [...open].map(id => ({ id, title: id, isShown: true, isFocused: false, isPlaced: true })),

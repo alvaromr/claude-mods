@@ -455,7 +455,7 @@ const drawn = async (
 
   return (
     <Box key="slot:1.2:ui-companion">
-      <Button key="consejero" plain dimColor={now !== 'minimized'} onPress={() => void toggle($)}>
+      <Button key="consejero" plain dimColor={now !== 'minimized'} onPress={() => toggle($)}>
         <Text color={commenting ? 'success' : 'inactive'}>{commenting ? '●' : '○'}</Text> companion
       </Button>
     </Box>
@@ -588,7 +588,7 @@ export const register: Register = on => {
               paddingX={1}
             >
               <Box flexDirection="row" justifyContent="space-between">
-                <Button key={`alert-open-${warned.mode}`} plain onPress={() => void show($)}>
+                <Button key={`alert-open-${warned.mode}`} plain onPress={() => show($)}>
                   <Text weight="semibold" color={accent}>
                     {alertHeading(warned)}
                   </Text>
@@ -602,7 +602,7 @@ export const register: Register = on => {
                   onPress={() => void dismiss($, warned.mode)}
                 />
               </Box>
-              <Button key={`alert-text-${warned.mode}`} plain onPress={() => void show($)}>
+              <Button key={`alert-text-${warned.mode}`} plain onPress={() => show($)}>
                 <Text color={accent}>{warned.text}</Text>
               </Button>
               <Box flexDirection="row" justifyContent="flex-end" columnGap={2}>

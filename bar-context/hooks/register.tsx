@@ -212,15 +212,12 @@ const measure = async ($: EngineInterface, moment: 'start' | 'compaction') => {
 }
 
 let ticker: Timer | undefined
-let hasStarted = false
 
 // The settings, the effort, the model and the window read again; the cache's
-// time left counting down. Run by session.start, and by the first drawing
-// where a resumed session drew before session.start reached this mod. A start
-// that fails says why in the debug log and lets the next drawing try again.
+// time left counting down. Run by session.start, which every fresh load of
+// this mod raises, a reload's too; a drawing before it shows the defaults, as
+// drawing writes no state. A start that fails says why in the debug log.
 const start = async ($: EngineInterface) => {
-  hasStarted = true
-
   try {
     await loadSettings($)
 
@@ -236,7 +233,6 @@ const start = async ($: EngineInterface) => {
       $.ui.invalidate('ui.render')
     })
   } catch (failure) {
-    hasStarted = false
     orElse($, 'starting', undefined)(failure)
   }
 }
@@ -295,12 +291,6 @@ const switchTo = async ($: EngineInterface, what: 'model' | 'effort', value: str
 // that compacts it, on a block of its color (a Button takes no color of its
 // own); and the ⚙ that opens the settings, which stays when no part is shown.
 const drawn = async ($: EngineInterface, { Box, Button, Text }: Pick<Elements, 'Box' | 'Button' | 'Text'>) => {
-  // Drawing writes no state: the start runs on a timer of its own.
-  if (!hasStarted) {
-    hasStarted = true
-    $.clock.after(0, () => void start($))
-  }
-
   const s = await read($, settings)
   const window = await read($, fill)
   const cache = { warm: await read($, warm), miss: await read($, miss), now: await $.clock.now() }
@@ -385,7 +375,7 @@ const drawn = async ($: EngineInterface, { Box, Button, Text }: Pick<Elements, '
         </Box>
       )}
       <Box flexShrink={0}>
-        <Button key="bar-context-settings" plain dimColor label="⚙" onPress={() => void togglePane($)} />
+        <Button key="bar-context-settings" plain dimColor label="⚙" onPress={() => togglePane($)} />
       </Box>
     </Box>
   )

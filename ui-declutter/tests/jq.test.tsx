@@ -13,6 +13,9 @@ test('a jq check that cannot run leaves every row to the engine, saying why unde
 
     return <Text>engine</Text>
   })
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+
+  await $.session.start({ cwd: '/repo', surface: 'terminal', isInteractive: true })
 
   const ui = await $.ui.mount({
     plugin: 'ui-declutter',

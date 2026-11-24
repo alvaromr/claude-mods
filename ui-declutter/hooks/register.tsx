@@ -157,16 +157,13 @@ const forgetProject = async ($: EngineInterface) => {
   await loadSettings($)
 }
 
-let hasStarted = false
 // Without jq the results of the rows not drawn yet cannot be read: every row
 // is the engine's, as with the mod off. Unknown until the start looks.
 let hasJq = true
 
-// Run by session.start, and by the first drawing where a resumed session drew
-// before session.start reached this mod.
+// Run by session.start, which every fresh load of this mod raises, a reload's
+// too; a drawing before it shows the defaults, as drawing writes no state.
 const start = async ($: EngineInterface) => {
-  hasStarted = true
-
   await loadSettings($)
 
   // A check that cannot run tells nothing of jq, and the rows would need it.
@@ -716,19 +713,13 @@ export const register: Register = on => {
       return slotted(beneath, [])
     }
 
-    // Drawing writes no state: the start runs on a timer of its own.
-    if (!hasStarted) {
-      hasStarted = true
-      $.clock.after(0, () => void start($))
-    }
-
     const isActive = await isDrawing($)
     const { Box, Button, Text } = $.ui.resolve(e)
 
     // As the companion's: its dot green while it draws, gray while it leaves Claude Code's.
     return slotted(beneath, [
       <Box key="slot:1.3:ui-declutter">
-        <Button key="declutter" plain dimColor onPress={() => void togglePane($)}>
+        <Button key="declutter" plain dimColor onPress={() => togglePane($)}>
           <Text color={isActive ? 'success' : 'inactive'}>{isActive ? '●' : '○'}</Text> declutter
         </Button>
       </Box>,

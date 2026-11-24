@@ -8,6 +8,13 @@ entry names its mod.
 
 ### Fixed
 
+- `bar-context`, `bar-git`, `bar-limits`, `bar-path`, `ui-colorify`, `ui-companion`, `ui-declutter`, `ui-linkify`,
+  `ui-mods`: a click on the footer's button that opens a mod's pane opens it again on a terminal narrower than 144
+  columns. Since Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it
+  waited undrawn.
+- `bar-context`, `bar-git`, `bar-path`, `ui-colorify`, `ui-declutter`: a session's start no longer fills the debug log
+  with «starting failed: … state.set: denied». Since Claude Code 2.1.331 a start a drawing sets off cannot write
+  state, so the mods start at `session.start` alone, which every load of a mod raises.
 - `pet`: a session in a git worktree goes by the project the worktree was made from, not by the worktree's folder.
 - `pet`: a chat Orca runs, a worker's or a bot's, goes by the title and project Orca shows for it, and pressing its
   row brings its tab forward in Orca, where it said «sin ventana que abrir», whichever workspace Orca shows: Orca
