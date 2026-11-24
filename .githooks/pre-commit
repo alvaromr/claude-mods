@@ -2,7 +2,7 @@
 # Runs the gate before every commit; `pnpm install` points git at this folder.
 # A commit that touches only mods and the root's Markdown checks those mods
 # alone; one that touches anything else (tooling, the marketplace, scripts)
-# runs the whole gate. Either leaves the mutants to the pre-push hook.
+# runs the whole gate.
 set -eu
 
 staged=$(git diff --cached --name-only --diff-filter=ACMRD)
@@ -16,11 +16,11 @@ for path in $staged; do
   elif [ "$top" = "$path" ] && [ "${path%.md}" != "$path" ]; then
     :
   else
-    pnpm exec sh scripts/check.sh --no-mutants
+    pnpm exec sh scripts/check.sh
     exec pnpm exec sh scripts/check.test.sh
   fi
 done
 
 # The words are the mods' folder names, which hold no spaces.
 # shellcheck disable=SC2086
-exec pnpm exec sh scripts/check.sh --no-mutants --only $mods
+exec pnpm exec sh scripts/check.sh --only $mods

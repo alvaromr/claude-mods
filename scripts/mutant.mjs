@@ -39,7 +39,7 @@ export const yielding = platform => (platform === 'darwin' ? ['taskpolicy', '-b'
 
 /**
  * How the command ends within `ms`: `passed`, `failed`, or `timed out`, stopped with every process it started, as a
- * test binary a shell left looping. One that cannot start at all is a failure of the gate, not a killed mutant.
+ * test binary a shell left looping. One that cannot start at all is a failure of the run, not a killed mutant.
  */
 export const verdictOf = ([command = 'true', ...args], ms) =>
   new Promise((resolve, reject) => {

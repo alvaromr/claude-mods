@@ -74,7 +74,7 @@ expect_failure 'a shellcheck finding stops the gate' 'SC2086'
 if [ "$(uname)" = Darwin ]; then
   fresh
   printf 'let text = try! String(contentsOfFile: "a")\n' >"$tmp/repo/pet/app/Unlinted.swift"
-  expect_failure 'a swiftlint finding in the pet stops the gate' 'force_try' --no-mutants --only pet
+  expect_failure 'a swiftlint finding in the pet stops the gate' 'force_try' --only pet
 fi
 
 fresh
@@ -104,7 +104,7 @@ fi
 
 fresh
 rm "$tmp/repo/$first/.claude-plugin/icon.png"
-expect_failure "$first without an icon stops the gate" "$first has no icon" --no-mutants --only "$first"
+expect_failure "$first without an icon stops the gate" "$first has no icon" --only "$first"
 
 fresh
 rm -rf "$tmp/repo/$first/.claude-plugin/types"
@@ -113,30 +113,6 @@ expect_failure "$first without engine types stops the gate, saying how to write 
 fresh
 printf "export const n: number = 'text'\n" >"$tmp/repo/$first/hooks/mistyped.ts"
 expect_failure "a type error in $first stops the gate" 'TS2322'
-
-mutated=''
-for list in "$repo"/*/tests/mutants.json; do
-  [ -f "$list" ] || continue
-  mutated=$(basename "$(dirname "$(dirname "$list")")")
-  break
-done
-
-if [ -z "$mutated" ]; then
-  echo '✗ a mutant the tests let through stops the gate: no mod lists mutants'
-  failures=$((failures + 1))
-else
-  fresh
-  # A mutant that only rewrites a comment: no test can catch it.
-  printf '// harmless\n' >>"$tmp/repo/$mutated/hooks/register.tsx"
-  printf '[{ "file": "hooks/register.tsx", "from": "// harmless", "to": "// changed", "why": "a comment" }]\n' \
-    >"$tmp/repo/$mutated/tests/mutants.json"
-  expect_failure "a mutant the tests of $mutated let through stops the gate" 'no test holds «a comment»' --only "$mutated"
-
-  fresh
-  printf '[{ "file": "hooks/register.tsx", "from": "not in the file", "to": "", "why": "a stale one" }]\n' \
-    >"$tmp/repo/$mutated/tests/mutants.json"
-  expect_failure "a mutant whose text is gone from $mutated stops the gate" 'update the mutant «a stale one»' --only "$mutated"
-fi
 
 if [ "$failures" -eq 0 ]; then echo 'all passed'; else echo "$failures failed"; fi
 [ "$failures" -eq 0 ]

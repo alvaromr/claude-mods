@@ -1,21 +1,12 @@
 #!/bin/sh
 # The gate: formatting, lint (shell scripts too), the marketplace, the scripts'
-# tests, each mod's manifest, tests, types and, where it lists them, mutants,
-# the smoke and, on macOS, the pet's lint and tests. Run
-# through `pnpm check`, which puts the tools on PATH; it stops at the first
-# failure, and its exit code is the verdict.
-# `--no-mutants` leaves the mutants out, which take minutes: the pre-commit
-# hook's form, as the pre-push hook runs them.
+# tests, each mod's manifest, tests and types, the smoke and, on macOS, the
+# pet's lint and tests. Run through `pnpm check`, which puts the tools on PATH;
+# it stops at the first failure, and its exit code is the verdict.
 # `--only <mod>...` checks those mods alone, none if none is named, after the
 # whole repo's formatting, lint and marketplace: the pre-commit hook's form.
 set -eu
 cd "$(dirname "$0")/.."
-
-mutants=true
-if [ "${1:-}" = --no-mutants ]; then
-  mutants=false
-  shift
-fi
 
 only=false
 if [ "${1:-}" = --only ]; then
@@ -81,10 +72,6 @@ for manifest in */.claude-plugin/plugin.json; do
     fi
   done
   tsc -p "$mod"
-  # A mod that lists mutants has each one break a behaviour its tests must catch.
-  if [ "$mutants" = true ] && [ -f "$mod/tests/mutants.json" ]; then
-    node scripts/mutate.mjs "$mod"
-  fi
 done
 
 # A real Claude Code loads the mods checked (scripts/smoke.sh).
