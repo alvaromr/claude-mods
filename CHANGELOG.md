@@ -11,6 +11,7 @@ entry names its mod.
 - `pet`: a session in a git worktree goes by the project the worktree was made from, not by the worktree's folder.
 - `pet`: a chat Orca runs, a worker's or a bot's, goes by the title and project Orca shows for it, and pressing its
   row brings its tab forward in Orca, where it said «sin ventana que abrir».
+- `pet`: the pet's log says why a program it runs failed, as Orca refusing to show a chat, with what it said.
 
 ## [session-title 0.3.0] - 2026-11-24
 

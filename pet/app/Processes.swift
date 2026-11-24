@@ -36,35 +36,48 @@ private struct TimedOut: LocalizedError {
     var errorDescription: String? { "it took more than \(seconds) s" }
 }
 
+private struct Failed: LocalizedError {
+    let status: Int32
+    let cause: String
+    var errorDescription: String? { "it ended with status \(status)" + (cause.isEmpty ? "" : ": \(cause)") }
+}
+
 /// What the program prints, or nil when it cannot run, fails or does not end within `timeout`
 /// seconds, which it is stopped at: the pet asks `ps` and Orca, and one that hangs must not
-/// hold the pet with it.
-/// A program that fails with a status in `allowing` still gives what it printed.
+/// hold the pet with it. One that fails says why, with what it wrote to its errors.
+/// A program that fails with a status in `allowing` still gives what it printed, and says nothing.
 func run(_ path: String, _ arguments: [String], timeout: TimeInterval = 5, allowing: Set<Int32> = [0]) -> String? {
-    /// What the program printed, filled in by the thread that reads it.
+    /// What the program wrote to a pipe, filled in by the thread that reads it.
     final class Printed: @unchecked Sendable { var data = Data() }
     let process = Process()
-    let output = Pipe()
+    let output = Pipe(), errors = Pipe()
     process.executableURL = URL(fileURLWithPath: path)
     process.arguments = arguments
     process.standardOutput = output
-    process.standardError = FileHandle.nullDevice
+    process.standardError = errors
     let ended = DispatchSemaphore(value: 0)
     process.terminationHandler = { _ in ended.signal() }
     guard orNil("running \(path)", process.run) != nil else { return nil }
-    let printed = Printed(), reading = DispatchGroup(), pipe = output.fileHandleForReading
-    reading.enter()
-    DispatchQueue.global().async {
-        printed.data = pipe.readDataToEndOfFile()
-        reading.leave()
+    let printed = Printed(), written = Printed(), reading = DispatchGroup()
+    for (pipe, into) in [(output, printed), (errors, written)] {
+        reading.enter()
+        DispatchQueue.global().async {
+            into.data = pipe.fileHandleForReading.readDataToEndOfFile()
+            reading.leave()
+        }
     }
-    // a program that ends leaves its pipe at its end, unless something it started holds it open
+    // a program that ends leaves its pipes at their end, unless something it started holds them open
     guard ended.wait(timeout: .now() + timeout) == .success, reading.wait(timeout: .now() + 1) == .success else {
         process.terminate()
         _ = orNil("running \(path)") { throw TimedOut(seconds: timeout) }
         return nil
     }
-    return allowing.contains(process.terminationStatus) ? lossyText(printed.data) : nil
+    guard allowing.contains(process.terminationStatus) else {
+        let cause = lossyText(written.data).trimmingCharacters(in: .whitespacesAndNewlines)
+        _ = orNil("running \(path)") { throw Failed(status: process.terminationStatus, cause: cause) }
+        return nil
+    }
+    return lossyText(printed.data)
 }
 
 // MARK: - Servers

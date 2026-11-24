@@ -259,9 +259,21 @@
   },
   {
     "file": "app/Processes.swift",
-    "from": "return allowing.contains(process.terminationStatus) ? lossyText(printed.data) : nil",
-    "to": "return lossyText(printed.data)",
+    "from": "guard allowing.contains(process.terminationStatus) else {",
+    "to": "guard true else {",
     "why": "a program that fails gives nothing, unless its status is allowed"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "_ = orNil(\"running \\(path)\") { throw Failed(status: process.terminationStatus, cause: cause) }",
+    "to": "_ = 0",
+    "why": "a program that fails says why"
+  },
+  {
+    "file": "app/Processes.swift",
+    "from": "(cause.isEmpty ? \"\" : \": \\(cause)\")",
+    "to": "\"\"",
+    "why": "a program that fails says what it wrote to its errors"
   },
   {
     "file": "app/Processes.swift",

@@ -229,6 +229,18 @@ func programTests() {
         report = { NSLog("%@", $0) }
     }
 
+    test("a program that fails gives nothing and says why, once; one whose status is allowed says nothing") {
+        var told: [String] = []
+        report = { told.append($0) }
+        let failing = ["-c", "echo printed; echo 'the cause' >&2; exit 3"]
+        expect(run("/bin/sh", failing), nil)
+        expect(run("/bin/sh", failing), nil)
+        expect(told, ["running /bin/sh failed: it ended with status 3: the cause"])
+        expect(run("/bin/sh", ["-c", "echo printed; echo 'no cause' >&2; exit 1"], allowing: [0, 1]), "printed\n")
+        expect(told.count, 1, "lines told")
+        report = { NSLog("%@", $0) }
+    }
+
     test("the pet's Salir leaves its word next to the app, where the launcher looks") {
         expect(quitMark(app: URL(fileURLWithPath: "/a/claude-pet/Pet.app")).path, "/a/claude-pet/quit")
     }
