@@ -6,6 +6,8 @@ entry names its mod.
 
 ## [Unreleased]
 
+## [ui-mods 0.3.1] - 2026-11-25
+
 ### Fixed
 
 - `ui-mods`: the footer's button and `/mods` open the mods' pane again on a terminal narrower than 144 columns. Since
