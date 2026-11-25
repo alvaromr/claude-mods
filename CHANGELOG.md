@@ -8,8 +8,6 @@ entry names its mod.
 
 ### Added
 
-- `bar-context`: a «Coste estimado de la sesión» part, off by default and turned on in the settings pane, shows the
-  session's estimated cost in dollars (`$0.42`) at the row's end, in the secondary text's color.
 - `guard-outward`: also asks before the built-in tools that publish, send or delete: deleting an artifact, replying
   to its comments, publishing a plugin, running remote triggers, and sending files to other sessions.
 
@@ -23,14 +21,6 @@ entry names its mod.
 
 ### Fixed
 
-- `bar-context`: the prompt cache's lifetime (5 minutes or 1 hour) is read from the usage each response reports, so
-  it is right in long sessions too: the transcript it read before could not be read above 4 MiB, and the row fell
-  back to guessing from the account's plan and settings.
-- `bar-context`: the ⚙ button opens the settings pane again on a terminal narrower than 144 columns. Since Claude
-  Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
-- `bar-context`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
-  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
-  which every load of a mod raises.
 - `bar-git`: the ⚙ button opens the settings pane again on a terminal narrower than 144 columns. Since Claude Code
   2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
 - `bar-git`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
@@ -77,6 +67,24 @@ entry names its mod.
   row brings its tab forward in Orca, where it said «sin ventana que abrir», whichever workspace Orca shows: Orca
   first shows the chat's, a repo's worktree or the bot's folder.
 - `pet`: the pet's log says why a program it runs failed, as Orca refusing to show a chat, with what it said.
+
+## [bar-context 0.4.0] - 2026-11-25
+
+### Added
+
+- `bar-context`: a «Coste estimado de la sesión» part, off by default and turned on in the settings pane, shows the
+  session's estimated cost in dollars (`$0.42`) at the row's end, in the secondary text's color.
+
+### Fixed
+
+- `bar-context`: the prompt cache's lifetime (5 minutes or 1 hour) is read from the usage each response reports, so
+  it is right in long sessions too: the transcript it read before could not be read above 4 MiB, and the row fell
+  back to guessing from the account's plan and settings.
+- `bar-context`: the ⚙ button opens the settings pane again on a terminal narrower than 144 columns. Since Claude
+  Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `bar-context`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
+  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
+  which every load of a mod raises.
 
 ## [session-title 0.3.0] - 2026-11-24
 

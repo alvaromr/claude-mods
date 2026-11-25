@@ -1,6 +1,6 @@
 {
   "name": "bar-context",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "The model, its effort, the context window's fill, the prompt cache's time left and last miss, and the output speed, and on request the session's estimated cost, in a row of the prompt's footer, with a button that compacts once the window is filling up; a red line above the prompt while this session's prompt cache has expired; and a ⚙ button that opens a pane to choose what shows, the colors, the thresholds and the cache's lifetime.",
   "author": { "name": "alvaro.martin" },
   "types": "./types/index.d.ts"
