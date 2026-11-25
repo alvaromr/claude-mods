@@ -8,9 +8,6 @@ entry names its mod.
 
 ### Changed
 
-- `ui-declutter`: no longer needs `jq`; it reads the results of rows not drawn yet straight from the session's
-  transcript, from its end, so recent results show at once even in very large sessions, and the «needs jq» notice
-  under the prompt is gone.
 - `ui-linkify`: pictures a terminal dropped when it redrew its screen are sent again the moment the window gets the
   focus back, instead of at the next key typed; a terminal that reports no focus keeps the old behaviour.
 
@@ -39,15 +36,6 @@ entry names its mod.
 - `ui-companion`: the footer's button and the command open the companion's pane again on a terminal narrower than
   144 columns. Since Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and
   it waited undrawn.
-- `ui-declutter`: the session's transcript is found wherever Claude Code keeps it, a custom config folder too,
-  instead of at a guessed path.
-- `ui-declutter`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
-  Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
-- `ui-declutter`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
-  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
-  which every load of a mod raises.
-- `ui-declutter`: a span whose result the transcript did not hold yet, or whose read was cut short, is drawn with it
-  once it is read again, where it kept its «?»: the read again wrote state from a timer a drawing set.
 - `ui-linkify`: the session's transcript is found wherever Claude Code keeps it, a custom config folder too, instead
   of at a guessed path.
 - `ui-linkify`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
@@ -62,6 +50,26 @@ entry names its mod.
   row brings its tab forward in Orca, where it said «sin ventana que abrir», whichever workspace Orca shows: Orca
   first shows the chat's, a repo's worktree or the bot's folder.
 - `pet`: the pet's log says why a program it runs failed, as Orca refusing to show a chat, with what it said.
+
+## [ui-declutter 0.3.0] - 2026-11-25
+
+### Changed
+
+- `ui-declutter`: no longer needs `jq`; it reads the results of rows not drawn yet straight from the session's
+  transcript, from its end, so recent results show at once even in very large sessions, and the «needs jq» notice
+  under the prompt is gone.
+
+### Fixed
+
+- `ui-declutter`: the session's transcript is found wherever Claude Code keeps it, a custom config folder too,
+  instead of at a guessed path.
+- `ui-declutter`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
+  Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `ui-declutter`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
+  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
+  which every load of a mod raises.
+- `ui-declutter`: a span whose result the transcript did not hold yet, or whose read was cut short, is drawn with it
+  once it is read again, where it kept its «?»: the read again wrote state from a timer a drawing set.
 
 ## [guard-outward 0.3.0] - 2026-11-25
 
