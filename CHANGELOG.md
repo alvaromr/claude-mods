@@ -6,11 +6,6 @@ entry names its mod.
 
 ## [Unreleased]
 
-### Added
-
-- `guard-outward`: also asks before the built-in tools that publish, send or delete: deleting an artifact, replying
-  to its comments, publishing a plugin, running remote triggers, and sending files to other sessions.
-
 ### Changed
 
 - `ui-declutter`: no longer needs `jq`; it reads the results of rows not drawn yet straight from the session's
@@ -67,6 +62,13 @@ entry names its mod.
   row brings its tab forward in Orca, where it said «sin ventana que abrir», whichever workspace Orca shows: Orca
   first shows the chat's, a repo's worktree or the bot's folder.
 - `pet`: the pet's log says why a program it runs failed, as Orca refusing to show a chat, with what it said.
+
+## [guard-outward 0.3.0] - 2026-11-25
+
+### Added
+
+- `guard-outward`: also asks before the built-in tools that publish, send or delete: deleting an artifact, replying
+  to its comments, publishing a plugin, running remote triggers, and sending files to other sessions.
 
 ## [bar-context 0.4.0] - 2026-11-25
 

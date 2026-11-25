@@ -1,6 +1,6 @@
 {
   "name": "guard-outward",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Puts every call that reaches outside the session to a person, whatever the mode: git push, gh commands that write, the commands you list, MCP tools that are not reads, and the built-in tools that publish, send or delete (artifact deletes, plugin publishing, remote triggers, files sent to other sessions). In auto mode the classifier cannot approve them, and where nobody can be asked they are refused.",
   "author": { "name": "alvaro.martin" },
   "userConfig": {
