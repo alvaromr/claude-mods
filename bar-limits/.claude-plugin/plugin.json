@@ -1,6 +1,6 @@
 {
   "name": "bar-limits",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "The subscription's limits under the prompt: the 5-hour session, the week and each model's weekly limit, with bar, pace, time to reset and the pace in percent, and a ⚙ button that opens a pane to choose what shows, the colors and the thresholds.",
   "author": { "name": "alvaro.martin" },
   "types": "./types/index.d.ts"

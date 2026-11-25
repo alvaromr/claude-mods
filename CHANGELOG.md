@@ -6,6 +6,8 @@ entry names its mod.
 
 ## [Unreleased]
 
+## [bar-limits 0.4.0] - 2026-11-25
+
 ### Added
 
 - `bar-limits`: each window's arrow carries its pace in percent, «↓9%» or «↑150%»: the share used against the share
