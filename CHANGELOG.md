@@ -8,17 +8,22 @@ entry names its mod.
 
 ### Fixed
 
-- `ui-colorify`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
-  Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
-- `ui-colorify`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
-  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
-  which every load of a mod raises.
 - `ui-companion`: the footer's button and the command open the companion's pane again on a terminal narrower than
   144 columns. Since Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and
   it waited undrawn.
 - `ui-mods`: the footer's button and `/mods` open the mods' pane again on a terminal narrower than 144 columns. Since
   Claude Code 2.1.331 a pane opened after its press or command has ended counts as one nobody asked for, and it
   waited undrawn.
+
+## [ui-colorify 0.1.1] - 2026-11-25
+
+### Fixed
+
+- `ui-colorify`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
+  Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `ui-colorify`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
+  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
+  which every load of a mod raises.
 
 ## [pet 0.3.1] - 2026-11-25
 

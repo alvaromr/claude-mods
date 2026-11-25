@@ -1,6 +1,6 @@
 {
   "name": "ui-colorify",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Colour in the terminal's conversation, so what matters stands out: the GitHub alerts in an assistant reply (> [!NOTE], [!TIP], [!IMPORTANT], [!WARNING], [!CAUTION]) and a quote without a marker drawn in a box, between two lines or under a title of their colour, without the marker, each with a ⧉ that copies its text; the headings bold in a colour; the person's own prompts in a box or between two lines of a colour; and a section of the system prompt that teaches the model when to write each alert, sparingly. A button in the footer's first row opens a pane with all of it and a switch that turns the whole mod off.",
   "author": { "name": "alvaro.martin" },
   "types": "./types/index.d.ts"
