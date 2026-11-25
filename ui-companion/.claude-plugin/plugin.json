@@ -1,6 +1,6 @@
 {
   "name": "ui-companion",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A pane where a second model reads the conversation and comments on it after each turn, in every mode turned on there (vigilante: only what is not obvious; resumen: the conversation in four lines; asesor: ideas, risks and improvements; troll: mocks whatever the assistant did; pendientes: the next steps), each with its own model and effort, the pane showing one mode's notes at a time; each note can be discarded, or all of the mode's at once, and each mode's prompt is edited there. What a mode writes also shows above the prompt in its color, never, while the pane is put away or always, as set for it, a press on it bringing the pane back, ✕ putting it away, and its buttons including it in the conversation or deleting it. Set to, a new session starts it minimized, commenting with the pane away. The footer's button carries a dot, green while some mode comments, gray while none does.",
   "author": { "name": "alvaro.martin" },
   "types": "./types/index.d.ts"

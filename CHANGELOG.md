@@ -8,12 +8,17 @@ entry names its mod.
 
 ### Fixed
 
-- `ui-companion`: the footer's button and the command open the companion's pane again on a terminal narrower than
-  144 columns. Since Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and
-  it waited undrawn.
 - `ui-mods`: the footer's button and `/mods` open the mods' pane again on a terminal narrower than 144 columns. Since
   Claude Code 2.1.331 a pane opened after its press or command has ended counts as one nobody asked for, and it
   waited undrawn.
+
+## [ui-companion 0.3.1] - 2026-11-25
+
+### Fixed
+
+- `ui-companion`: the footer's button and the command open the companion's pane again on a terminal narrower than
+  144 columns. Since Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and
+  it waited undrawn.
 
 ## [ui-colorify 0.1.1] - 2026-11-25
 
