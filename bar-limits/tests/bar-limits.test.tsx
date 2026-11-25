@@ -213,11 +213,15 @@ test('an endpoint that refuses leaves the models out, and why in the debug log',
   await footer.unmount()
 })
 
-test('a resumed session drawn before session.start reached the mod: the line fills in from the last readings', async ($, on) => {
-  const { clock } = stage(on, true)
+test('a resumed session drawn before session.start reached the mod: the line fills in from the last readings at the start', async ($, on) => {
+  const it = stage(on, true)
   const footer = await $.ui.mount({ ...FOOTER, surface: 'terminal' })
 
-  await clock.settle()
+  // Drawing writes no state, so it starts nothing: the line waits.
+  await it.clock.settle()
+  expect(await line(footer)).toBeUndefined()
+
+  await begin($, it)
   expect(await line(footer)).toBe(
     'Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓ sobra 91% (3h53m) · Week ▰▱▱▱▱▱▱▱◇▱ 19% ↓ sobra 77% (1d6h) · Fable ▱▱▱▱▱▱▱▱◇▱ 0% (1d6h)',
   )
@@ -641,7 +645,7 @@ test('what the store holds as the last readings or models, if it is no list, is 
   await footer.unmount()
 })
 
-test('a start that fails is tried again at the next drawing', async ($, on) => {
+test('a start that fails says why in the debug log, and the next start fills the line in', async ($, on) => {
   const it = stage(on, false, 'state')
 
   await begin($, it)
@@ -652,6 +656,9 @@ test('a start that fails is tried again at the next drawing', async ($, on) => {
   const footer = await $.ui.mount({ ...FOOTER, surface: 'terminal' })
 
   await it.clock.settle()
+  expect(await line(footer)).toBeUndefined()
+
+  await begin($, it)
   expect(await line(footer)).toMatch(/^Session/)
   await footer.unmount()
 })

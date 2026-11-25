@@ -232,10 +232,12 @@ const lookup = async ($: EngineInterface) => {
   lost.forEach(id => results.set(id, null))
   again.forEach(id => misses.set(id, (misses.get(id) ?? 0) + 1))
 
+  // A timer a drawing set, as this one may be, can write no state: it asks for
+  // the drawing again instead.
   if (again.length > 0) {
-    $.clock.after(RETRY_MS, async () => {
+    $.clock.after(RETRY_MS, () => {
       lostIn(again, results).forEach(id => results.delete(id))
-      await update($, revision, n => n + 1)
+      $.ui.invalidate('ui.render')
     })
   }
 }
@@ -254,7 +256,7 @@ const resultsOf = async ($: EngineInterface, ids: readonly string[]) => {
           await lookup($).catch(orElse($, 'reading the results from the transcript', undefined))
           pending.forEach(id => results.set(id, null))
           pending.clear()
-          await update($, revision, n => n + 1)
+          $.ui.invalidate('ui.render')
         }),
       )
     await lookups

@@ -26,16 +26,52 @@ entry names its mod.
 - `bar-context`: the prompt cache's lifetime (5 minutes or 1 hour) is read from the usage each response reports, so
   it is right in long sessions too: the transcript it read before could not be read above 4 MiB, and the row fell
   back to guessing from the account's plan and settings.
-- `ui-declutter`, `ui-linkify`: the session's transcript is found wherever Claude Code keeps it, a custom config
-  folder too, instead of at a guessed path.
-
-- `bar-context`, `bar-git`, `bar-limits`, `bar-path`, `ui-colorify`, `ui-companion`, `ui-declutter`, `ui-linkify`,
-  `ui-mods`: a click on the footer's button that opens a mod's pane opens it again on a terminal narrower than 144
-  columns. Since Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it
+- `bar-context`: the ⚙ button opens the settings pane again on a terminal narrower than 144 columns. Since Claude
+  Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `bar-context`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
+  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
+  which every load of a mod raises.
+- `bar-git`: the ⚙ button opens the settings pane again on a terminal narrower than 144 columns. Since Claude Code
+  2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `bar-git`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
+  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
+  which every load of a mod raises.
+- `bar-limits`: the ⚙ button opens the settings pane again on a terminal narrower than 144 columns. Since Claude
+  Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `bar-limits`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
+  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
+  which every load of a mod raises.
+- `bar-path`: the ⚙ button opens the settings pane again on a terminal narrower than 144 columns. Since Claude Code
+  2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `bar-path`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
+  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
+  which every load of a mod raises.
+- `ui-colorify`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
+  Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `ui-colorify`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
+  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
+  which every load of a mod raises.
+- `ui-companion`: the footer's button and the command open the companion's pane again on a terminal narrower than
+  144 columns. Since Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and
+  it waited undrawn.
+- `ui-declutter`: the session's transcript is found wherever Claude Code keeps it, a custom config folder too,
+  instead of at a guessed path.
+- `ui-declutter`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
+  Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `ui-declutter`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
+  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
+  which every load of a mod raises.
+- `ui-declutter`: a span whose result the transcript did not hold yet, or whose read was cut short, is drawn with it
+  once it is read again, where it kept its «?»: the read again wrote state from a timer a drawing set.
+- `ui-linkify`: the session's transcript is found wherever Claude Code keeps it, a custom config folder too, instead
+  of at a guessed path.
+- `ui-linkify`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
+  Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `ui-linkify`: the saved settings load at the session's start, not from a drawing before it, which since Claude
+  Code 2.1.331 cannot write state, so a footer drawn first no longer fails to load them.
+- `ui-mods`: the footer's button and `/mods` open the mods' pane again on a terminal narrower than 144 columns. Since
+  Claude Code 2.1.331 a pane opened after its press or command has ended counts as one nobody asked for, and it
   waited undrawn.
-- `bar-context`, `bar-git`, `bar-path`, `ui-colorify`, `ui-declutter`: a session's start no longer fills the debug log
-  with «starting failed: … state.set: denied». Since Claude Code 2.1.331 a start a drawing sets off cannot write
-  state, so the mods start at `session.start` alone, which every load of a mod raises.
 - `pet`: a session in a git worktree goes by the project the worktree was made from, not by the worktree's folder.
 - `pet`: a chat Orca runs, a worker's or a bot's, goes by the title and project Orca shows for it, and pressing its
   row brings its tab forward in Orca, where it said «sin ventana que abrir», whichever workspace Orca shows: Orca

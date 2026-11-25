@@ -110,13 +110,7 @@ export async function provenance($: EngineInterface) {
   return read($, origin)
 }
 
-/** The settings as a drawing has them: drawing writes no state, so a start runs on a timer of its own. */
+/** The settings as a drawing has them: drawing writes no state, so before the start they are the defaults. */
 export async function shown($: EngineInterface) {
-  // One that fails leaves the defaults drawn, as before the start.
-  if (!hasStarted) {
-    hasStarted = true
-    $.clock.after(0, () => void start($).catch(orElse($, 'loading the settings', undefined)))
-  }
-
   return read($, settings)
 }

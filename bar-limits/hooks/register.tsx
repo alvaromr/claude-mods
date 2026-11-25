@@ -54,7 +54,6 @@ type Elements = ReturnType<EngineInterface['ui']['resolve']>
 let fetchedAt = -Infinity
 let ticker: Timer | undefined
 let redraw: Timer | undefined
-let hasStarted = false
 
 /**
  * Keeps the latest reading, for the next session too until a response reports
@@ -216,12 +215,10 @@ const forgetProject = async ($: Engine) => {
 }
 
 // The settings and the last readings, read again; the line kept counting down.
-// Run by session.start, and by the first drawing where a resumed session drew
-// before session.start reached this mod. A start that fails says why in the
-// debug log and lets the next drawing try again.
+// Run by session.start, which every fresh load of this mod raises, a reload's
+// too; a drawing before it shows no line, as drawing writes no state. A start
+// that fails says why in the debug log.
 const start = async ($: Engine) => {
-  hasStarted = true
-
   try {
     await loadSettings($)
 
@@ -241,7 +238,6 @@ const start = async ($: Engine) => {
       $.ui.invalidate('ui.render')
     })
   } catch (failure) {
-    hasStarted = false
     orElse($, 'starting', undefined)(failure)
   }
 }
@@ -261,12 +257,6 @@ const togglePane = async ($: Engine) => {
 // the windows, all in a line or one at a time that a click passes on, and the
 // ⚙ that opens the settings, which stays when no window is shown.
 const drawn = async ($: Engine, { Box, Button, Text }: Pick<Elements, 'Box' | 'Button' | 'Text'>) => {
-  // Drawing writes no state: the start runs on a timer of its own.
-  if (!hasStarted) {
-    hasStarted = true
-    $.clock.after(0, () => void start($))
-  }
-
   const s = await read($, settings)
   const now = await $.clock.now()
   const shown = shownOf(await read($, limits), await read($, models), s)

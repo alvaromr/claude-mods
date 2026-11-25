@@ -445,12 +445,6 @@
   },
   {
     "file": "hooks/register.tsx",
-    "from": "    hasStarted = false\n",
-    "to": "",
-    "why": "a start that fails is tried again at the next drawing"
-  },
-  {
-    "file": "hooks/register.tsx",
     "from": "    redraw?.cancel()\n",
     "to": "",
     "why": "a new start replaces the old redraw"

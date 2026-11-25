@@ -378,6 +378,8 @@ test('a result read cut short is read again off the drawing, and the span drawn 
 
     return resultRow('e2', EDIT)
   })
+  // As the engine does with a timer a drawing set: it writes no state.
+  on('state.set', (_, e, next) => (e.key === 'revision' ? { deny: 'drawing is pure' } : next(e)))
 
   const first = await editRow($, 'e1')
   expect((await first.find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +3 −1 ? ▸')
@@ -417,14 +419,19 @@ test('a last row of the transcript not written whole yet gives no result', async
 })
 
 test('a session with no transcript file on this machine gives no result, and reads no file', async ($, on) => {
-  mock.clock(on)
+  const clock = mock.clock(on)
+  const logged: unknown[] = []
   twoEdits(on)
+  on('ui.log', (_, e) => (logged.push(e), { value: undefined }))
 
   const file = transcript(on, () => e2, '')
 
   expect((await (await editRow($, 'e1')).find({ key: 'view' }))?.text).toBe('2 cambios · a.ts +3 −1 ? ▸')
+  await clock.settle()
   expect(file.passes).toBe(0)
   expect(file.reads).toEqual([])
+  // Not even a read that the engine turns down for its empty path.
+  expect(logged).toEqual([])
 })
 
 test('the transcript is read in bytes, at the path the session names, wherever the config folder is', async ($, on) => {
@@ -769,6 +776,9 @@ test('a result keeps its diff where the diffs are not hidden; only where they ar
 test('a result the transcript file did not hold yet is read again a little later, twice at most', async ($, on) => {
   const clock = mock.clock(on)
   twoEdits(on)
+  // As the engine does with a timer a drawing set: it writes no state, so the
+  // read again draws the row again without one.
+  on('state.set', (_, e, next) => (e.key === 'revision' ? { deny: 'drawing is pure' } : next(e)))
 
   // The second read finds it: the file was written in between.
   const file = transcript(on, pass => (pass < 2 ? '' : e2))

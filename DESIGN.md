@@ -92,4 +92,5 @@ glyph there. All of them follow the same rules, so the fifteen read as one famil
 
 - A drawing hook writes no state and starts no long work: what must be read or computed is done outside the drawing
   (`$.clock.after`), and when done it draws again. A call that a newer drawing cancels is not kept as a result.
-- Start-up happens in `session.start` and, in case it does not arrive (a resumed session), in the first drawing.
+- Start-up happens in `session.start` alone, which every fresh load of a mod raises, a reload's too. A drawing
+  before it draws the defaults: a start it set off, even on a timer, could write no state.

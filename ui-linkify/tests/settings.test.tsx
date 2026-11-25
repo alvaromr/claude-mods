@@ -122,6 +122,27 @@ test("the button's dot is full and green while some part links or draws, hollow 
   expect((await footer.find({ type: 'Text', text: '○' }))?.props.color).toBe('inactive')
 })
 
+test('a footer drawn before session.start reached the mod shows the defaults, and the saved settings from the start', async ($, on) => {
+  const clock = mock.clock(on)
+  const none = { paths: false, jira: false, images: false, draft: false, commands: false }
+  const begin = jira(on, { site: SITE, keys: 'ABC', ...none })
+  stage(on)
+
+  const footer = await $.ui.mount({
+    plugin: 'ui-linkify',
+    surface: 'terminal',
+    component: 'SessionMode',
+    props: { modes: [] },
+  })
+
+  // Drawing writes no state, so it starts nothing: the settings wait.
+  await clock.settle()
+  expect((await footer.find({ key: 'linkify' }))?.text).toBe('● linkify')
+
+  await begin($)
+  expect((await footer.find({ key: 'linkify' }))?.text).toBe('○ linkify')
+})
+
 for (const part of ['paths', 'jira', 'images', 'draft', 'commands'] as const) {
   test(`the button's dot is full while ${part} alone is on`, async ($, on) => {
     const off = { paths: false, jira: false, images: false, draft: false, commands: false }
