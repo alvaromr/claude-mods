@@ -1,6 +1,6 @@
 {
   "name": "pet",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A desktop pet: the Claude spark floating above every window, with a speech bubble listing the live Claude Code sessions (waiting for the person, working and inactive) that opens each one where it lives: the Claude desktop app, its Orca tab or its terminal. An icon marks a session blocked on a dialog, one that goes on by itself (a scheduled task, a command or subagents in the background) and one whose last turn ended on an API error. The bubble opens when a session finishes or needs the person, unless they already have it in front of them in Orca. macOS only. Its own settings window picks the pet's size, the bubble's size and side, when opening a session closes it, the sounds, and an animation for each state and event; its help window explains every icon, tab and gesture. /pet opens it and /pet salir closes it.",
   "author": { "name": "alvaro.martin" }
 }

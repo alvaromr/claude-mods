@@ -19,6 +19,11 @@ entry names its mod.
 - `ui-mods`: the footer's button and `/mods` open the mods' pane again on a terminal narrower than 144 columns. Since
   Claude Code 2.1.331 a pane opened after its press or command has ended counts as one nobody asked for, and it
   waited undrawn.
+
+## [pet 0.3.1] - 2026-11-25
+
+### Fixed
+
 - `pet`: a session in a git worktree goes by the project the worktree was made from, not by the worktree's folder.
 - `pet`: a chat Orca runs, a worker's or a bot's, goes by the title and project Orca shows for it, and pressing its
   row brings its tab forward in Orca, where it said «sin ventana que abrir», whichever workspace Orca shows: Orca
