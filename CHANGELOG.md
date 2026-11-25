@@ -6,11 +6,6 @@ entry names its mod.
 
 ## [Unreleased]
 
-### Changed
-
-- `ui-linkify`: pictures a terminal dropped when it redrew its screen are sent again the moment the window gets the
-  focus back, instead of at the next key typed; a terminal that reports no focus keeps the old behaviour.
-
 ### Fixed
 
 - `bar-git`: the ⚙ button opens the settings pane again on a terminal narrower than 144 columns. Since Claude Code
@@ -36,12 +31,6 @@ entry names its mod.
 - `ui-companion`: the footer's button and the command open the companion's pane again on a terminal narrower than
   144 columns. Since Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and
   it waited undrawn.
-- `ui-linkify`: the session's transcript is found wherever Claude Code keeps it, a custom config folder too, instead
-  of at a guessed path.
-- `ui-linkify`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
-  Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
-- `ui-linkify`: the saved settings load at the session's start, not from a drawing before it, which since Claude
-  Code 2.1.331 cannot write state, so a footer drawn first no longer fails to load them.
 - `ui-mods`: the footer's button and `/mods` open the mods' pane again on a terminal narrower than 144 columns. Since
   Claude Code 2.1.331 a pane opened after its press or command has ended counts as one nobody asked for, and it
   waited undrawn.
@@ -50,6 +39,22 @@ entry names its mod.
   row brings its tab forward in Orca, where it said «sin ventana que abrir», whichever workspace Orca shows: Orca
   first shows the chat's, a repo's worktree or the bot's folder.
 - `pet`: the pet's log says why a program it runs failed, as Orca refusing to show a chat, with what it said.
+
+## [ui-linkify 0.6.0] - 2026-11-25
+
+### Changed
+
+- `ui-linkify`: pictures a terminal dropped when it redrew its screen are sent again the moment the window gets the
+  focus back, instead of at the next key typed; a terminal that reports no focus keeps the old behaviour.
+
+### Fixed
+
+- `ui-linkify`: the session's transcript is found wherever Claude Code keeps it, a custom config folder too, instead
+  of at a guessed path.
+- `ui-linkify`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
+  Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `ui-linkify`: the saved settings load at the session's start, not from a drawing before it, which since Claude
+  Code 2.1.331 cannot write state, so a footer drawn first no longer fails to load them.
 
 ## [ui-declutter 0.3.0] - 2026-11-25
 
