@@ -8,11 +8,6 @@ entry names its mod.
 
 ### Fixed
 
-- `bar-path`: the ⚙ button opens the settings pane again on a terminal narrower than 144 columns. Since Claude Code
-  2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
-- `bar-path`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
-  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
-  which every load of a mod raises.
 - `ui-colorify`: the footer's button opens the settings pane again on a terminal narrower than 144 columns. Since
   Claude Code 2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
 - `ui-colorify`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
@@ -29,6 +24,16 @@ entry names its mod.
   row brings its tab forward in Orca, where it said «sin ventana que abrir», whichever workspace Orca shows: Orca
   first shows the chat's, a repo's worktree or the bot's folder.
 - `pet`: the pet's log says why a program it runs failed, as Orca refusing to show a chat, with what it said.
+
+## [bar-path 0.3.1] - 2026-11-25
+
+### Fixed
+
+- `bar-path`: the ⚙ button opens the settings pane again on a terminal narrower than 144 columns. Since Claude Code
+  2.1.331 a pane opened after its press has ended counts as one nobody asked for, and it waited undrawn.
+- `bar-path`: a session's start no longer fills the debug log with «starting failed: … state.set: denied». Since
+  Claude Code 2.1.331 a start a drawing sets off cannot write state, so the mod starts at `session.start` alone,
+  which every load of a mod raises.
 
 ## [bar-limits 0.3.1] - 2026-11-25
 
