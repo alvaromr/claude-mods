@@ -17,10 +17,12 @@ export type Preferences = {
   /** The time elapsed of the window, as a cursor in the bar. */
   showCursor: boolean
   showPercent: boolean
-  /** `↑ agota en …` or `↓ sobra N%`, by how fast the window is spent. */
+  /** `↑ agota en …`, when the window is spent fast. */
   showPace: boolean
   /** `(3h53m)`, the time until the window resets. */
   showReset: boolean
+  /** `↑150%`, the share used against the share of the window elapsed, beside the arrow, which then always shows. */
+  showRatio: boolean
   sessionLabel: string
   weekLabel: string
   /** One window at a time, the next on a click and every `cycleSeconds` (0: on a click alone). */
@@ -30,14 +32,15 @@ export type Preferences = {
   midColor: string
   highColor: string
   emptyColor: string
-  paceColor: string
   mutedColor: string
   /** The share used from which the window takes `midColor`, then `highColor`. */
   midFrom: number
   highFrom: number
-  /** Share used over share of the window elapsed, ×100: at or above, it runs out early; at or below, it is left over. */
+  /** The pace from which its arrow takes `midColor`, then `highColor`. */
+  paceMidFrom: number
+  paceHighFrom: number
+  /** Share used over share of the window elapsed, ×100: at or above, it runs out early. */
   paceFast: number
-  paceSlack: number
 }
 
 /**

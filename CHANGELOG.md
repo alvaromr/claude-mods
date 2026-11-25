@@ -6,6 +6,19 @@ entry names its mod.
 
 ## [Unreleased]
 
+### Added
+
+- `bar-limits`: each window's arrow carries its pace in percent, «↓9%» or «↑150%»: the share used against the share
+  of the window elapsed, where 100% spends the limit just as it resets. The arrow now shows always, pointing up from
+  100%, and a switch in the settings pane hides the percent.
+- `bar-limits`: the arrow takes the color of its pace rather than red: the low use's below 95%, the mid one's from
+  it and the high one's, bold, from 120%; both thresholds are set in the settings pane.
+
+### Removed
+
+- `bar-limits`: «↓ sobra 76%», which the pace in percent says already, and its threshold in the settings pane; and
+  the arrows' own color, which their pace now gives them.
+
 ## [ui-mods 0.3.1] - 2026-11-25
 
 ### Fixed

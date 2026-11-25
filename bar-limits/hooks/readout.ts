@@ -24,8 +24,8 @@ export const until = (seconds: number) => {
 
 /**
  * A window as runs of one color: its label, the bar with the elapsed time as a
- * cursor, the share used, its pace and the time to reset, each part as the
- * settings say. Bar and share take the tier's color; past its reset, before a
+ * cursor, the share used, its pace with its percent and the time to reset, each part as the
+ * settings say. Bar and share take the tier's color, the pace that of its own tier; past its reset, before a
  * response reports the new one, the window counts as unused.
  */
 export const runsOf = (limit: Limit, s: Preferences, now: number): Run[] => {
@@ -40,8 +40,10 @@ export const runsOf = (limit: Limit, s: Preferences, now: number): Run[] => {
     limit.kind === 'five_hour' ? s.sessionLabel : limit.kind === 'seven_day' ? s.weekLabel : (limit.name ?? '')
   const elapsed = resetsAt === undefined ? undefined : Math.min(Math.max(seconds - (resetsAt - window), 0), window)
   const timePct = elapsed === undefined ? undefined : Math.floor((elapsed * 100) / window)
-  const ratio =
-    timePct !== undefined && timePct >= PACE_MIN_ELAPSED && pct > 0 ? Math.floor((pct * 100) / timePct) : undefined
+  // The share used against the share of the window elapsed: 100 is the fair pace. Always drawn where it can be
+  // reckoned; the arrows judge it only once enough of the window has elapsed.
+  const pace = timePct === undefined || timePct === 0 ? undefined : Math.floor((pct * 100) / timePct)
+  const ratio = timePct !== undefined && timePct >= PACE_MIN_ELAPSED && pct > 0 ? pace : undefined
   const isFast = ratio !== undefined && ratio >= s.paceFast
   const runs: Run[] = [{ ...tier, text: label }]
 
@@ -65,14 +67,24 @@ export const runsOf = (limit: Limit, s: Preferences, now: number): Run[] => {
     runs.push({ ...tier, text: ` ${pct}%` })
   }
 
-  if (s.showPace && elapsed !== undefined && ratio !== undefined) {
-    if (isFast) {
-      runs.push(
-        { color: s.paceColor, text: ' ↑' },
-        { color: s.mutedColor, text: TEXT.runsOut(until((elapsed * 100) / pct - elapsed)) },
-      )
-    } else if (ratio <= s.paceSlack) {
-      runs.push({ color: s.paceColor, text: ' ↓' }, { color: s.mutedColor, text: TEXT.slack(100 - ratio) })
+  // The arrow, with the pace in percent beside it whenever that shows, and after it, for a fast pace, when the
+  // limit runs out.
+  const words =
+    s.showPace && isFast && elapsed !== undefined ? TEXT.runsOut(until((elapsed * 100) / pct - elapsed)) : undefined
+  const shownPace = s.showRatio ? pace : undefined
+
+  if (words !== undefined || shownPace !== undefined) {
+    const isUp = isFast || (shownPace !== undefined && shownPace >= 100)
+    const percent = shownPace === undefined ? '' : TEXT.ratio(shownPace)
+
+    // The arrow takes the color of its pace, as the share takes that of its use. Drawn, it always has one.
+    const speed = pace ?? 0
+    const paceColor = speed >= s.paceHighFrom ? s.highColor : speed >= s.paceMidFrom ? s.midColor : s.lowColor
+
+    runs.push({ color: paceColor, isBold: speed >= s.paceHighFrom, text: ` ${isUp ? '↑' : '↓'}${percent}` })
+
+    if (words !== undefined) {
+      runs.push({ color: s.mutedColor, text: words })
     }
   }
 

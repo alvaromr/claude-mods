@@ -10,6 +10,7 @@ export const DEFAULTS: Preferences = {
   showPercent: true,
   showPace: true,
   showReset: true,
+  showRatio: true,
   sessionLabel: 'Session',
   weekLabel: 'Week',
   cycle: false,
@@ -18,12 +19,12 @@ export const DEFAULTS: Preferences = {
   midColor: '#d78700',
   highColor: 'red',
   emptyColor: '#5f5f5f',
-  paceColor: 'red',
   mutedColor: '#8a8a8a',
   midFrom: 50,
   highFrom: 71,
+  paceMidFrom: 95,
+  paceHighFrom: 120,
   paceFast: 125,
-  paceSlack: 50,
 }
 
 export type Flag = { [K in keyof Preferences]: Preferences[K] extends boolean ? K : never }[keyof Preferences]
@@ -42,6 +43,7 @@ export const PARTS: [Flag, string][] = [
   ['showPercent', TEXT.showPercent],
   ['showPace', TEXT.showPace],
   ['showReset', TEXT.showReset],
+  ['showRatio', TEXT.showRatio],
 ]
 // Input draws its own colon after the label.
 export const LABELS: [Words, string][] = [
@@ -53,7 +55,6 @@ export const COLORS: [Words, string][] = [
   ['midColor', TEXT.midColor],
   ['highColor', TEXT.highColor],
   ['emptyColor', TEXT.emptyColor],
-  ['paceColor', TEXT.paceColor],
   ['mutedColor', TEXT.mutedColor],
 ]
 // The cycle's seconds go with the cycle's switch, apart from the thresholds.
@@ -62,13 +63,13 @@ export const COUNTS: [Count, string, number, number][] = [
   CYCLE_SECONDS,
   ['midFrom', TEXT.midFrom, 0, 100],
   ['highFrom', TEXT.highFrom, 0, 100],
+  ['paceMidFrom', TEXT.paceMidFrom, 0, 1000],
+  ['paceHighFrom', TEXT.paceHighFrom, 0, 1000],
   ['paceFast', TEXT.paceFast, 100, 1000],
-  ['paceSlack', TEXT.paceSlack, 0, 100],
 ]
 // What a field does, drawn dim under it.
 export const NOTES: Partial<Record<Count, string>> = {
   paceFast: TEXT.paceFastNote,
-  paceSlack: TEXT.paceSlackNote,
 }
 
 // A hex color, a color's name or a theme key (warning, claude…), as Text paints them.

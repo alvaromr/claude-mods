@@ -115,14 +115,15 @@ test('the pane bounds its counts as the settings can hold', () => {
     ['cycleSeconds', 0, 3600],
     ['midFrom', 0, 100],
     ['highFrom', 0, 100],
+    ['paceMidFrom', 0, 1000],
+    ['paceHighFrom', 0, 1000],
     ['paceFast', 100, 1000],
-    ['paceSlack', 0, 100],
   ])
   expect(COUNTS[0]).toBe(CYCLE_SECONDS)
 })
 
-test('the pace fields each have a note under them', () => {
-  expect(Object.keys(NOTES)).toEqual(['paceFast', 'paceSlack'])
+test('the pace field has a note under it', () => {
+  expect(Object.keys(NOTES)).toEqual(['paceFast'])
 })
 
 test('every field the pane lists exists in the settings, of the type its control holds', () => {

@@ -91,6 +91,42 @@
   },
   {
     "file": "hooks/preferences.ts",
+    "from": "showRatio: true,",
+    "to": "showRatio: false,",
+    "why": "the pace in percent shows by default"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const shownPace = s.showRatio ? pace : undefined",
+    "to": "const shownPace = pace",
+    "why": "the pace in percent hides by its setting"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const isUp = isFast || (shownPace !== undefined && shownPace >= 100)",
+    "to": "const isUp = isFast || (shownPace !== undefined && shownPace > 100)",
+    "why": "the arrow points up from the fair pace"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const isUp = isFast ||",
+    "to": "const isUp =",
+    "why": "a fast pace points up with no percent shown"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "timePct === undefined || timePct === 0 ? undefined",
+    "to": "timePct === undefined ? undefined",
+    "why": "a window that has not begun has no pace in percent"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "const percent = shownPace === undefined ? '' : TEXT.ratio(shownPace)",
+    "to": "const percent = ''",
+    "why": "the pace in percent is drawn beside the arrow"
+  },
+  {
+    "file": "hooks/preferences.ts",
     "from": "sessionLabel: 'Session',",
     "to": "sessionLabel: 'Sesión',",
     "why": "the session's label is Session by default"
@@ -139,12 +175,6 @@
   },
   {
     "file": "hooks/preferences.ts",
-    "from": "paceColor: 'red',",
-    "to": "paceColor: 'cyan',",
-    "why": "the pace arrows are red"
-  },
-  {
-    "file": "hooks/preferences.ts",
     "from": "mutedColor: '#8a8a8a',",
     "to": "mutedColor: 'cyan',",
     "why": "the secondary text is gray"
@@ -166,12 +196,6 @@
     "from": "paceFast: 125,",
     "to": "paceFast: 150,",
     "why": "a pace is fast from 125% of the fair one"
-  },
-  {
-    "file": "hooks/preferences.ts",
-    "from": "paceSlack: 50,",
-    "to": "paceSlack: 40,",
-    "why": "a pace is slack up to 50% of the fair one"
   },
   {
     "file": "hooks/preferences.ts",
@@ -577,33 +601,51 @@
   },
   {
     "file": "hooks/readout.ts",
-    "from": "if (s.showPace && elapsed !== undefined && ratio !== undefined) {",
-    "to": "if (elapsed !== undefined && ratio !== undefined) {",
+    "from": "s.showPace && isFast && elapsed !== undefined",
+    "to": "isFast && elapsed !== undefined",
     "why": "the pace hides when the setting says so"
   },
   {
     "file": "hooks/readout.ts",
-    "from": "{ color: s.paceColor, text: ' ↑' },",
-    "to": "{ color: s.mutedColor, text: ' ↑' },",
-    "why": "the pace arrow takes its own color"
+    "from": "runs.push({ color: paceColor, isBold: speed >= s.paceHighFrom,",
+    "to": "runs.push({ ...tier,",
+    "why": "the pace arrow takes the color of its pace, not of its window"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "speed >= s.paceHighFrom ? s.highColor",
+    "to": "speed > s.paceHighFrom ? s.highColor",
+    "why": "a pace is high from its threshold"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "speed >= s.paceMidFrom ? s.midColor",
+    "to": "speed > s.paceMidFrom ? s.midColor",
+    "why": "a pace is mid from its threshold"
+  },
+  {
+    "file": "hooks/readout.ts",
+    "from": "isBold: speed >= s.paceHighFrom,",
+    "to": "isBold: false,",
+    "why": "a high pace is bold"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "paceMidFrom: 95,",
+    "to": "paceMidFrom: 96,",
+    "why": "a pace is mid from 95%"
+  },
+  {
+    "file": "hooks/preferences.ts",
+    "from": "paceHighFrom: 120,",
+    "to": "paceHighFrom: 121,",
+    "why": "a pace is high from 120%"
   },
   {
     "file": "hooks/readout.ts",
     "from": "TEXT.runsOut(until((elapsed * 100) / pct - elapsed))",
     "to": "TEXT.runsOut(until((elapsed * 100) / pct))",
     "why": "a fast pace says in how long the limit runs out"
-  },
-  {
-    "file": "hooks/readout.ts",
-    "from": "ratio <= s.paceSlack",
-    "to": "ratio < s.paceSlack",
-    "why": "a pace is slack up to its threshold"
-  },
-  {
-    "file": "hooks/readout.ts",
-    "from": "TEXT.slack(100 - ratio)",
-    "to": "TEXT.slack(ratio)",
-    "why": "a slack pace says how much is left over"
   },
   {
     "file": "hooks/readout.ts",

@@ -172,7 +172,7 @@ test('the footer draws the line the status line drew, and ⚙ opens and closes t
 
   const footer = await $.ui.mount({ ...FOOTER, surface: 'terminal' })
   expect(await line(footer)).toBe(
-    'Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓ sobra 91% (3h53m) · Week ▰▱▱▱▱▱▱▱◇▱ 19% ↓ sobra 77% (1d6h) · Fable ▱▱▱▱▱▱▱▱◇▱ 0% (1d6h)',
+    'Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓9% (3h53m) · Week ▰▱▱▱▱▱▱▱◇▱ 19% ↓23% (1d6h) · Fable ▱▱▱▱▱▱▱▱◇▱ 0% ↓0% (1d6h)',
   )
 
   await footer.press({ key: 'bar-limits-settings' })
@@ -208,7 +208,7 @@ test('an endpoint that refuses leaves the models out, and why in the debug log',
   await clock.settle()
 
   const footer = await $.ui.mount({ ...FOOTER, surface: 'terminal' })
-  expect(await line(footer)).toBe('Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓ sobra 91% (3h53m) · Week ▰▱▱▱▱▱▱▱◇▱ 19% ↓ sobra 77% (1d6h)')
+  expect(await line(footer)).toBe('Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓9% (3h53m) · Week ▰▱▱▱▱▱▱▱◇▱ 19% ↓23% (1d6h)')
   expect(logged).toContain('reading the usage endpoint failed: status 401')
   await footer.unmount()
 })
@@ -223,7 +223,7 @@ test('a resumed session drawn before session.start reached the mod: the line fil
 
   await begin($, it)
   expect(await line(footer)).toBe(
-    'Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓ sobra 91% (3h53m) · Week ▰▱▱▱▱▱▱▱◇▱ 19% ↓ sobra 77% (1d6h) · Fable ▱▱▱▱▱▱▱▱◇▱ 0% (1d6h)',
+    'Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓9% (3h53m) · Week ▰▱▱▱▱▱▱▱◇▱ 19% ↓23% (1d6h) · Fable ▱▱▱▱▱▱▱▱◇▱ 0% ↓0% (1d6h)',
   )
   await footer.unmount()
 })
@@ -267,7 +267,7 @@ test('the pane hides parts and windows, recolors, and turns the line into one wi
     await pane.press({ key: 'showCursor' })
     await pane.press({ key: 'showModels' })
     // The terminal's run moved the clock 8 seconds on: the desktop's reads a minute less.
-    expect(await line(footer)).toMatch(/^Session ▱{10} 2% \(3h5[23]m\) · Week ▰▱{9} 19% \(1d6h\)$/)
+    expect(await line(footer)).toMatch(/^Session ▱{10} 2% ↓9% \(3h5[23]m\) · Week ▰▱{9} 19% ↓23% \(1d6h\)$/)
 
     await pane.input({ key: 'sessionLabel', text: 'x'.repeat(25) })
     expect(toasts.at(-1)).toBe('Entre 1 y 24 caracteres')
@@ -278,9 +278,9 @@ test('the pane hides parts and windows, recolors, and turns the line into one wi
 
     await pane.press({ key: 'cycle' })
     const shown = async () => (await footer.find({ type: 'Button', key: 'bar-limits-next' }))?.text
-    expect(await shown()).toMatch(/^Session ▱{10} 2% \(3h5[23]m\)$/)
+    expect(await shown()).toMatch(/^Session ▱{10} 2% ↓9% \(3h5[23]m\)$/)
     await footer.press({ key: 'bar-limits-next' })
-    expect(await shown()).toBe('Week ▰▱▱▱▱▱▱▱▱▱ 19% (1d6h)')
+    expect(await shown()).toBe('Week ▰▱▱▱▱▱▱▱▱▱ 19% ↓23% (1d6h)')
     // Every 8 seconds by default, back to the first of the two.
     await clock.advance(8000)
     expect(await shown()).toMatch(/^Session/)
@@ -327,7 +327,7 @@ test('changes pressed together all land', async ($, on) => {
     pane.press({ key: 'showPace' }),
     pane.press({ key: 'showCursor' }),
   ])
-  expect(await line(footer)).toMatch(/^Session ▱{10} 2% \(3h5[23]m\) · Week ▰▱{9} 19% \(1d6h\)$/)
+  expect(await line(footer)).toMatch(/^Session ▱{10} 2% ↓9% \(3h5[23]m\) · Week ▰▱{9} 19% ↓23% \(1d6h\)$/)
   await pane.unmount()
   await footer.unmount()
 })
@@ -448,6 +448,7 @@ test('a use is drawn in the color of its tier, bold from the high one, over a ba
 
   await pane.press({ key: 'showPace' })
   await pane.press({ key: 'showReset' })
+  await pane.press({ key: 'showRatio' })
 
   const first = async (percent: number) => (await use(percent))[0]
 
@@ -465,37 +466,35 @@ test('a use is drawn in the color of its tier, bold from the high one, over a ba
   await footer.unmount()
 })
 
-test('a pace is slack up to half the fair one, fast from a quarter over it, and says so with its own color', async ($, on) => {
+test('a pace is fast from a quarter over the fair one, its arrow in the color of its pace', async ($, on) => {
   const { footer, pane, use } = await sessionOnly($, on)
-  const arrows = async (percent: number) => (await use(percent)).filter(run => / [↑↓]|agota|sobra/.test(run.text))
+  const arrows = async (percent: number) => (await use(percent)).filter(run => / [↑↓]|agota/.test(run.text))
 
   await pane.press({ key: 'showReset' })
-  // A fifth of the time run: 10% is the half of the fair pace, 25% a quarter over it.
-  expect(await arrows(10)).toEqual([
-    { text: ' ↓', color: 'red', weight: undefined },
-    { text: ' sobra 50%', color: '#8a8a8a', weight: undefined },
-  ])
-  expect(await arrows(11)).toEqual([])
+  await pane.press({ key: 'showRatio' })
+  // A fifth of the time run: 25% is a quarter over the fair pace.
+  expect(await arrows(10)).toEqual([])
   expect(await arrows(24)).toEqual([])
   expect(await arrows(25)).toEqual([
-    { text: ' ↑', color: 'red', weight: undefined },
+    // A pace of 125%: high, though the share is low.
+    { text: ' ↑', color: 'red', weight: 'semibold' },
     { text: ' agota en 3h0m', color: '#8a8a8a', weight: undefined },
   ])
   expect((await use(25))[0]?.text).toBe('Session ▰▰◆')
 
-  // A limit already spent runs out now; the arrow is not merged into the bold run before it.
-  expect(await arrows(100)).toContainEqual({ text: ' ↑', color: 'red', weight: undefined })
+  // A limit already spent runs out now; its arrow is red and bold, as its share is, and drawn with it.
+  expect(await arrows(100)).toContainEqual({ text: 'Session ▰▰◆▰▰▰▰▰▰▰ 100% ↑', color: 'red', weight: 'semibold' })
   expect(await arrows(100)).toContainEqual({ text: ' agota en now', color: '#8a8a8a', weight: undefined })
   await pane.unmount()
   await footer.unmount()
 })
 
-test('a pace is judged only once a few percent of the window has run, and the cursor starts at its first cell', async ($, on) => {
+test('a pace is judged only once a few percent of the window has run, though drawn from the first, and the cursor starts at its first cell', async ($, on) => {
   const { footer, pane, use } = await sessionOnly($, on)
 
   await pane.press({ key: 'showReset' })
-  // 3 minutes of 5 hours run (1%): too soon to judge.
-  expect((await use(50, '2026-10-22T13:04:00Z')).map(run => run.text).join('')).toBe('Session ◇▰▰▰▰▱▱▱▱▱ 50%')
+  // 3 minutes of 5 hours run (1%): too soon to judge, with no «agota en», but the pace is drawn.
+  expect((await use(50, '2026-10-22T13:04:00Z')).map(run => run.text).join('')).toBe('Session ◇▰▰▰▰▱▱▱▱▱ 50% ↑5000%')
   // A reset further than the window's length: nothing has run, and the cursor is on its first cell.
   expect((await use(0, '2026-10-22T13:40:20Z')).map(run => run.text).join('')).toBe('Session ◇▱▱▱▱▱▱▱▱▱ 0%')
   await pane.unmount()
@@ -516,6 +515,7 @@ test('the time to reset reads in days and hours, hours and minutes, or minutes',
   await pane.press({ key: 'showPace' })
   await pane.press({ key: 'showBar' })
   await pane.press({ key: 'showPercent' })
+  await pane.press({ key: 'showRatio' })
 
   const reset = async (at: string) =>
     (await use(0, at))
@@ -530,25 +530,27 @@ test('the time to reset reads in days and hours, hours and minutes, or minutes',
   await footer.unmount()
 })
 
-test('the pane hides the bar, the share, the pace and the time to reset one by one', async ($, on) => {
+test('the pane hides the bar, the share, the pace, the time to reset and the pace in percent one by one', async ($, on) => {
   const { footer, pane, use } = await sessionOnly($, on)
   const text = async () => (await use(30)).map(run => run.text).join('')
 
-  expect(await text()).toBe('Session ▰▰◆▱▱▱▱▱▱▱ 30% ↑ agota en 2h20m (4h0m)')
+  expect(await text()).toBe('Session ▰▰◆▱▱▱▱▱▱▱ 30% ↑150% agota en 2h20m (4h0m)')
   await pane.press({ key: 'showBar' })
-  expect(await text()).toBe('Session 30% ↑ agota en 2h20m (4h0m)')
+  expect(await text()).toBe('Session 30% ↑150% agota en 2h20m (4h0m)')
   await pane.press({ key: 'showPercent' })
-  expect(await text()).toBe('Session ↑ agota en 2h20m (4h0m)')
+  expect(await text()).toBe('Session ↑150% agota en 2h20m (4h0m)')
   await pane.press({ key: 'showPace' })
-  expect(await text()).toBe('Session (4h0m)')
+  expect(await text()).toBe('Session ↑150% (4h0m)')
   await pane.press({ key: 'showReset' })
+  expect(await text()).toBe('Session ↑150%')
+  await pane.press({ key: 'showRatio' })
   expect(await text()).toBe('Session')
   await pane.unmount()
   await footer.unmount()
 })
 
-const BASE = 'Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓ sobra 91% (3h53m) · Week ▰▱▱▱▱▱▱▱◇▱ 19% ↓ sobra 77% (1d6h)'
-const FABLE = ' · Fable ▱▱▱▱▱▱▱▱◇▱ 0% (1d6h)'
+const BASE = 'Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓9% (3h53m) · Week ▰▱▱▱▱▱▱▱◇▱ 19% ↓23% (1d6h)'
+const FABLE = ' · Fable ▱▱▱▱▱▱▱▱◇▱ 0% ↓0% (1d6h)'
 const begin = async ($: Engine, it: ReturnType<typeof stage>) => {
   await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
   await it.clock.settle()
@@ -626,7 +628,7 @@ test('the last readings and models are kept for the next session, and a measure 
   it.endpoint.status = 401
   await it.clock.advance(70_000)
   await begin($, it)
-  expect(await line(footer)).toMatch(/^Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓ sobra 91% \(3h5\dm\) · Week .* · Fable /)
+  expect(await line(footer)).toMatch(/^Session ▱▱◇▱▱▱▱▱▱▱ 2% ↓9% \(3h5\dm\) · Week .* · Fable /)
   await footer.unmount()
 })
 
@@ -835,7 +837,6 @@ test('the pane shows a switch on as a full square and off dim, the mode picked a
     '#d78700',
     'red',
     '#5f5f5f',
-    'red',
     '#8a8a8a',
   ])
   await pane.unmount()
