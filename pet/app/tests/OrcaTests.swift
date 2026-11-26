@@ -139,6 +139,21 @@ func orcaChatTests() {
     }
 }
 
+func orcaLeftTests() {
+    test("an Orca chat whose folder is gone, a finished worker's, is left out; any other session stays") {
+        var worker = session(.idle)
+        worker.cwd = home.appendingPathComponent("removed-worktree").path
+        expect(worker.isLeftByOrca(at: .orcaChat("c")), true, "a chat in a folder that is gone")
+        expect(worker.isLeftByOrca(at: .orca("term_t")), false, "a terminal tab, which still opens")
+        expect(worker.isLeftByOrca(at: .bot("b")), false, "a bot's chat")
+        expect(worker.isLeftByOrca(at: nil), false, "a session whose place is not known yet")
+        worker.cwd = home.path
+        expect(worker.isLeftByOrca(at: .orcaChat("c")), false, "a chat whose folder is there")
+        worker.cwd = ""
+        expect(worker.isLeftByOrca(at: .orcaChat("c")), false, "a chat that tells no folder")
+    }
+}
+
 func orcaOpenTests() {
     test("an Orca chat's row opens its tab in Orca, rather than the bot whose chat it may be") {
         // a process Orca runs as a chat; node, as `ps` shows no environment of the system's own programs

@@ -27,7 +27,10 @@ final class Controller: NSObject, NSApplicationDelegate {
     private let transcripts = Transcripts()
     private let orcaIcons = OrcaIcons()
     let orcaChats = OrcaChats()
+    /// The sessions the bubble lists.
     private var sessions: [Session] = []
+    /// Every live session, those the bubble leaves out too, which keep their place.
+    private var alive: [Session] = []
     /// When each session the person has seen last changed, by its pid.
     private var seen: [Int32: Date] = [:]
     /// The phase each session was in at the last look.
@@ -121,6 +124,7 @@ final class Controller: NSObject, NSApplicationDelegate {
     }
 
     private func refresh() {
+        alive = liveSessions()
         sessions = currentSessions()
         seen = seen.filter { pid, updated in sessions.contains { $0.pid == pid && $0.updated == updated } }
         let (events, calling) = changesSinceLastLook()
@@ -141,10 +145,10 @@ final class Controller: NSObject, NSApplicationDelegate {
         render()
     }
 
-    /// The sessions alive now, each with what its transcript and its processes tell of it.
+    /// The sessions alive now that the bubble lists, each with what its transcript and its processes tell of it.
     private func currentSessions() -> [Session] {
         // seen for as long as it stays as it was when the person said so
-        let listed = liveSessions()
+        let listed = alive.filter { !$0.isLeftByOrca(at: places[$0.pid]?.place) }
         // only a session with a command in the background can have a server there
         let open = servers(of: listed.filter { transcripts.runningCommands($0) > 0 }.map(\.pid))
         return listed.map { session in
@@ -191,15 +195,15 @@ final class Controller: NSObject, NSApplicationDelegate {
 
     /// Looks for where each session lives, off the main thread, for those not found yet.
     private func locatePlaces() {
-        places = places.filter { pid, known in sessions.contains { $0.pid == pid && $0.id == known.id } }
-        for session in sessions where places[session.pid] == nil && locating.insert(session.pid).inserted {
+        places = places.filter { pid, known in alive.contains { $0.pid == pid && $0.id == known.id } }
+        for session in alive where places[session.pid] == nil && locating.insert(session.pid).inserted {
             lookups.async { [unowned self] in
                 let found = place(of: session)
                 DispatchQueue.main.async { [self] in
                     locating.remove(session.pid)
                     // the session may be gone by the time it is found, and its pid another's
                     guard let found,
-                          sessions.contains(where: { $0.pid == session.pid && $0.id == session.id }) else { return }
+                          alive.contains(where: { $0.pid == session.pid && $0.id == session.id }) else { return }
                     places[session.pid] = (session.id, found)
                     render()
                 }

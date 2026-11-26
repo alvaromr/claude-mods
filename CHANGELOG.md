@@ -6,6 +6,12 @@ entry names its mod.
 
 ## [Unreleased]
 
+### Fixed
+
+- `pet`: an Orca worker that finished and removed its own workspace leaves the bubble, where it stayed in «Esperan»
+  until Orca closed it, and opened the bubble, with a row that pressing did nothing to: Orca drops its chat with
+  the workspace, so there is nothing to open, and it waits for nobody.
+
 ## [bar-limits 0.4.0] - 2026-11-25
 
 ### Added

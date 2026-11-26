@@ -55,6 +55,14 @@ extension Session {
         if !chat.project.isEmpty { named.project = chat.project }
         return named
     }
+
+    /// Whether the session is a chat Orca runs whose folder is gone: a worker that finished and removed
+    /// its own worktree, whose process waits only for Orca to close it. Orca drops the chat with its
+    /// workspace, so there is nothing to open, and it waits for nobody, so the bubble leaves it out.
+    func isLeftByOrca(at place: Place?) -> Bool {
+        guard case .orcaChat = place, !cwd.isEmpty else { return false }
+        return !FileManager.default.fileExists(atPath: cwd)
+    }
 }
 
 /// The chats Orca runs, as its agent list last said, asked again every 10 s off the main thread
