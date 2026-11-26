@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { isLater, modsOf, pin, release } from './release.mjs'
+import { isLater, modsOf, pin, release, sourcedFrom } from './release.mjs'
 
 const CHANGELOG = `# Changelog
 
@@ -133,6 +133,13 @@ test("a release moves the marketplace's tag for its mod, and nothing else", () =
     () => pin(marketplace('bar-git--v0.3.1', 'bar-path--v0.3.1'), 'pet', 'pet--v0.4.0'),
     /installs pet from no tag of its own/,
   )
+})
+
+test("a release's smoke takes every mod from its clone, at the same tags", () => {
+  const marketplace = url =>
+    `{ "plugins": [\n  { "source": { "url": "${url}", "ref": "bar-git--v0.4.0" } },\n  { "source": { "url": "${url}", "ref": "pet--v0.3.1" } }\n] }\n`
+
+  assert.equal(sourcedFrom(marketplace('alvaromr/claude-mods'), 'file:///tmp/clone'), marketplace('file:///tmp/clone'))
 })
 
 test('a version must be a later 0.y.z', () => {

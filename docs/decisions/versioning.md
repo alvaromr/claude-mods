@@ -13,9 +13,11 @@ that did not change and tell their users nothing.
 
 **How:** `pnpm release <mod> <version>` ([scripts/release.mjs](../../scripts/release.mjs)) bumps it, moves the mod's
 entries in `CHANGELOG.md` from Unreleased to the version, points the mod's entry in the marketplace at the new tag,
-commits through the gate and tags it with `claude plugin tag <mod>` (`<mod>--v<version>`). A mod never tagged is
-released first at the version it has. An entry that names other mods too is split by hand first. The commit and its
-tag are pushed together, `git push --follow-tags`: until the tag is on GitHub, the marketplace names a tag an install
-cannot find.
+installs the mod as a user would, in a home of its own, from a clone tagged as the release will be, and stops unless
+the installed copy holds every file of the mod and loads in Claude Code (an install from a tag drops a link that leads
+out of the mod's folder). Then it commits through the gate and tags it with `claude plugin tag <mod>`
+(`<mod>--v<version>`). A mod never tagged is released first at the version it has. An entry that names other mods too
+is split by hand first. The commit and its tag are pushed together, `git push --follow-tags`: until the tag is on
+GitHub, the marketplace names a tag an install cannot find.
 
 **Rejected:** one version for the marketplace, as above; 1.0.0 now, until the hooks API is stable.

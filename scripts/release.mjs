@@ -1,9 +1,12 @@
 // Releases one mod: `pnpm release <mod> <version>`. Moves the mod's entries in CHANGELOG.md from Unreleased to a
-// section of their own, sets the version in its plugin.json and the marketplace's tag for it, commits (the
-// pre-commit hook runs the gate) and tags it with `claude plugin tag`. An entry that names other mods too is left
-// for a person to split first, since a release section says only what that release holds.
-import { execFileSync } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+// section of their own, sets the version in its plugin.json and the marketplace's tag for it, installs the release
+// as a user would and checks it loads, then commits (the pre-commit hook runs the gate) and tags it with
+// `claude plugin tag`. An entry that names other mods too is left for a person to split first, since a release
+// section says only what that release holds.
+import { execFileSync, spawnSync } from 'node:child_process'
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
@@ -118,6 +121,84 @@ export const pin = (marketplace, mod, tag) => {
   return marketplace.replace(ref, `"ref": "${tag}"`)
 }
 
+/** The marketplace's text with every mod taken from the repository at `url`: a clone, for the release's smoke. */
+export const sourcedFrom = (marketplace, url) => marketplace.replaceAll(/"url": "[^"]*"/g, `"url": "${url}"`)
+
+/**
+ * Installs the release of `mod` as a user would, in a home of its own, from a clone of what git tracks with the
+ * release's `changes`, committed and tagged by `claude plugin tag` as the release will be, and the marketplace
+ * pointed at that clone instead of GitHub. Throws unless the installed copy is at `version`, holds every file of the
+ * mod (an install from a tag drops a link that leads out of the mod's folder) and loads in Claude Code.
+ */
+const smoke = (mod, version, changes) => {
+  const scratch = mkdtempSync(join(tmpdir(), 'release-'))
+  const [clone, home, log] = [join(scratch, 'clone'), join(scratch, 'home'), join(scratch, 'log')]
+  const inClone = { cwd: clone }
+  // None of the owner's settings, plugins or login take part: with no login the session stops before asking any
+  // model, which costs nothing.
+  const user = { cwd: scratch, env: { PATH: String(process.env.PATH), HOME: home } }
+  const { name: marketplace } = JSON.parse(changes[MARKETPLACE])
+  // A step's output, or a failure that carries all it printed, since the CLI says why it failed on either stream.
+  const run = (command, args, options) => {
+    const result = spawnSync(command, args, { ...options, encoding: 'utf8' })
+
+    if (result.status !== 0) {
+      throw new Error(
+        `${[command, ...args].join(' ')} failed:\n${result.error?.message ?? ''}${result.stdout}${result.stderr}`,
+      )
+    }
+
+    return result.stdout
+  }
+
+  try {
+    mkdirSync(clone)
+    mkdirSync(home)
+    run('git', ['archive', '--output', join(scratch, 'head.tar'), 'HEAD'])
+    run('tar', ['-xf', join(scratch, 'head.tar'), '-C', clone])
+
+    for (const [file, text] of Object.entries(changes)) {
+      writeFileSync(join(clone, file), text)
+    }
+
+    run('git', ['init', '--quiet'], inClone)
+    run('git', ['add', '--all'], inClone)
+    run('git', ['commit', '--quiet', '--message', `Release ${mod} ${version}`], inClone)
+    run('claude', ['plugin', 'tag', mod], inClone)
+    const files = run('git', ['ls-files', '-z', '--', mod], inClone)
+      .split('\0')
+      .filter(file => file !== '')
+    writeFileSync(join(clone, MARKETPLACE), sourcedFrom(changes[MARKETPLACE], `file://${clone}`))
+
+    run('claude', ['plugin', 'install', mod, '--marketplace', clone], user)
+    const installed = JSON.parse(run('claude', ['plugin', 'list', '--json'], user)).find(
+      plugin => plugin.id === `${mod}@${marketplace}`,
+    )
+
+    if (installed?.version !== version) {
+      throw new Error(`the installed ${mod} is not at ${version}`)
+    }
+
+    const dropped = files.filter(
+      file =>
+        lstatSync(join(installed.installPath, file.slice(mod.length + 1)), { throwIfNoEntry: false }) === undefined,
+    )
+
+    if (dropped.length > 0) {
+      throw new Error(`the installed ${mod} lacks ${dropped.join(', ')}: make each a file of the mod's own`)
+    }
+
+    // The session ends asking for a login; its exit code says nothing of the mod.
+    spawnSync('claude', ['-p', '--no-session-persistence', '--debug-file', log, 'Reply with: ok'], user)
+
+    if (!existsSync(log) || !readFileSync(log, 'utf8').includes(`hooks module ${mod}@${marketplace} loaded`)) {
+      throw new Error(`the installed ${mod} did not load in Claude Code`)
+    }
+  } finally {
+    rmSync(scratch, { recursive: true, force: true })
+  }
+}
+
 const main = (mod, version) => {
   const git = (...args) => execFileSync('git', args, { encoding: 'utf8' })
   const manifest = `${mod}/.claude-plugin/plugin.json`
@@ -141,12 +222,18 @@ const main = (mod, version) => {
   }
 
   const date = new Date().toISOString().slice(0, 10)
-  // Every change is worked out before any is written, so a release that stops leaves the tree as it was.
+  const tag = `${mod}--v${version}`
+  // Every change is worked out, and the release installed, before any is written, so a release that stops leaves
+  // the tree as it was.
   const changes = {
     'CHANGELOG.md': release(readFileSync('CHANGELOG.md', 'utf8'), mod, version, date),
     [manifest]: plugin.replace(`"version": "${current}"`, `"version": "${version}"`),
-    [MARKETPLACE]: pin(readFileSync(MARKETPLACE, 'utf8'), mod, `${mod}--v${version}`),
+    [MARKETPLACE]: pin(readFileSync(MARKETPLACE, 'utf8'), mod, tag),
   }
+
+  process.stdout.write(`release: installing ${mod} from a clone tagged ${tag}, in a home of its own\n`)
+  smoke(mod, version, changes)
+  process.stdout.write(`release: the installed ${mod} ${version} holds every file of the mod and loads\n`)
 
   for (const [file, text] of Object.entries(changes)) {
     writeFileSync(file, text)
