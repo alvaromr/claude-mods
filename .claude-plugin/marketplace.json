@@ -7,7 +7,7 @@
       "name": "guard-pnpm",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "guard-pnpm",
         "ref": "guard-pnpm--v0.2.0"
       }
@@ -16,7 +16,7 @@
       "name": "guard-commit",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "guard-commit",
         "ref": "guard-commit--v0.2.0"
       }
@@ -25,7 +25,7 @@
       "name": "ui-linkify",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "ui-linkify",
         "ref": "ui-linkify--v0.6.0"
       }
@@ -34,7 +34,7 @@
       "name": "bar-git",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "bar-git",
         "ref": "bar-git--v0.3.1"
       }
@@ -43,7 +43,7 @@
       "name": "session-title",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "session-title",
         "ref": "session-title--v0.3.0"
       }
@@ -52,7 +52,7 @@
       "name": "ui-companion",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "ui-companion",
         "ref": "ui-companion--v0.3.1"
       }
@@ -61,7 +61,7 @@
       "name": "pet",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "pet",
         "ref": "pet--v0.3.1"
       }
@@ -70,7 +70,7 @@
       "name": "ui-declutter",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "ui-declutter",
         "ref": "ui-declutter--v0.3.0"
       }
@@ -79,7 +79,7 @@
       "name": "guard-edit",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "guard-edit",
         "ref": "guard-edit--v0.2.0"
       }
@@ -88,7 +88,7 @@
       "name": "guard-outward",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "guard-outward",
         "ref": "guard-outward--v0.3.0"
       }
@@ -97,7 +97,7 @@
       "name": "ui-mods",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "ui-mods",
         "ref": "ui-mods--v0.3.1"
       }
@@ -106,7 +106,7 @@
       "name": "bar-limits",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "bar-limits",
         "ref": "bar-limits--v0.4.0"
       }
@@ -115,7 +115,7 @@
       "name": "bar-context",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "bar-context",
         "ref": "bar-context--v0.4.0"
       }
@@ -124,7 +124,7 @@
       "name": "bar-path",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "bar-path",
         "ref": "bar-path--v0.3.1"
       }
@@ -133,7 +133,7 @@
       "name": "ui-colorify",
       "source": {
         "source": "git-subdir",
-        "url": "alvaromr/claude-mods",
+        "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "ui-colorify",
         "ref": "ui-colorify--v0.1.1"
       }

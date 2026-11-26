@@ -109,6 +109,12 @@ expect_failure "a marketplace that installs $first from a tag other than its ver
   "$first must install from its folder at" --only
 
 fresh
+sed 's#"url": "https://github.com/\([^"]*\)\.git"#"url": "\1"#' "$repo/.claude-plugin/marketplace.json" \
+  >"$tmp/repo/.claude-plugin/marketplace.json"
+expect_failure "a marketplace that names its repository as owner/repo, which installs over SSH, stops the gate" \
+  "must install from its folder at" --only
+
+fresh
 rm "$tmp/repo/$first/.claude-plugin/icon.png"
 expect_failure "$first without an icon stops the gate" "$first has no icon" --only "$first"
 

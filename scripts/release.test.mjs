@@ -117,7 +117,7 @@ test('a mod with no entry, or a changelog with no Unreleased section, stops the 
 
 test("a release moves the marketplace's tag for its mod, and nothing else", () => {
   const entry = (name, ref) =>
-    `    {\n      "name": "${name}",\n      "source": {\n        "source": "git-subdir",\n        "url": "alvaromr/claude-mods",\n        "path": "${name}",\n        "ref": "${ref}"\n      }\n    }`
+    `    {\n      "name": "${name}",\n      "source": {\n        "source": "git-subdir",\n        "url": "https://github.com/alvaromr/claude-mods.git",\n        "path": "${name}",\n        "ref": "${ref}"\n      }\n    }`
   const marketplace = (gitRef, pathRef) =>
     `{\n  "plugins": [\n${entry('bar-git', gitRef)},\n${entry('bar-path', pathRef)}\n  ]\n}\n`
 
@@ -139,7 +139,10 @@ test("a release's smoke takes every mod from its clone, at the same tags", () =>
   const marketplace = url =>
     `{ "plugins": [\n  { "source": { "url": "${url}", "ref": "bar-git--v0.4.0" } },\n  { "source": { "url": "${url}", "ref": "pet--v0.3.1" } }\n] }\n`
 
-  assert.equal(sourcedFrom(marketplace('alvaromr/claude-mods'), 'file:///tmp/clone'), marketplace('file:///tmp/clone'))
+  assert.equal(
+    sourcedFrom(marketplace('https://github.com/alvaromr/claude-mods.git'), 'file:///tmp/clone'),
+    marketplace('file:///tmp/clone'),
+  )
 })
 
 test('a version must be a later 0.y.z', () => {
