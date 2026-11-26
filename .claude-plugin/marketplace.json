@@ -63,7 +63,7 @@
         "source": "git-subdir",
         "url": "https://github.com/alvaromr/claude-mods.git",
         "path": "pet",
-        "ref": "pet--v0.3.1"
+        "ref": "pet--v0.3.2"
       }
     },
     {

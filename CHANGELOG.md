@@ -6,6 +6,8 @@ entry names its mod.
 
 ## [Unreleased]
 
+## [pet 0.3.2] - 2026-11-26
+
 ### Fixed
 
 - `pet`: an Orca worker that finished and removed its own workspace leaves the bubble, where it stayed in «Esperan»
