@@ -31,7 +31,9 @@ Run each from the repo root:
 
 ## Architecture
 
-- One mod per top-level folder, all listed in `.claude-plugin/marketplace.json`. Each holds
+- One mod per top-level folder, all listed in `.claude-plugin/marketplace.json`, which installs each from its folder
+  at the tag of its version, `<mod>--v<version>`, so a user gets that release and never the default branch; the
+  gate holds every entry to it, and a mod installs only once that tag is pushed. Each holds
   `.claude-plugin/plugin.json`, its icon in `.claude-plugin/icon.png`, `hooks/hooks.json` naming its hooks module, the module in `hooks/`, the shell
   scripts it runs, if any, in `scripts/` (code in a string escapes the gate), its tests in `tests/` and, when it
   keeps values in `$.state`, their contract in `types/index.d.ts`.

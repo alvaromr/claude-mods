@@ -103,6 +103,12 @@ else
 fi
 
 fresh
+sed "s/\"ref\": \"$first--v[^\"]*\"/\"ref\": \"$first--v0.0.0\"/" "$repo/.claude-plugin/marketplace.json" \
+  >"$tmp/repo/.claude-plugin/marketplace.json"
+expect_failure "a marketplace that installs $first from a tag other than its version's stops the gate" \
+  "$first must install from its folder at" --only
+
+fresh
 rm "$tmp/repo/$first/.claude-plugin/icon.png"
 expect_failure "$first without an icon stops the gate" "$first has no icon" --only "$first"
 

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { isLater, modsOf, release } from './release.mjs'
+import { isLater, modsOf, pin, release } from './release.mjs'
 
 const CHANGELOG = `# Changelog
 
@@ -113,6 +113,26 @@ test('an entry shared with other mods stops the release, naming it', () => {
 test('a mod with no entry, or a changelog with no Unreleased section, stops the release', () => {
   assert.throws(() => release(CHANGELOG, 'pet', '0.2.0', 'd'), /no entry for pet/)
   assert.throws(() => release('# Changelog\n', 'bar-git', '0.2.0', 'd'), /no "## \[Unreleased\]" section/)
+})
+
+test("a release moves the marketplace's tag for its mod, and nothing else", () => {
+  const entry = (name, ref) =>
+    `    {\n      "name": "${name}",\n      "source": {\n        "source": "git-subdir",\n        "url": "alvaromr/claude-mods",\n        "path": "${name}",\n        "ref": "${ref}"\n      }\n    }`
+  const marketplace = (gitRef, pathRef) =>
+    `{\n  "plugins": [\n${entry('bar-git', gitRef)},\n${entry('bar-path', pathRef)}\n  ]\n}\n`
+
+  assert.equal(
+    pin(marketplace('bar-git--v0.3.1', 'bar-path--v0.3.1'), 'bar-git', 'bar-git--v0.4.0'),
+    marketplace('bar-git--v0.4.0', 'bar-path--v0.3.1'),
+  )
+  assert.equal(
+    pin(marketplace('bar-git--v0.3.1', 'bar-path--v0.3.1'), 'bar-path', 'bar-path--v0.3.2'),
+    marketplace('bar-git--v0.3.1', 'bar-path--v0.3.2'),
+  )
+  assert.throws(
+    () => pin(marketplace('bar-git--v0.3.1', 'bar-path--v0.3.1'), 'pet', 'pet--v0.4.0'),
+    /installs pet from no tag of its own/,
+  )
 })
 
 test('a version must be a later 0.y.z', () => {

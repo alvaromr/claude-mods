@@ -1,13 +1,14 @@
 // Releases one mod: `pnpm release <mod> <version>`. Moves the mod's entries in CHANGELOG.md from Unreleased to a
-// section of their own, sets the version in its plugin.json, commits (the pre-commit hook runs the gate) and tags
-// it with `claude plugin tag`. An entry that names other mods too is left for a person to split first, since a
-// release section says only what that release holds.
+// section of their own, sets the version in its plugin.json and the marketplace's tag for it, commits (the
+// pre-commit hook runs the gate) and tags it with `claude plugin tag`. An entry that names other mods too is left
+// for a person to split first, since a release section says only what that release holds.
 import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
 const UNRELEASED = '## [Unreleased]'
+const MARKETPLACE = '.claude-plugin/marketplace.json'
 // Versions stay below 1.0.0 while the engine's hooks API is early access (docs/decisions/versioning.md).
 const VERSION = /^0\.(\d+)\.(\d+)$/
 
@@ -106,6 +107,17 @@ export const release = (changelog, mod, version, date) => {
   ].join('\n')
 }
 
+/** The marketplace's text with `mod` installed from `tag`, its release's, and nothing else changed. */
+export const pin = (marketplace, mod, tag) => {
+  const ref = new RegExp(`"ref": "${mod}--v[^"]*"`)
+
+  if (!ref.test(marketplace)) {
+    throw new Error(`${MARKETPLACE} installs ${mod} from no tag of its own`)
+  }
+
+  return marketplace.replace(ref, `"ref": "${tag}"`)
+}
+
 const main = (mod, version) => {
   const git = (...args) => execFileSync('git', args, { encoding: 'utf8' })
   const manifest = `${mod}/.claude-plugin/plugin.json`
@@ -129,10 +141,18 @@ const main = (mod, version) => {
   }
 
   const date = new Date().toISOString().slice(0, 10)
+  // Every change is worked out before any is written, so a release that stops leaves the tree as it was.
+  const changes = {
+    'CHANGELOG.md': release(readFileSync('CHANGELOG.md', 'utf8'), mod, version, date),
+    [manifest]: plugin.replace(`"version": "${current}"`, `"version": "${version}"`),
+    [MARKETPLACE]: pin(readFileSync(MARKETPLACE, 'utf8'), mod, `${mod}--v${version}`),
+  }
 
-  writeFileSync('CHANGELOG.md', release(readFileSync('CHANGELOG.md', 'utf8'), mod, version, date))
-  writeFileSync(manifest, plugin.replace(`"version": "${current}"`, `"version": "${version}"`))
-  git('add', 'CHANGELOG.md', manifest)
+  for (const [file, text] of Object.entries(changes)) {
+    writeFileSync(file, text)
+  }
+
+  git('add', ...Object.keys(changes))
   execFileSync('git', ['commit', '-m', `Release ${mod} ${version}`], { stdio: 'inherit' })
   execFileSync('claude', ['plugin', 'tag', mod], { stdio: 'inherit' })
 }
